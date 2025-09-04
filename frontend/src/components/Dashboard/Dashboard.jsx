@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FileText, 
@@ -10,98 +10,206 @@ import {
   XCircle,
   Plus
 } from 'lucide-react';
+import { processoService, alertService } from '../../services/api';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  // Dados mockados para demonstração
-  const stats = [
-    {
-      title: 'Total de Processos',
-      value: '24',
-      change: '+12%',
-      changeType: 'positive',
-      icon: FileText,
-      color: 'primary'
-    },
-    {
-      title: 'Alertas Ativos',
-      value: '8',
-      change: '+3',
-      changeType: 'warning',
-      icon: AlertTriangle,
-      color: 'warning'
-    },
-    {
-      title: 'Próximas Audiências',
-      value: '3',
-      change: 'Esta semana',
-      changeType: 'info',
-      icon: Calendar,
-      color: 'info'
-    },
-    {
-      title: 'Taxa de Sucesso',
-      value: '87%',
-      change: '+5%',
-      changeType: 'positive',
-      icon: TrendingUp,
-      color: 'success'
-    }
-  ];
+  const [processos, setProcessos] = useState([]);
+  const [alertas, setAlertas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const recentProcesses = [
-    {
-      id: 1,
-      numero: '0001234-12.2024.8.05.0001',
-      classe: 'Ação de Indenização',
-      status: 'Em Andamento',
-      prazo: '15 dias',
-      priority: 'high'
-    },
-    {
-      id: 2,
-      numero: '0001235-12.2024.8.05.0001',
-      classe: 'Execução de Título Extrajudicial',
-      status: 'Aguardando Despacho',
-      prazo: '8 dias',
-      priority: 'medium'
-    },
-    {
-      id: 3,
-      numero: '0001236-12.2024.8.05.0001',
-      classe: 'Mandado de Segurança',
-      status: 'Concluído',
-      prazo: 'Concluído',
-      priority: 'low'
-    }
-  ];
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      setLoading(true);
+      try {
+        const [processosResponse, alertasResponse] = await Promise.all([
+          processoService.getAll(),
+          alertService.getAll()
+        ]);
+        
+        setProcessos(processosResponse.processos || []);
+        setAlertas(alertasResponse.alertas || []);
+      } catch (error) {
+        console.error('Erro ao carregar dados do dashboard:', error);
+        setProcessos([]);
+        setAlertas([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const upcomingDeadlines = [
-    {
-      id: 1,
-      title: 'Prazo para Recurso',
-      process: '0001234-12.2024.8.05.0001',
-      deadline: '2024-01-15',
-      type: 'recurso',
-      daysLeft: 2
-    },
-    {
-      id: 2,
-      title: 'Audiência de Conciliação',
-      process: '0001235-12.2024.8.05.0001',
-      deadline: '2024-01-18',
-      type: 'audiencia',
-      daysLeft: 5
-    },
-    {
-      id: 3,
-      title: 'Prazo para Embargos',
-      process: '0001236-12.2024.8.05.0001',
-      deadline: '2024-01-20',
-      type: 'embargos',
-      daysLeft: 7
+    loadDashboardData();
+  }, []);
+
+  // Calcular estatísticas baseadas nos dados reais
+  const getStats = () => {
+    const totalProcessos = processos.length;
+    const alertasAtivos = alertas.filter(a => !a.lido).length;
+    const proximasAudiencias = processos.filter(p => 
+      p.proximaAudiencia && 
+      new Date(p.proximaAudiencia) >= new Date() &&
+      new Date(p.proximaAudiencia) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    ).length;
+    const processosAtivos = processos.filter(p => p.status === 'ativo').length;
+    const taxaSucesso = totalProcessos > 0 ? Math.round((processosAtivos / totalProcessos) * 100) : 0;
+
+    return [
+      {
+        title: 'Total de Processos',
+        value: totalProcessos.toString(),
+        change: '+12%',
+        changeType: 'positive',
+        icon: FileText,
+        color: 'primary'
+      },
+      {
+        title: 'Alertas Ativos',
+        value: alertasAtivos.toString(),
+        change: '+3',
+        changeType: 'warning',
+        icon: AlertTriangle,
+        color: 'warning'
+      },
+      {
+        title: 'Próximas Audiências',
+        value: proximasAudiencias.toString(),
+        change: 'Esta semana',
+        changeType: 'info',
+        icon: Calendar,
+        color: 'info'
+      },
+      {
+        title: 'Taxa de Sucesso',
+        value: `${taxaSucesso}%`,
+        change: '+5%',
+        changeType: 'positive',
+        icon: TrendingUp,
+        color: 'success'
+      }
+    ];
+  };
+
+  // Processos recentes (últimos 5)
+  const getRecentProcesses = () => {
+    return processos
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5)
+      .map(processo => {
+        const nextDeadline = getNextDeadline(processo);
+        return {
+          id: processo.id,
+          numero: processo.numero,
+          classe: processo.classe,
+          status: getStatusText(processo.status),
+          prazo: nextDeadline ? `${nextDeadline.daysLeft} dias` : 'Sem prazo',
+          priority: getPriorityFromDeadline(nextDeadline)
+        };
+      });
+  };
+
+  // Prazos próximos baseados nos processos
+  const getUpcomingDeadlines = () => {
+    const deadlines = [];
+    
+    processos.forEach(processo => {
+      // Próxima audiência
+      if (processo.proximaAudiencia) {
+        const daysLeft = getDaysUntilDeadline(processo.proximaAudiencia);
+        if (daysLeft >= 0 && daysLeft <= 30) {
+          deadlines.push({
+            id: `audiencia-${processo.id}`,
+            title: 'Audiência de Conciliação',
+            process: processo.numero,
+            deadline: processo.proximaAudiencia,
+            type: 'audiencia',
+            daysLeft: daysLeft
+          });
+        }
+      }
+
+      // Prazo para recurso
+      if (processo.prazoRecurso) {
+        const daysLeft = getDaysUntilDeadline(processo.prazoRecurso);
+        if (daysLeft >= 0 && daysLeft <= 30) {
+          deadlines.push({
+            id: `recurso-${processo.id}`,
+            title: 'Prazo para Recurso',
+            process: processo.numero,
+            deadline: processo.prazoRecurso,
+            type: 'recurso',
+            daysLeft: daysLeft
+          });
+        }
+      }
+
+      // Prazo para embargos
+      if (processo.prazoEmbargos) {
+        const daysLeft = getDaysUntilDeadline(processo.prazoEmbargos);
+        if (daysLeft >= 0 && daysLeft <= 30) {
+          deadlines.push({
+            id: `embargos-${processo.id}`,
+            title: 'Prazo para Embargos',
+            process: processo.numero,
+            deadline: processo.prazoEmbargos,
+            type: 'embargos',
+            daysLeft: daysLeft
+          });
+        }
+      }
+    });
+
+    return deadlines
+      .sort((a, b) => a.daysLeft - b.daysLeft)
+      .slice(0, 5);
+  };
+
+  // Funções auxiliares
+  const getDaysUntilDeadline = (dateString) => {
+    if (!dateString) return null;
+    const deadline = new Date(dateString);
+    const now = new Date();
+    const diffTime = deadline - now;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const getNextDeadline = (processo) => {
+    const deadlines = [
+      { date: processo.proximaAudiencia, label: 'Audiência' },
+      { date: processo.prazoRecurso, label: 'Recurso' },
+      { date: processo.prazoEmbargos, label: 'Embargos' }
+    ].filter(d => d.date);
+
+    if (deadlines.length === 0) return null;
+
+    const sortedDeadlines = deadlines.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const nextDeadline = sortedDeadlines[0];
+    const daysLeft = getDaysUntilDeadline(nextDeadline.date);
+
+    return {
+      ...nextDeadline,
+      daysLeft
+    };
+  };
+
+  const getPriorityFromDeadline = (deadline) => {
+    if (!deadline) return 'low';
+    if (deadline.daysLeft <= 3) return 'high';
+    if (deadline.daysLeft <= 7) return 'medium';
+    return 'low';
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'ativo': return 'Em Andamento';
+      case 'arquivado': return 'Arquivado';
+      case 'suspenso': return 'Suspenso';
+      default: return 'Em Andamento';
     }
-  ];
+  };
+
+  const stats = getStats();
+  const recentProcesses = getRecentProcesses();
+  const upcomingDeadlines = getUpcomingDeadlines();
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -129,6 +237,17 @@ const Dashboard = () => {
       default: return 'var(--neutral-500)';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="dashboard">
+        <div className="dashboard-loading">
+          <div className="dashboard-loading-spinner" />
+          <p>Carregando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard">
