@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import './Consultas.css';
 
@@ -253,156 +252,146 @@ const Consultas = () => {
     }
   };
 
-  // Função para exportar em Word
-  const handleExportWord = async () => {
+  // Função para exportar em Word (HTML compatível)
+  const handleExportWord = () => {
     if (!selectedConsulta) return;
 
     try {
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: [
-            new Paragraph({
-              text: "Relatório de Consulta",
-              heading: HeadingLevel.TITLE,
-            }),
-            new Paragraph({
-              text: `Data: ${formatDate(selectedConsulta.dataConsulta)}`,
-            }),
-            new Paragraph({
-              text: "",
-            }),
-            new Paragraph({
-              text: "Informações Básicas",
-              heading: HeadingLevel.HEADING_1,
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Tipo: ", bold: true }),
-                new TextRun({ text: getTipoText(selectedConsulta.tipo) }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Número: ", bold: true }),
-                new TextRun({ text: selectedConsulta.numero }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Classe: ", bold: true }),
-                new TextRun({ text: selectedConsulta.classe }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Tribunal: ", bold: true }),
-                new TextRun({ text: selectedConsulta.tribunal }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Comarca: ", bold: true }),
-                new TextRun({ text: selectedConsulta.comarca }),
-              ],
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Status: ", bold: true }),
-                new TextRun({ text: getStatusText(selectedConsulta.status) }),
-              ],
-            }),
-            new Paragraph({
-              text: "",
-            }),
-            ...(selectedConsulta.resultado ? [
-              new Paragraph({
-                text: "Resultado da Consulta",
-                heading: HeadingLevel.HEADING_1,
-              }),
-              ...(selectedConsulta.tipo === 'processo' ? [
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Status do Processo: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.status }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Última Movimentação: ", bold: true }),
-                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaMovimentacao) }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Valor da Causa: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.valorCausa }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Partes Envolvidas: ", bold: true }),
-                  ],
-                }),
-                ...selectedConsulta.resultado.partes.map(parte => 
-                  new Paragraph({
-                    children: [
-                      new TextRun({ text: `• ${parte.nome} (${parte.tipo})`, italics: true }),
-                    ],
-                  })
-                ),
-              ] : selectedConsulta.tipo === 'pessoa' ? [
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Nome: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.nome }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Situação: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.situacao }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Última Atualização: ", bold: true }),
-                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaAtualizacao) }),
-                  ],
-                }),
-              ] : selectedConsulta.tipo === 'empresa' ? [
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Razão Social: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.razaoSocial }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Situação: ", bold: true }),
-                    new TextRun({ text: selectedConsulta.resultado.situacao }),
-                  ],
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: "Última Atualização: ", bold: true }),
-                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaAtualizacao) }),
-                  ],
-                }),
-              ] : [])
-            ] : [
-              new Paragraph({
-                text: "Nenhum resultado encontrado para esta consulta.",
-                italics: true,
-              }),
-            ]),
-          ],
-        }],
-      });
+      let htmlContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:w="urn:schemas-microsoft-com:office:word" 
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8">
+          <meta name="ProgId" content="Word.Document">
+          <meta name="Generator" content="Microsoft Word 15">
+          <meta name="Originator" content="Microsoft Word 15">
+          <title>Relatório de Consulta</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+            h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+            h2 { color: #34495e; margin-top: 30px; }
+            .info-item { margin: 10px 0; }
+            .label { font-weight: bold; color: #2c3e50; }
+            .value { margin-left: 10px; }
+            .section { margin: 20px 0; }
+            .no-result { font-style: italic; color: #7f8c8d; }
+            ul { margin: 10px 0; padding-left: 20px; }
+            li { margin: 5px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>Relatório de Consulta</h1>
+          <p><strong>Data:</strong> ${formatDate(selectedConsulta.dataConsulta)}</p>
+          
+          <div class="section">
+            <h2>Informações Básicas</h2>
+            <div class="info-item">
+              <span class="label">Tipo:</span>
+              <span class="value">${getTipoText(selectedConsulta.tipo)}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Número:</span>
+              <span class="value">${selectedConsulta.numero}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Classe:</span>
+              <span class="value">${selectedConsulta.classe}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Tribunal:</span>
+              <span class="value">${selectedConsulta.tribunal}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Comarca:</span>
+              <span class="value">${selectedConsulta.comarca}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Status:</span>
+              <span class="value">${getStatusText(selectedConsulta.status)}</span>
+            </div>
+          </div>
+      `;
 
-      const buffer = await Packer.toBuffer(doc);
-      const fileName = `consulta_${selectedConsulta.numero}_${new Date().toISOString().split('T')[0]}.docx`;
-      saveAs(new Blob([buffer]), fileName);
+      if (selectedConsulta.resultado) {
+        htmlContent += `
+          <div class="section">
+            <h2>Resultado da Consulta</h2>
+        `;
+
+        if (selectedConsulta.tipo === 'processo') {
+          htmlContent += `
+            <div class="info-item">
+              <span class="label">Status do Processo:</span>
+              <span class="value">${selectedConsulta.resultado.status}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Última Movimentação:</span>
+              <span class="value">${formatDate(selectedConsulta.resultado.ultimaMovimentacao)}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Valor da Causa:</span>
+              <span class="value">${selectedConsulta.resultado.valorCausa}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Partes Envolvidas:</span>
+              <ul>
+                ${selectedConsulta.resultado.partes.map(parte => 
+                  `<li>${parte.nome} (${parte.tipo})</li>`
+                ).join('')}
+              </ul>
+            </div>
+          `;
+        } else if (selectedConsulta.tipo === 'pessoa') {
+          htmlContent += `
+            <div class="info-item">
+              <span class="label">Nome:</span>
+              <span class="value">${selectedConsulta.resultado.nome}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Situação:</span>
+              <span class="value">${selectedConsulta.resultado.situacao}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Última Atualização:</span>
+              <span class="value">${formatDate(selectedConsulta.resultado.ultimaAtualizacao)}</span>
+            </div>
+          `;
+        } else if (selectedConsulta.tipo === 'empresa') {
+          htmlContent += `
+            <div class="info-item">
+              <span class="label">Razão Social:</span>
+              <span class="value">${selectedConsulta.resultado.razaoSocial}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Situação:</span>
+              <span class="value">${selectedConsulta.resultado.situacao}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Última Atualização:</span>
+              <span class="value">${formatDate(selectedConsulta.resultado.ultimaAtualizacao)}</span>
+            </div>
+          `;
+        }
+
+        htmlContent += `</div>`;
+      } else {
+        htmlContent += `
+          <div class="section">
+            <h2>Resultado da Consulta</h2>
+            <p class="no-result">Nenhum resultado encontrado para esta consulta.</p>
+          </div>
+        `;
+      }
+
+      htmlContent += `
+          </body>
+        </html>
+      `;
+
+      const blob = new Blob([htmlContent], { type: 'application/msword' });
+      const fileName = `consulta_${selectedConsulta.numero}_${new Date().toISOString().split('T')[0]}.doc`;
+      saveAs(blob, fileName);
     } catch (error) {
       console.error('Erro ao exportar Word:', error);
       alert('Erro ao exportar Word. Tente novamente.');
