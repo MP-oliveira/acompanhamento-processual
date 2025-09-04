@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
+import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
 import './NovoProcesso.css';
 
@@ -14,14 +15,9 @@ const NovoProcesso = () => {
     setError(null);
 
     try {
-      // Simulação de API call
-      console.log('Criando processo:', formData);
-      
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simula sucesso
-      console.log('Processo criado com sucesso!');
+      // Chama a API para criar o processo
+      const response = await processoService.create(formData);
+      console.log('Processo criado com sucesso:', response);
       
       // Redireciona para a lista de processos
       navigate('/processos', { 
@@ -32,8 +28,9 @@ const NovoProcesso = () => {
       });
       
     } catch (err) {
-      setError('Erro ao criar processo. Tente novamente.');
       console.error('Erro ao criar processo:', err);
+      const errorMessage = err.response?.data?.message || 'Erro ao criar processo. Tente novamente.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

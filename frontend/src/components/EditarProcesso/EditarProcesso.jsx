@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, X } from 'lucide-react';
+import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
 import './EditarProcesso.css';
 
@@ -10,106 +11,50 @@ const EditarProcesso = () => {
   const [processo, setProcesso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
-  // Dados mockados para demonstração
-  const mockProcessos = [
-    {
-      id: 1,
-      numero: '0001234-12.2024.8.05.0001',
-      classe: 'Ação de Indenização por Dano Moral',
-      assunto: 'Indenização por danos morais decorrentes de acidente de trânsito',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'ativo',
-      dataDistribuicao: '2024-01-15T10:30:00Z',
-      dataSentenca: '2024-02-20T14:15:00Z',
-      prazoRecurso: '2024-03-05T23:59:59Z',
-      prazoEmbargos: '2024-03-10T23:59:59Z',
-      proximaAudiencia: '2024-03-15T09:00:00Z',
-      observacoes: 'Processo em fase de produção de provas. Aguardando perícia médica.',
-      user: { nome: 'Dr. João Silva' },
-      createdAt: '2024-01-15T10:30:00Z'
-    },
-    {
-      id: 2,
-      numero: '0001235-12.2024.8.05.0001',
-      classe: 'Execução de Título Extrajudicial',
-      assunto: 'Execução de título extrajudicial - cheque sem fundos',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'ativo',
-      dataDistribuicao: '2024-01-20T08:45:00Z',
-      dataSentenca: null,
-      prazoRecurso: null,
-      prazoEmbargos: null,
-      proximaAudiencia: '2024-03-20T14:00:00Z',
-      observacoes: 'Aguardando manifestação do executado.',
-      user: { nome: 'Dra. Maria Santos' },
-      createdAt: '2024-01-20T08:45:00Z'
-    },
-    {
-      id: 3,
-      numero: '0001236-12.2024.8.05.0001',
-      classe: 'Mandado de Segurança',
-      assunto: 'Mandado de segurança contra ato de autoridade pública',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'arquivado',
-      dataDistribuicao: '2024-01-10T16:20:00Z',
-      dataSentenca: '2024-02-15T11:30:00Z',
-      prazoRecurso: '2024-02-28T23:59:59Z',
-      prazoEmbargos: '2024-03-05T23:59:59Z',
-      proximaAudiencia: null,
-      observacoes: 'Processo arquivado por acordo entre as partes.',
-      user: { nome: 'Dr. Pedro Costa' },
-      createdAt: '2024-01-10T16:20:00Z'
-    }
-  ];
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadProcesso = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const processoEncontrado = mockProcessos.find(p => p.id === parseInt(id));
-        if (processoEncontrado) {
-          setProcesso(processoEncontrado);
-        } else {
-          // Processo não encontrado
-          navigate('/processos');
-        }
+        // Carrega o processo da API
+        const response = await processoService.getById(id);
+        setProcesso(response);
       } catch (error) {
         console.error('Erro ao carregar processo:', error);
+        // Processo não encontrado ou erro
         navigate('/processos');
       } finally {
         setLoading(false);
       }
     };
 
-    loadProcesso();
+    if (id) {
+      loadProcesso();
+    }
   }, [id, navigate]);
 
-  const handleSave = async (formData) => {
+  const handleSubmit = async (formData) => {
     setSaving(true);
+    setError(null);
+
     try {
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Chama a API para atualizar o processo
+      const response = await processoService.update(id, formData);
+      console.log('Processo atualizado com sucesso:', response);
       
-      // Aqui você faria a chamada para a API para salvar
-      console.log('Salvando processo:', { id, ...formData });
-      
-      // Simula sucesso
-      navigate('/processos', {
-        state: {
+      // Redireciona para a lista de processos
+      navigate('/processos', { 
+        state: { 
           message: 'Processo atualizado com sucesso!',
           type: 'success'
         }
       });
-    } catch (error) {
-      console.error('Erro ao salvar processo:', error);
-      alert('Erro ao salvar processo. Tente novamente.');
+      
+    } catch (err) {
+      console.error('Erro ao atualizar processo:', err);
+      const errorMessage = err.response?.data?.message || 'Erro ao atualizar processo. Tente novamente.';
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -122,8 +67,8 @@ const EditarProcesso = () => {
   if (loading) {
     return (
       <div className="editar-processo">
-        <div className="editar-processo-loading">
-          <div className="editar-processo-loading-spinner" />
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
           <p>Carregando processo...</p>
         </div>
       </div>
@@ -133,11 +78,9 @@ const EditarProcesso = () => {
   if (!processo) {
     return (
       <div className="editar-processo">
-        <div className="editar-processo-error">
-          <h3>Processo não encontrado</h3>
-          <p>O processo solicitado não foi encontrado.</p>
+        <div className="error-container">
+          <p>Processo não encontrado.</p>
           <Link to="/processos" className="btn btn-primary">
-            <ArrowLeft size={20} />
             Voltar para Processos
           </Link>
         </div>
@@ -150,45 +93,37 @@ const EditarProcesso = () => {
       {/* Header da Página */}
       <div className="page-header">
         <div className="page-header-content">
-          <div className="page-header-breadcrumb">
-            <Link to="/processos" className="page-header-breadcrumb-link">
-              <ArrowLeft size={16} />
-              Processos
-            </Link>
-            <span className="page-header-breadcrumb-separator">/</span>
-            <span className="page-header-breadcrumb-current">Editar</span>
-          </div>
-          <h1 className="page-title">Editar Processo</h1>
-        </div>
-        <div className="page-header-actions">
-          <button 
-            className="btn btn-secondary" 
-            onClick={handleCancel}
-            disabled={saving}
-          >
-            <X size={20} />
-            Cancelar
-          </button>
-          <button 
-            className="btn btn-primary" 
-            onClick={() => document.getElementById('processo-form').dispatchEvent(new Event('submit'))}
-            disabled={saving}
-          >
-            <Save size={20} />
-            {saving ? 'Salvando...' : 'Salvar'}
-          </button>
+          <Link to="/processos" className="btn btn-secondary">
+            <ArrowLeft size={20} />
+            Voltar
+          </Link>
         </div>
       </div>
 
-      {/* Formulário */}
+      {/* Conteúdo Principal */}
       <div className="editar-processo-content">
-        <ProcessoForm
-          id="processo-form"
-          initialData={processo}
-          onSubmit={handleSave}
-          isEditing={true}
-          loading={saving}
-        />
+        <div className="editar-processo-form">
+          <div className="form-header">
+            <h2>Editar Processo</h2>
+            <p>Atualize as informações do processo {processo.numero}</p>
+          </div>
+
+          {error && (
+            <div className="form-error-message">
+              <X size={16} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <ProcessoForm
+            initialData={processo}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            loading={saving}
+            submitText="Salvar Alterações"
+            cancelText="Cancelar"
+          />
+        </div>
       </div>
     </div>
   );

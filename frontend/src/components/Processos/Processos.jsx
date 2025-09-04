@@ -12,6 +12,7 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react';
+import { processoService } from '../../services/api';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
 import './Processos.css';
 
@@ -26,71 +27,17 @@ const Processos = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [viewMode, setViewMode] = useState('grid'); // grid ou list
 
-  // Dados mockados para demonstração
-  const mockProcessos = [
-    {
-      id: 1,
-      numero: '0001234-12.2024.8.05.0001',
-      classe: 'Ação de Indenização por Dano Moral',
-      assunto: 'Indenização por danos morais decorrentes de acidente de trânsito',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'ativo',
-      dataDistribuicao: '2024-01-15T10:30:00Z',
-      dataSentenca: '2024-02-20T14:15:00Z',
-      prazoRecurso: '2024-03-05T23:59:59Z',
-      prazoEmbargos: '2024-03-10T23:59:59Z',
-      proximaAudiencia: '2024-03-15T09:00:00Z',
-      observacoes: 'Processo em fase de produção de provas. Aguardando perícia médica.',
-      user: { nome: 'Dr. João Silva' },
-      createdAt: '2024-01-15T10:30:00Z'
-    },
-    {
-      id: 2,
-      numero: '0001235-12.2024.8.05.0001',
-      classe: 'Execução de Título Extrajudicial',
-      assunto: 'Execução de título extrajudicial - cheque sem fundos',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'ativo',
-      dataDistribuicao: '2024-01-20T08:45:00Z',
-      dataSentenca: null,
-      prazoRecurso: null,
-      prazoEmbargos: null,
-      proximaAudiencia: '2024-03-20T14:00:00Z',
-      observacoes: 'Aguardando manifestação do executado.',
-      user: { nome: 'Dra. Maria Santos' },
-      createdAt: '2024-01-20T08:45:00Z'
-    },
-    {
-      id: 3,
-      numero: '0001236-12.2024.8.05.0001',
-      classe: 'Mandado de Segurança',
-      assunto: 'Mandado de segurança contra ato de autoridade pública',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'arquivado',
-      dataDistribuicao: '2024-01-10T16:20:00Z',
-      dataSentenca: '2024-02-15T11:30:00Z',
-      prazoRecurso: '2024-02-28T23:59:59Z',
-      prazoEmbargos: '2024-03-05T23:59:59Z',
-      proximaAudiencia: null,
-      observacoes: 'Processo arquivado por acordo entre as partes.',
-      user: { nome: 'Dr. Pedro Costa' },
-      createdAt: '2024-01-10T16:20:00Z'
-    }
-  ];
-
   useEffect(() => {
-    // Simula carregamento de dados
+    // Carrega processos da API real
     const loadProcessos = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setProcessos(mockProcessos);
+        const response = await processoService.getAll();
+        setProcessos(response.processos || []);
       } catch (error) {
         console.error('Erro ao carregar processos:', error);
+        // Em caso de erro, mantém array vazio
+        setProcessos([]);
       } finally {
         setLoading(false);
       }
@@ -147,10 +94,11 @@ const Processos = () => {
     if (window.confirm(`Tem certeza que deseja excluir ${processoNome}?\n\nEsta ação não pode ser desfeita.`)) {
       try {
         setLoading(true);
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Simula exclusão
+        // Chama a API para deletar o processo
+        await processoService.delete(id);
+        
+        // Remove o processo da lista local
         setProcessos(prev => prev.filter(p => p.id !== id));
         console.log('Processo excluído:', id);
         
@@ -158,7 +106,8 @@ const Processos = () => {
         alert('Processo excluído com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir processo:', error);
-        alert('Erro ao excluir processo. Tente novamente.');
+        const errorMessage = error.response?.data?.message || 'Erro ao excluir processo. Tente novamente.';
+        alert(errorMessage);
       } finally {
         setLoading(false);
       }
