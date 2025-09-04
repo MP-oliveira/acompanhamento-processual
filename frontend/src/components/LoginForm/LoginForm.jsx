@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react';
 import './LoginForm.css';
 
@@ -151,9 +152,9 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
             <span>Lembrar de mim</span>
           </label>
           
-          <a href="/esqueci-senha" className="login-form-forgot">
+          <Link to="/esqueci-senha" className="login-form-forgot">
             Esqueceu a senha?
-          </a>
+          </Link>
         </div>
 
         <div className="form-actions">
@@ -169,9 +170,9 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
         <div className="login-form-footer">
           <p className="login-form-footer-text">
             Não tem uma conta?{' '}
-            <a href="/register" className="login-form-footer-link">
+            <Link to="/register" className="login-form-footer-link">
               Registre-se
-            </a>
+            </Link>
           </p>
         </div>
       </form>

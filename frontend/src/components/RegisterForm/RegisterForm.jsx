@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, User, Mail, Lock, AlertCircle, UserPlus } from 'lucide-react';
 import './RegisterForm.css';
 
@@ -255,13 +256,13 @@ const RegisterForm = ({ onSubmit, loading = false, error = null }) => {
             />
             <span>
               Eu aceito os{' '}
-              <a href="/termos" className="register-form-terms-link">
+              <Link to="/termos" className="register-form-terms-link">
                 Termos de Uso
-              </a>{' '}
+              </Link>{' '}
               e a{' '}
-              <a href="/privacidade" className="register-form-terms-link">
+              <Link to="/privacidade" className="register-form-terms-link">
                 Política de Privacidade
-              </a>
+              </Link>
             </span>
           </label>
         </div>
@@ -284,9 +285,9 @@ const RegisterForm = ({ onSubmit, loading = false, error = null }) => {
         <div className="register-form-footer">
           <p className="register-form-footer-text">
             Já tem uma conta?{' '}
-            <a href="/login" className="register-form-footer-link">
+            <Link to="/login" className="register-form-footer-link">
               Faça login
-            </a>
+            </Link>
           </p>
         </div>
       </form>

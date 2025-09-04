@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FileText, 
   AlertTriangle, 
@@ -176,9 +177,9 @@ const Dashboard = () => {
           <div className="dashboard-section">
             <div className="dashboard-section-header">
               <h3 className="dashboard-section-title">Processos Recentes</h3>
-              <a href="/processos" className="dashboard-section-link">
+              <Link to="/processos" className="dashboard-section-link">
                 Ver todos
-              </a>
+              </Link>
             </div>
             <div className="dashboard-section-content">
               <div className="process-list">
@@ -217,9 +218,9 @@ const Dashboard = () => {
           <div className="dashboard-section">
             <div className="dashboard-section-header">
               <h3 className="dashboard-section-title">Prazos Próximos</h3>
-              <a href="/alertas" className="dashboard-section-link">
+              <Link to="/alertas" className="dashboard-section-link">
                 Ver todos
-              </a>
+              </Link>
             </div>
             <div className="dashboard-section-content">
               <div className="deadline-list">

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings, Bell } from 'lucide-react';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const location = useLocation();
 
   const toggleUserDropdown = () => {
     setShowUserDropdown(!showUserDropdown);
@@ -21,6 +23,13 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
       .join('')
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const isActiveRoute = (path) => {
+    if (path === '/dashboard') {
+      return location.pathname === '/dashboard' || location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -48,15 +57,24 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
 
         {/* Navegação Central */}
         <nav className="topbar-nav">
-          <a href="/dashboard" className="topbar-nav-link active">
+          <Link 
+            to="/dashboard" 
+            className={`topbar-nav-link ${isActiveRoute('/dashboard') ? 'active' : ''}`}
+          >
             Dashboard
-          </a>
-          <a href="/processos" className="topbar-nav-link">
+          </Link>
+          <Link 
+            to="/processos" 
+            className={`topbar-nav-link ${isActiveRoute('/processos') ? 'active' : ''}`}
+          >
             Processos
-          </a>
-          <a href="/alertas" className="topbar-nav-link">
+          </Link>
+          <Link 
+            to="/alertas" 
+            className={`topbar-nav-link ${isActiveRoute('/alertas') ? 'active' : ''}`}
+          >
             Alertas
-          </a>
+          </Link>
         </nav>
 
         {/* Usuário e Notificações */}

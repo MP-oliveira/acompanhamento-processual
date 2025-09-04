@@ -67,12 +67,12 @@ function App() {
     setSidebarOpen(false);
   };
 
-  // Páginas de Autenticação
-  if (!isAuthenticated) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <div className="app">
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="app">
+          {!isAuthenticated ? (
+            // Páginas de Autenticação
             <div className="login-page">
               <Routes>
                 <Route path="/login" element={<LoginForm onSubmit={handleLogin} />} />
@@ -80,58 +80,41 @@ function App() {
                 <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
             </div>
-            <Toaster 
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: 'var(--bg-secondary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-light)',
-                },
-              }}
-            />
-          </div>
-        </Router>
-      </QueryClientProvider>
-    );
-  }
-
-  // Aplicação principal (autenticada)
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="app">
-          <Topbar 
-            user={user}
-            onMenuToggle={toggleSidebar}
-            onLogout={handleLogout}
-          />
-          
-          <div className="app-container">
-            <Sidebar 
-              isOpen={sidebarOpen}
-              onClose={closeSidebar}
-            />
-            
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/processos" element={<Processos />} />
-                <Route path="/processos/novo" element={<NovoProcesso />} />
-                <Route path="/processos/editar/:id" element={<div>Editar Processo (em desenvolvimento)</div>} />
-                <Route path="/processos/:id" element={<div>Visualizar Processo (em desenvolvimento)</div>} />
-                <Route path="/alertas" element={<div>Página de Alertas (em desenvolvimento)</div>} />
-                <Route path="/calendario" element={<div>Página de Calendário (em desenvolvimento)</div>} />
-                <Route path="/consultas" element={<div>Página de Consultas (em desenvolvimento)</div>} />
-                <Route path="/relatorios" element={<div>Página de Relatórios (em desenvolvimento)</div>} />
-                <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
-                <Route path="/configuracoes" element={<div>Página de Configurações (em desenvolvimento)</div>} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </main>
-          </div>
+          ) : (
+            // Aplicação principal (autenticada)
+            <>
+              <Topbar 
+                user={user}
+                onMenuToggle={toggleSidebar}
+                onLogout={handleLogout}
+              />
+              
+              <div className="app-container">
+                <Sidebar 
+                  isOpen={sidebarOpen}
+                  onClose={closeSidebar}
+                />
+                
+                <main className="main-content">
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/processos" element={<Processos />} />
+                    <Route path="/processos/novo" element={<NovoProcesso />} />
+                    <Route path="/processos/editar/:id" element={<div>Editar Processo (em desenvolvimento)</div>} />
+                    <Route path="/processos/:id" element={<div>Visualizar Processo (em desenvolvimento)</div>} />
+                    <Route path="/alertas" element={<div>Página de Alertas (em desenvolvimento)</div>} />
+                    <Route path="/calendario" element={<div>Página de Calendário (em desenvolvimento)</div>} />
+                    <Route path="/consultas" element={<div>Página de Consultas (em desenvolvimento)</div>} />
+                    <Route path="/relatorios" element={<div>Página de Relatórios (em desenvolvimento)</div>} />
+                    <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
+                    <Route path="/configuracoes" element={<div>Página de Configurações (em desenvolvimento)</div>} />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </main>
+              </div>
+            </>
+          )}
 
           <Toaster 
             position="top-right"

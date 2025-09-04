@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, 
   FileText, 
@@ -13,11 +14,13 @@ import {
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const location = useLocation();
+  
   const menuItems = [
     {
       section: 'Principal',
       items: [
-        { icon: Home, label: 'Dashboard', href: '/dashboard', active: true },
+        { icon: Home, label: 'Dashboard', href: '/dashboard' },
         { icon: FileText, label: 'Processos', href: '/processos' },
         { icon: AlertTriangle, label: 'Alertas', href: '/alertas' },
         { icon: Calendar, label: 'Calendário', href: '/calendario' },
@@ -39,6 +42,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       ]
     }
   ];
+
+  const isActiveRoute = (href) => {
+    if (href === '/dashboard') {
+      return location.pathname === '/dashboard' || location.pathname === '/';
+    }
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -67,17 +77,17 @@ const Sidebar = ({ isOpen, onClose }) => {
               </h4>
               
               {section.items.map((item, itemIndex) => (
-                <a
+                <Link
                   key={itemIndex}
-                  href={item.href}
-                  className={`sidebar-nav-item ${item.active ? 'active' : ''}`}
+                  to={item.href}
+                  className={`sidebar-nav-item ${isActiveRoute(item.href) ? 'active' : ''}`}
                   onClick={onClose}
                 >
                   <item.icon className="sidebar-nav-item-icon" size={20} />
                   <span className="sidebar-nav-item-text">
                     {item.label}
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           ))}
