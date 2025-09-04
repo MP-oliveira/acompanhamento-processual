@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react';
 import './LoginForm.css';
@@ -10,6 +10,33 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Carrega dados salvos do localStorage ao montar o componente
+  useEffect(() => {
+    const savedData = localStorage.getItem('loginData');
+    if (savedData) {
+      try {
+        const { email, password, rememberMe: savedRememberMe } = JSON.parse(savedData);
+        setFormData({ email, password });
+        setRememberMe(savedRememberMe);
+      } catch (error) {
+        console.error('Erro ao carregar dados salvos:', error);
+        // Remove dados corrompidos
+        localStorage.removeItem('loginData');
+      }
+    }
+  }, []);
+
+  // Salva dados no localStorage quando rememberMe está ativo
+  const saveLoginData = (email, password, remember) => {
+    if (remember) {
+      const loginData = { email, password, rememberMe: remember };
+      localStorage.setItem('loginData', JSON.stringify(loginData));
+    } else {
+      localStorage.removeItem('loginData');
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,12 +77,24 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
     e.preventDefault();
     
     if (validateForm()) {
+      // Salva dados se "Lembrar de mim" estiver marcado
+      saveLoginData(formData.email, formData.password, rememberMe);
       onSubmit(formData);
     }
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleRememberMeChange = (e) => {
+    const isChecked = e.target.checked;
+    setRememberMe(isChecked);
+    
+    // Se desmarcar, remove dados salvos
+    if (!isChecked) {
+      localStorage.removeItem('loginData');
+    }
   };
 
   return (
@@ -148,6 +187,9 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
               className="form-checkbox"
               id="remember"
               name="remember"
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+              disabled={loading}
             />
             <span>Lembrar de mim</span>
           </label>
