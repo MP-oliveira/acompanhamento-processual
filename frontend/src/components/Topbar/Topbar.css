@@ -1,13 +1,12 @@
 /* ===== TOPBAR ===== */
 .topbar {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
+  background-color: var(--topbar-bg) !important;
+  border-bottom: 1px solid var(--topbar-border);
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .topbar-container {
@@ -31,7 +30,7 @@
   display: none;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   cursor: pointer;
   padding: var(--spacing-sm);
   border-radius: var(--radius-md);
@@ -39,8 +38,8 @@
 }
 
 .mobile-menu-toggle:hover {
-  background-color: var(--neutral-100);
-  color: var(--text-primary);
+  background-color: var(--topbar-hover);
+  color: var(--topbar-text);
 }
 
 .topbar-logo {
@@ -68,7 +67,7 @@
 }
 
 .topbar-nav-link {
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   font-weight: 500;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
@@ -111,7 +110,7 @@
   position: relative;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   cursor: pointer;
   padding: var(--spacing-sm);
   border-radius: var(--radius-md);
@@ -119,8 +118,8 @@
 }
 
 .topbar-notification-btn:hover {
-  background-color: var(--neutral-100);
-  color: var(--text-primary);
+  background-color: var(--topbar-hover);
+  color: var(--topbar-text);
 }
 
 .topbar-notification-badge {
@@ -181,13 +180,13 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--topbar-text);
 }
 
 .topbar-notification-count {
   font-size: 0.75rem;
   color: var(--text-tertiary);
-  background-color: var(--neutral-100);
+  background-color: var(--topbar-hover);
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-md);
 }
@@ -232,7 +231,7 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-md);
-  background-color: var(--neutral-100);
+  background-color: var(--topbar-hover);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,13 +251,13 @@
 
 .topbar-notification-title {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--topbar-text);
   margin-bottom: var(--spacing-xs);
   font-size: 0.875rem;
 }
 
 .topbar-notification-message {
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   font-size: 0.8125rem;
   line-height: 1.4;
   margin-bottom: var(--spacing-xs);
@@ -352,7 +351,7 @@
 }
 
 .topbar-user-trigger:hover {
-  background-color: var(--neutral-100);
+  background-color: var(--topbar-hover);
 }
 
 .topbar-user-avatar {
@@ -360,17 +359,17 @@
   height: 40px;
   border-radius: var(--radius-full);
   background-color: var(--primary-100);
-  color: var(--primary-600);
+  color: var(--primary-700) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: bold;
   font-size: 1rem;
   flex-shrink: 0;
 }
 
 .topbar-user-name {
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   font-weight: 500;
   font-size: 0.875rem;
 }
@@ -411,11 +410,11 @@
   height: 48px;
   border-radius: var(--radius-full);
   background-color: var(--primary-100);
-  color: var(--primary-600);
+  color: var(--primary-700) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: bold;
   font-size: 1.125rem;
   flex-shrink: 0;
 }
@@ -427,7 +426,7 @@
 
 .topbar-user-fullname {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--topbar-text);
   margin-bottom: var(--spacing-xs);
   font-size: 0.875rem;
 }
@@ -449,7 +448,7 @@
   gap: var(--spacing-sm);
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-lg);
-  color: var(--text-secondary);
+  color: var(--topbar-text);
   text-decoration: none;
   border: none;
   background: none;
@@ -460,8 +459,8 @@
 }
 
 .topbar-user-dropdown-item:hover {
-  background-color: var(--neutral-100);
-  color: var(--text-primary);
+  background-color: var(--topbar-hover);
+  color: var(--topbar-text);
 }
 
 .topbar-user-dropdown-item-danger {

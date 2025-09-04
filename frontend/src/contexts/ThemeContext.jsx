@@ -26,11 +26,8 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
     // Aplica o atributo data-theme no html
-    if (isDarkMode) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
+    const theme = isDarkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
   }, [isDarkMode]);
 
   const toggleTheme = () => {

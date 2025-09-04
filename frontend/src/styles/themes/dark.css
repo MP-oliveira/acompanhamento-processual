@@ -1,12 +1,12 @@
 /* Tema Dark - Variáveis CSS */
 [data-theme="dark"] {
-  /* Cores primárias */
+  /* Cores primárias - Mantendo cores do modo claro */
   --primary-color: #4A90E2;
   --primary-hover: #357ABD;
   --primary-light: #6BA3E8;
   --primary-dark: #2E5B8A;
 
-  /* Cores secundárias */
+  /* Cores secundárias - Mantendo cores do modo claro */
   --secondary-color: #7B68EE;
   --secondary-hover: #6A5ACD;
   --secondary-light: #9370DB;
@@ -36,28 +36,47 @@
   --border-dark: #666666;
   --border-focus: #4A90E2;
 
-  /* Cores de status */
-  --success-color: #4CAF50;
-  --success-bg: #1B5E20;
-  --success-light: #81C784;
+  /* Cores de status - Cores diretas do modo claro */
+  --success-color: #28A745;
+  --success-bg: #D4EDDA;
+  --success-light: #C3E6CB;
   
-  --warning-color: #FF9800;
-  --warning-bg: #E65100;
-  --warning-light: #FFB74D;
+  --warning-color: #FFC107;
+  --warning-bg: #FFF3CD;
+  --warning-light: #FFEAA7;
   
-  --error-color: #F44336;
-  --error-bg: #B71C1C;
-  --error-light: #EF5350;
+  --error-color: #DC3545;
+  --error-bg: #F8D7DA;
+  --error-light: #F5C6CB;
   
-  --info-color: #2196F3;
-  --info-bg: #0D47A1;
-  --info-light: #64B5F6;
+  --info-color: #17A2B8;
+  --info-bg: #D1ECF1;
+  --info-light: #BEE5EB;
 
-  /* Cores de prioridade */
-  --priority-urgent: #F44336;
-  --priority-high: #FF9800;
-  --priority-medium: #FFC107;
-  --priority-low: #4CAF50;
+  /* Cores de prioridade - Mantendo cores do modo claro */
+  --priority-urgent: #DC3545;
+  --priority-high: #FFC107;
+  --priority-medium: #FF9800;
+  --priority-low: #28A745;
+
+  /* Variáveis que faltavam - Cores do modo claro */
+  --primary-100: #e0e7ff;
+  --primary-500: #6366f1;
+  --primary-700: #4338ca;
+  --success-100: #dcfce7;
+  --success-500: #22c55e;
+  --success-700: #15803d;
+  --warning-100: #fef3c7;
+  --warning-500: #f59e0b;
+  --warning-700: #b45309;
+  --error-100: #fee2e2;
+  --error-500: #ef4444;
+  --error-700: #b91c1c;
+  --info-100: #dbeafe;
+  --info-500: #3b82f6;
+  --info-700: #1d4ed8;
+  --neutral-100: #f3f4f6;
+  --neutral-700: #374151;
 
   /* Sombras */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -83,10 +102,10 @@
   --sidebar-text: #C0C0C0;
   --sidebar-text-active: #E8E8E8;
 
-  --topbar-bg: #2A2A2A;
+  --topbar-bg: #3A3A3A;
   --topbar-border: #4A4A4A;
   --topbar-text: #E8E8E8;
-  --topbar-hover: #3A3A3A;
+  --topbar-hover: #4A4A4A;
 
   --card-bg: #3A3A3A;
   --card-border: #4A4A4A;
@@ -134,4 +153,28 @@
   --badge-warning: #FF9800;
   --badge-error: #F44336;
   --badge-info: #2196F3;
+
+  /* Cores de Status de Processo - Cores diretas do modo claro */
+  --processo-active-bg: #D4EDDA;
+  --processo-active-text: #28A745;
+  --processo-archived-bg: #F3F4F6;
+  --processo-archived-text: #6B7280;
+  --processo-suspended-bg: #FFF3CD;
+  --processo-suspended-text: #FFC107;
+
+  /* Cores de Prioridade - Cores diretas do modo claro */
+  --priority-urgent-bg: #DC3545;
+  --priority-urgent-text: #FFFFFF;
+  --priority-high-bg: #FFC107;
+  --priority-high-text: #000000;
+  --priority-medium-bg: #FF9800;
+  --priority-medium-text: #FFFFFF;
+  --priority-low-bg: #28A745;
+  --priority-low-text: #FFFFFF;
+
+  /* Cores dos Ícones dos Cards do Dashboard - Cores diretas do modo claro */
+  --stat-icon-primary: #6366F1;
+  --stat-icon-warning: #FFC107;
+  --stat-icon-info: #3B82F6;
+  --stat-icon-success: #28A745;
 }

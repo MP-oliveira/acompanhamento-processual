@@ -94,9 +94,10 @@ const AlertCard = ({
 
   const daysLeft = getDaysUntilDeadline(alert.dataVencimento);
   const alertColor = getAlertColor(alert.tipo, alert.prioridade);
+  const isOverdue = daysLeft < 0;
 
   return (
-    <div className={`alert-card alert-card-${alertColor} ${alert.lido ? 'alert-card-read' : ''}`}>
+    <div className={`alert-card alert-card-${alertColor} ${alert.lido ? 'alert-card-read' : ''} ${isOverdue ? 'alert-card-overdue' : ''}`}>
       {/* Header do Card */}
       <div className="alert-card-header">
         <div className="alert-card-icon">

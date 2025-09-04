@@ -138,6 +138,14 @@ const Usuarios = () => {
     }
   };
 
+  const getInitials = (nome) => {
+    const names = nome.split(' ');
+    if (names.length >= 2) {
+      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+    }
+    return nome.substring(0, 2).toUpperCase();
+  };
+
   const getRoleColor = (role) => {
     switch (role) {
       case 'admin': return 'admin';
@@ -525,7 +533,7 @@ const Usuarios = () => {
               <div key={usuario.id} className="usuario-card">
                 <div className="usuario-card-header">
                   <div className="usuario-card-avatar">
-                    <User size={24} />
+                    {getInitials(usuario.nome)}
                   </div>
                   <div className="usuario-card-info">
                     <h4 className="usuario-card-name">{usuario.nome}</h4>

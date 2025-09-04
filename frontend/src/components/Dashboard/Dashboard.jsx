@@ -300,7 +300,7 @@ const Dashboard = () => {
             <div className="dashboard-section-content">
               <div className="process-list">
                 {recentProcesses.map((process) => (
-                  <div key={process.id} className="process-item">
+                  <div key={process.id} className={`process-item process-item-${process.status.toLowerCase().replace(' ', '-')}`}>
                     <div className="process-item-main">
                       <div className="process-item-header">
                         <h4 className="process-item-title">

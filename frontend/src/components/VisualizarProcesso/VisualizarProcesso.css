@@ -138,18 +138,18 @@
 }
 
 .visualizar-processo-status-active {
-  background: var(--success-100);
-  color: var(--success-700);
+  background: var(--processo-active-bg, var(--success-100));
+  color: var(--processo-active-text, var(--success-700));
 }
 
 .visualizar-processo-status-archived {
-  background: var(--neutral-100);
-  color: var(--neutral-700);
+  background: var(--processo-archived-bg, var(--neutral-100));
+  color: var(--processo-archived-text, var(--neutral-700));
 }
 
 .visualizar-processo-status-suspended {
-  background: var(--warning-100);
-  color: var(--warning-700);
+  background: var(--processo-suspended-bg, var(--warning-100));
+  color: var(--processo-suspended-text, var(--warning-700));
 }
 
 .visualizar-processo-status-badge {
