@@ -136,9 +136,6 @@ const Dashboard = () => {
       <div className="page-header">
         <div className="page-header-content">
           <h1 className="page-title">Dashboard</h1>
-          <p className="page-subtitle">
-            Visão geral dos seus processos e prazos
-          </p>
         </div>
         <div className="page-header-actions">
           <Link to="/processos/novo" className="btn btn-primary">

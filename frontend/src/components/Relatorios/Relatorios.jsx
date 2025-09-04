@@ -258,9 +258,6 @@ const Relatorios = () => {
             <BarChart3 size={24} />
             Relatórios
           </h1>
-          <p className="page-subtitle">
-            Visualize estatísticas e gere relatórios do sistema
-          </p>
         </div>
         <div className="page-header-actions">
           <button className="btn btn-secondary" onClick={handleRefresh} disabled={loading}>

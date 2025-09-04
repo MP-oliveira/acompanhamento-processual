@@ -197,9 +197,6 @@ const Processos = () => {
       <div className="page-header">
         <div className="page-header-content">
           <h1 className="page-title">Processos</h1>
-          <p className="page-subtitle">
-            Gerencie todos os seus processos judiciais
-          </p>
         </div>
         <div className="page-header-actions">
           <button 

@@ -202,9 +202,6 @@ const Alertas = () => {
             <Bell size={24} />
             Alertas
           </h1>
-          <p className="page-subtitle">
-            Gerencie seus alertas e prazos importantes
-          </p>
         </div>
         <div className="page-header-actions">
           <button className="btn btn-secondary">

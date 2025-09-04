@@ -133,9 +133,6 @@ const Perfil = () => {
             <span className="page-header-breadcrumb-current">Meu Perfil</span>
           </div>
           <h1 className="page-title">Meu Perfil</h1>
-          <p className="page-subtitle">
-            Gerencie suas informações pessoais
-          </p>
         </div>
         <div className="page-header-actions">
           {!isEditing ? (

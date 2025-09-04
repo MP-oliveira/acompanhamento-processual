@@ -367,9 +367,6 @@ const Usuarios = () => {
       <div className="page-header">
         <div className="page-header-content">
           <h1 className="page-title">Usuários</h1>
-          <p className="page-subtitle">
-            Gerencie os usuários do sistema
-          </p>
         </div>
         <div className="page-header-actions">
           <button 

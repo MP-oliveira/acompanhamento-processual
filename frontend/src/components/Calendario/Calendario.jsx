@@ -314,9 +314,6 @@ const Calendario = () => {
             <Calendar size={24} />
             Calendário
           </h1>
-          <p className="page-subtitle">
-            Visualize seus compromissos e prazos
-          </p>
         </div>
         <div className="page-header-actions">
           <button 

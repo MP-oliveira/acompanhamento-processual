@@ -517,9 +517,6 @@ const Consultas = () => {
             <Search size={24} />
             Consultas
           </h1>
-          <p className="page-subtitle">
-            Consulte processos, pessoas e empresas em sistemas externos
-          </p>
         </div>
         <div className="page-header-actions">
           <button className="btn btn-secondary" onClick={handleRefresh} disabled={loading}>

@@ -159,9 +159,6 @@ const EditarProcesso = () => {
             <span className="page-header-breadcrumb-current">Editar</span>
           </div>
           <h1 className="page-title">Editar Processo</h1>
-          <p className="page-subtitle">
-            {processo.numero} - {processo.classe}
-          </p>
         </div>
         <div className="page-header-actions">
           <button 

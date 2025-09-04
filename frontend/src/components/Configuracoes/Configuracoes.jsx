@@ -223,9 +223,6 @@ const Configuracoes = () => {
       <div className="page-header">
         <div className="page-header-content">
           <h1 className="page-title">Configurações</h1>
-          <p className="page-subtitle">
-            Gerencie as configurações do sistema
-          </p>
         </div>
         <div className="page-header-actions">
           {showSuccess && (

@@ -14,17 +14,9 @@
 
 .page-header-content {
   flex: 1;
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-md);
 }
 
 .page-header-content h1 {
-  margin: 0;
-  line-height: 1;
-}
-
-.page-header-content p {
   margin: 0;
   line-height: 1;
 }
@@ -450,9 +442,7 @@
   }
   
   .page-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-xs);
+    text-align: center;
   }
   
   .page-header-actions {

@@ -62,9 +62,6 @@ const NovoProcesso = () => {
               <Plus size={24} />
               Novo Processo
             </h1>
-            <p className="page-subtitle">
-              Preencha as informações para criar um novo processo
-            </p>
           </div>
         </div>
       </div>

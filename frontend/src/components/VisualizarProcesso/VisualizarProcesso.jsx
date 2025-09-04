@@ -218,9 +218,6 @@ const VisualizarProcesso = () => {
             <span className="page-header-breadcrumb-current">Visualizar</span>
           </div>
           <h1 className="page-title">Processo {processo.numero}</h1>
-          <p className="page-subtitle">
-            {processo.classe}
-          </p>
         </div>
         <div className="page-header-actions">
           <button className="btn btn-outline" onClick={handlePrint}>
