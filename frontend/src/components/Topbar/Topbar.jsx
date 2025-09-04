@@ -17,8 +17,11 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
+        console.log('🔔 Buscando notificações...');
         const response = await alertService.getAll();
+        console.log('🔔 Resposta da API:', response);
         const alerts = response.alerts || [];
+        console.log('🔔 Alertas encontrados:', alerts.length);
         
         // Converter alertas em notificações
         const notificationsData = alerts.slice(0, 5).map(alert => ({
@@ -32,9 +35,10 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           icon: AlertTriangle
         }));
         
+        console.log('🔔 Notificações processadas:', notificationsData);
         setNotifications(notificationsData);
       } catch (error) {
-        console.error('Erro ao buscar notificações:', error);
+        console.error('🔔 Erro ao buscar notificações:', error);
         setNotifications([]);
       } finally {
         setLoading(false);
@@ -137,6 +141,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   };
 
   const unreadCount = notifications.filter(n => n.unread).length;
+  console.log('🔔 Contador de notificações não lidas:', unreadCount);
 
   return (
     <header className="topbar">
