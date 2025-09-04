@@ -1,13 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
+import { alertService } from '../../services/api';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Buscar notificações reais dos alertas
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
+        const response = await alertService.getAll();
+        const alerts = response.alerts || [];
+        
+        // Converter alertas em notificações
+        const notificationsData = alerts.slice(0, 5).map(alert => ({
+          id: alert.id,
+          type: 'alerta',
+          title: alert.titulo,
+          message: alert.mensagem,
+          time: formatTimeAgo(alert.createdAt),
+          unread: !alert.lido,
+          alertId: alert.id,
+          icon: AlertTriangle
+        }));
+        
+        setNotifications(notificationsData);
+      } catch (error) {
+        console.error('Erro ao buscar notificações:', error);
+        setNotifications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const formatTimeAgo = (dateString) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Agora';
+    if (diffInMinutes < 60) return `${diffInMinutes} min atrás`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} hora${diffInHours > 1 ? 's' : ''} atrás`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} dia${diffInDays > 1 ? 's' : ''} atrás`;
+  };
 
   const toggleUserDropdown = () => {
     setShowUserDropdown(!showUserDropdown);
@@ -17,6 +67,15 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     setShowUserDropdown(false);
+  };
+
+  // Fechar dropdowns ao sair do mouse
+  const handleUserMenuMouseLeave = () => {
+    setShowUserDropdown(false);
+  };
+
+  const handleNotificationMenuMouseLeave = () => {
+    setShowNotifications(false);
   };
 
   const handleLogout = () => {
@@ -34,8 +93,26 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     navigate('/configuracoes');
   };
 
-  const handleNotificationClick = (notification) => {
+  const handleNotificationClick = async (notification) => {
     setShowNotifications(false);
+    
+    // Marcar como lida se não estiver lida
+    if (notification.unread && notification.alertId) {
+      try {
+        await alertService.markAsRead(notification.alertId);
+        // Atualizar a notificação local
+        setNotifications(prev => 
+          prev.map(n => 
+            n.id === notification.id 
+              ? { ...n, unread: false }
+              : n
+          )
+        );
+      } catch (error) {
+        console.error('Erro ao marcar notificação como lida:', error);
+      }
+    }
+    
     if (notification.type === 'processo') {
       navigate(`/processos/${notification.processId}`);
     } else if (notification.type === 'alerta') {
@@ -58,38 +135,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     }
     return location.pathname.startsWith(path);
   };
-
-  // Dados mockados para notificações
-  const notifications = [
-    {
-      id: 1,
-      type: 'alerta',
-      title: 'Prazo vencendo',
-      message: 'Processo 0001234-12.2024.8.05.0001 tem prazo vencendo em 2 dias',
-      time: '5 min atrás',
-      unread: true,
-      icon: AlertTriangle
-    },
-    {
-      id: 2,
-      type: 'processo',
-      title: 'Nova movimentação',
-      message: 'Processo 0001235-12.2024.8.05.0001 teve nova movimentação',
-      time: '1 hora atrás',
-      unread: true,
-      processId: 2,
-      icon: CheckCircle
-    },
-    {
-      id: 3,
-      type: 'alerta',
-      title: 'Audiência agendada',
-      message: 'Audiência de conciliação agendada para amanhã às 14h',
-      time: '3 horas atrás',
-      unread: false,
-      icon: Clock
-    }
-  ];
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
@@ -141,7 +186,10 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
         {/* Usuário e Notificações */}
         <div className="topbar-right">
           {/* Notificações */}
-          <div className="topbar-notification-menu">
+          <div 
+            className="topbar-notification-menu"
+            onMouseLeave={handleNotificationMenuMouseLeave}
+          >
             <button 
               className="topbar-notification-btn" 
               onClick={toggleNotifications}
@@ -161,7 +209,14 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
               </div>
               
               <div className="topbar-notification-list">
-                {notifications.length === 0 ? (
+                {loading ? (
+                  <div className="topbar-notification-empty">
+                    <div className="topbar-notification-loading">
+                      <div className="topbar-notification-spinner"></div>
+                    </div>
+                    <p>Carregando...</p>
+                  </div>
+                ) : notifications.length === 0 ? (
                   <div className="topbar-notification-empty">
                     <Bell size={24} />
                     <p>Nenhuma notificação</p>
@@ -198,7 +253,10 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           </div>
 
           {/* Menu do Usuário */}
-          <div className="topbar-user-menu">
+          <div 
+            className="topbar-user-menu"
+            onMouseLeave={handleUserMenuMouseLeave}
+          >
             <button 
               className="topbar-user-trigger"
               onClick={toggleUserDropdown}

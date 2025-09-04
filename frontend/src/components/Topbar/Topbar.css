@@ -294,6 +294,27 @@
   font-size: 0.875rem;
 }
 
+.topbar-notification-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.topbar-notification-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-light);
+  border-top: 2px solid var(--primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .topbar-notification-footer {
   padding: var(--spacing-md) var(--spacing-lg);
   border-top: 1px solid var(--border-light);
