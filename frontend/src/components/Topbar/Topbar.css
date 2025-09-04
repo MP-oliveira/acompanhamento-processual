@@ -1,0 +1,336 @@
+/* ===== TOPBAR ===== */
+.topbar {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.topbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+/* ===== LADO ESQUERDO ===== */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--neutral-100);
+  color: var(--text-primary);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  text-decoration: none;
+}
+
+.topbar-logo-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
+/* ===== NAVEGAÇÃO CENTRAL ===== */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.topbar-nav-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  position: relative;
+}
+
+.topbar-nav-link:hover {
+  color: var(--primary-600);
+  background-color: var(--primary-50);
+  text-decoration: none;
+}
+
+.topbar-nav-link.active {
+  color: var(--primary-600);
+  background-color: var(--primary-50);
+}
+
+.topbar-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background-color: var(--primary-500);
+  border-radius: var(--radius-full);
+}
+
+/* ===== LADO DIREITO ===== */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.topbar-notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.topbar-notification-btn:hover {
+  background-color: var(--neutral-100);
+  color: var(--text-primary);
+}
+
+.topbar-notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--error-500);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== MENU DO USUÁRIO ===== */
+.topbar-user-menu {
+  position: relative;
+}
+
+.topbar-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.topbar-user-trigger:hover {
+  background-color: var(--neutral-100);
+}
+
+.topbar-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-100);
+  color: var(--primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.topbar-user-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* ===== DROPDOWN DO USUÁRIO ===== */
+.topbar-user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-sm);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all var(--transition-normal);
+}
+
+.topbar-user-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.topbar-user-info {
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.topbar-user-avatar-large {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-100);
+  color: var(--primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.topbar-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar-user-fullname {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.topbar-user-email {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.topbar-user-dropdown-divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: var(--spacing-sm) 0;
+}
+
+.topbar-user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  font-size: 0.875rem;
+}
+
+.topbar-user-dropdown-item:hover {
+  background-color: var(--neutral-100);
+  color: var(--text-primary);
+}
+
+.topbar-user-dropdown-item-danger {
+  color: var(--error-600);
+}
+
+.topbar-user-dropdown-item-danger:hover {
+  background-color: var(--error-50);
+  color: var(--error-700);
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .topbar-nav {
+    display: none;
+  }
+  
+  .topbar-container {
+    padding: 0 var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar-container {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .topbar-user-name {
+    display: none;
+  }
+  
+  .topbar-user-dropdown {
+    min-width: 240px;
+    right: -10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar-container {
+    height: 60px;
+  }
+  
+  .topbar-logo {
+    font-size: 1.25rem;
+  }
+  
+  .topbar-logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .topbar-user-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  
+  .topbar-user-dropdown {
+    min-width: 200px;
+    right: -20px;
+  }
+}

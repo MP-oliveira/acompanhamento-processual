@@ -1,0 +1,182 @@
+import React, { useState } from 'react';
+import { Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react';
+import './LoginForm.css';
+
+const LoginForm = ({ onSubmit, loading = false, error = null }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Limpa erro do campo quando usuário começa a digitar
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.email) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email deve ser válido';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      onSubmit(formData);
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <div className="login-form-container">
+      <div className="login-form-header">
+        <div className="login-form-logo">
+          <div className="login-form-logo-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h1 className="login-form-title">JurisAcompanha</h1>
+        </div>
+        <p className="login-form-subtitle">
+          Sistema de Acompanhamento Processual
+        </p>
+      </div>
+
+      <form className="login-form" onSubmit={handleSubmit}>
+        {error && (
+          <div className="login-form-error">
+            <AlertCircle size={16} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <div className="form-group">
+          <label htmlFor="email" className="form-label required">
+            Email
+          </label>
+          <div className="form-input-wrapper">
+            <Mail className="form-input-icon" size={20} />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`form-input ${errors.email ? 'error' : ''}`}
+              placeholder="seu@email.com"
+              disabled={loading}
+            />
+          </div>
+          {errors.email && (
+            <div className="form-error">
+              <AlertCircle className="form-error-icon" size={16} />
+              <span>{errors.email}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password" className="form-label required">
+            Senha
+          </label>
+          <div className="form-input-wrapper">
+            <Lock className="form-input-icon" size={20} />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={`form-input ${errors.password ? 'error' : ''}`}
+              placeholder="Sua senha"
+              disabled={loading}
+            />
+            <button
+              type="button"
+              className="form-input-toggle"
+              onClick={togglePasswordVisibility}
+              disabled={loading}
+              aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+          {errors.password && (
+            <div className="form-error">
+              <AlertCircle className="form-error-icon" size={16} />
+              <span>{errors.password}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="login-form-options">
+          <label className="form-checkbox-group">
+            <input
+              type="checkbox"
+              className="form-checkbox"
+              id="remember"
+              name="remember"
+            />
+            <span>Lembrar de mim</span>
+          </label>
+          
+          <a href="/esqueci-senha" className="login-form-forgot">
+            Esqueceu a senha?
+          </a>
+        </div>
+
+        <div className="form-actions">
+          <button
+            type="submit"
+            className={`btn btn-primary btn-lg ${loading ? 'btn-loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </div>
+
+        <div className="login-form-footer">
+          <p className="login-form-footer-text">
+            Não tem uma conta?{' '}
+            <a href="/register" className="login-form-footer-link">
+              Registre-se
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default LoginForm;

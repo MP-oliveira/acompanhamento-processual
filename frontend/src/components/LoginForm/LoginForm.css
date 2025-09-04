@@ -1,0 +1,253 @@
+/* ===== LOGIN FORM ===== */
+.login-form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+}
+
+.login-form-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.login-form-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.login-form-logo-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--primary-600);
+}
+
+.login-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  margin: 0;
+}
+
+.login-form-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ===== FORMULÁRIO ===== */
+.login-form {
+  width: 100%;
+}
+
+.login-form-error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--error-50);
+  border: 1px solid var(--error-200);
+  border-radius: var(--radius-md);
+  color: var(--error-700);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ===== INPUTS COM ÍCONES ===== */
+.form-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input-icon {
+  position: absolute;
+  left: var(--spacing-md);
+  color: var(--text-tertiary);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.form-input-wrapper .form-input {
+  padding-left: calc(var(--spacing-md) + 24px);
+}
+
+.form-input-toggle {
+  position: absolute;
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  z-index: 1;
+}
+
+.form-input-toggle:hover {
+  color: var(--text-secondary);
+  background-color: var(--neutral-100);
+}
+
+.form-input-toggle:focus {
+  outline: none;
+  color: var(--primary-600);
+  background-color: var(--primary-50);
+}
+
+/* ===== OPÇÕES DO LOGIN ===== */
+.login-form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.login-form-forgot {
+  color: var(--primary-600);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.login-form-forgot:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+/* ===== FOOTER DO FORM ===== */
+.login-form-footer {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+.login-form-footer-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.login-form-footer-link {
+  color: var(--primary-600);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.login-form-footer-link:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .login-form-container {
+    margin: var(--spacing-lg);
+    padding: var(--spacing-xl);
+  }
+  
+  .login-form-title {
+    font-size: 1.75rem;
+  }
+  
+  .login-form-options {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-form-container {
+    margin: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+  
+  .login-form-title {
+    font-size: 1.5rem;
+  }
+  
+  .login-form-logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+.login-form-container {
+  animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.login-form-error {
+  animation: slideIn var(--transition-normal) ease-out;
+}
+
+/* ===== ESTADOS DE FOCUS ===== */
+.form-input-wrapper:focus-within .form-input-icon {
+  color: var(--primary-500);
+}
+
+.form-input-wrapper:focus-within .form-input-toggle {
+  color: var(--primary-500);
+}
+
+/* ===== ESTADOS DE DISABLED ===== */
+.form-input:disabled,
+.form-input-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-input:disabled + .form-input-icon {
+  opacity: 0.6;
+}
+
+/* ===== VALIDAÇÃO VISUAL ===== */
+.form-input.error {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 3px var(--error-50);
+}
+
+.form-input.error + .form-input-icon {
+  color: var(--error-500);
+}
+
+.form-input:focus.error {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 3px var(--error-100);
+}
+
+/* ===== LOADING STATE ===== */
+.login-form.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.login-form.loading .form-input,
+.login-form.loading .btn {
+  pointer-events: none;
+}
+
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-reduced-motion: reduce) {
+  .login-form-container,
+  .login-form-error {
+    animation: none;
+  }
+  
+  .form-input-toggle,
+  .login-form-forgot,
+  .login-form-footer-link {
+    transition: none;
+  }
+}
