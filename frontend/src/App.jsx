@@ -9,6 +9,8 @@ import RegisterForm from './components/RegisterForm/RegisterForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import Processos from './components/Processos/Processos';
 import NovoProcesso from './components/NovoProcesso/NovoProcesso';
+import Alertas from './components/Alertas/Alertas';
+import Calendario from './components/Calendario/Calendario';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -103,8 +105,8 @@ function App() {
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<div>Editar Processo (em desenvolvimento)</div>} />
                     <Route path="/processos/:id" element={<div>Visualizar Processo (em desenvolvimento)</div>} />
-                    <Route path="/alertas" element={<div>Página de Alertas (em desenvolvimento)</div>} />
-                    <Route path="/calendario" element={<div>Página de Calendário (em desenvolvimento)</div>} />
+                    <Route path="/alertas" element={<Alertas />} />
+                    <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<div>Página de Consultas (em desenvolvimento)</div>} />
                     <Route path="/relatorios" element={<div>Página de Relatórios (em desenvolvimento)</div>} />
                     <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
