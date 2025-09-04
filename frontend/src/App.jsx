@@ -15,6 +15,8 @@ import Alertas from './components/Alertas/Alertas';
 import Calendario from './components/Calendario/Calendario';
 import Consultas from './components/Consultas/Consultas';
 import Relatorios from './components/Relatorios/Relatorios';
+import Usuarios from './components/Usuarios/Usuarios';
+import Configuracoes from './components/Configuracoes/Configuracoes';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -113,8 +115,8 @@ function App() {
                     <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<Consultas />} />
                     <Route path="/relatorios" element={<Relatorios />} />
-                    <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
-                    <Route path="/configuracoes" element={<div>Página de Configurações (em desenvolvimento)</div>} />
+                    <Route path="/usuarios" element={<Usuarios />} />
+                    <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </main>

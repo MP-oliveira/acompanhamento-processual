@@ -1,0 +1,471 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  MoreVertical,
+  User,
+  Mail,
+  Phone,
+  Shield,
+  Edit,
+  Trash2,
+  Eye,
+  UserCheck,
+  UserX
+} from 'lucide-react';
+import './Usuarios.css';
+
+const Usuarios = () => {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('todos');
+  const [statusFilter, setStatusFilter] = useState('todos');
+  const [sortBy, setSortBy] = useState('nome');
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  // Dados mockados para demonstração
+  const mockUsuarios = [
+    {
+      id: 1,
+      nome: 'Dr. João Silva',
+      email: 'joao.silva@advocacia.com',
+      telefone: '(71) 99999-1111',
+      role: 'admin',
+      status: 'ativo',
+      ultimoAcesso: '2024-01-20T14:30:00Z',
+      processosAtivos: 12,
+      createdAt: '2024-01-01T10:00:00Z'
+    },
+    {
+      id: 2,
+      nome: 'Dra. Maria Santos',
+      email: 'maria.santos@advocacia.com',
+      telefone: '(71) 99999-2222',
+      role: 'advogado',
+      status: 'ativo',
+      ultimoAcesso: '2024-01-19T16:45:00Z',
+      processosAtivos: 8,
+      createdAt: '2024-01-05T09:30:00Z'
+    },
+    {
+      id: 3,
+      nome: 'Dr. Pedro Costa',
+      email: 'pedro.costa@advocacia.com',
+      telefone: '(71) 99999-3333',
+      role: 'advogado',
+      status: 'inativo',
+      ultimoAcesso: '2024-01-15T11:20:00Z',
+      processosAtivos: 5,
+      createdAt: '2024-01-10T14:15:00Z'
+    },
+    {
+      id: 4,
+      nome: 'Ana Oliveira',
+      email: 'ana.oliveira@advocacia.com',
+      telefone: '(71) 99999-4444',
+      role: 'assistente',
+      status: 'ativo',
+      ultimoAcesso: '2024-01-20T13:10:00Z',
+      processosAtivos: 0,
+      createdAt: '2024-01-12T08:45:00Z'
+    }
+  ];
+
+  useEffect(() => {
+    const loadUsuarios = async () => {
+      setLoading(true);
+      try {
+        // Simula delay da API
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setUsuarios(mockUsuarios);
+      } catch (error) {
+        console.error('Erro ao carregar usuários:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUsuarios();
+  }, []);
+
+  const filteredUsuarios = usuarios.filter(usuario => {
+    const matchesSearch = 
+      usuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.telefone.includes(searchTerm);
+
+    const matchesRole = roleFilter === 'todos' || usuario.role === roleFilter;
+    const matchesStatus = statusFilter === 'todos' || usuario.status === statusFilter;
+
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
+  const sortedUsuarios = [...filteredUsuarios].sort((a, b) => {
+    let aValue = a[sortBy];
+    let bValue = b[sortBy];
+
+    if (sortBy === 'ultimoAcesso' || sortBy === 'createdAt') {
+      aValue = new Date(aValue);
+      bValue = new Date(bValue);
+    }
+
+    if (sortOrder === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
+
+  const getRoleText = (role) => {
+    switch (role) {
+      case 'admin': return 'Administrador';
+      case 'advogado': return 'Advogado';
+      case 'assistente': return 'Assistente';
+      default: return 'Usuário';
+    }
+  };
+
+  const getRoleColor = (role) => {
+    switch (role) {
+      case 'admin': return 'admin';
+      case 'advogado': return 'advogado';
+      case 'assistente': return 'assistente';
+      default: return 'usuario';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'ativo': return 'Ativo';
+      case 'inativo': return 'Inativo';
+      default: return 'Desconhecido';
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'ativo': return 'active';
+      case 'inativo': return 'inactive';
+      default: return 'unknown';
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Nunca';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const handleEdit = (id) => {
+    console.log('Editar usuário:', id);
+    // Implementar edição
+  };
+
+  const handleDelete = async (id) => {
+    const usuario = usuarios.find(u => u.id === id);
+    const usuarioNome = usuario ? usuario.nome : 'este usuário';
+    
+    if (window.confirm(`Tem certeza que deseja excluir ${usuarioNome}?\n\nEsta ação não pode ser desfeita.`)) {
+      try {
+        setLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        setUsuarios(prev => prev.filter(u => u.id !== id));
+        console.log('Usuário excluído:', id);
+        alert('Usuário excluído com sucesso!');
+      } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        alert('Erro ao excluir usuário. Tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleToggleStatus = async (id) => {
+    try {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setUsuarios(prev => prev.map(u => 
+        u.id === id 
+          ? { ...u, status: u.status === 'ativo' ? 'inativo' : 'ativo' }
+          : u
+      ));
+      
+      const usuario = usuarios.find(u => u.id === id);
+      const novoStatus = usuario?.status === 'ativo' ? 'inativo' : 'ativo';
+      console.log(`Status do usuário ${id} alterado para: ${novoStatus}`);
+    } catch (error) {
+      console.error('Erro ao alterar status:', error);
+      alert('Erro ao alterar status. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStats = () => {
+    const total = usuarios.length;
+    const ativos = usuarios.filter(u => u.status === 'ativo').length;
+    const inativos = usuarios.filter(u => u.status === 'inativo').length;
+    const admins = usuarios.filter(u => u.role === 'admin').length;
+    
+    return { total, ativos, inativos, admins };
+  };
+
+  const stats = getStats();
+
+  if (loading) {
+    return (
+      <div className="usuarios">
+        <div className="usuarios-loading">
+          <div className="usuarios-loading-spinner" />
+          <p>Carregando usuários...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="usuarios">
+      {/* Header da Página */}
+      <div className="page-header">
+        <div className="page-header-content">
+          <h1 className="page-title">Usuários</h1>
+          <p className="page-subtitle">
+            Gerencie os usuários do sistema
+          </p>
+        </div>
+        <div className="page-header-actions">
+          <button className="btn btn-primary">
+            <Plus size={20} />
+            Novo Usuário
+          </button>
+        </div>
+      </div>
+
+      {/* Estatísticas */}
+      <div className="usuarios-stats">
+        <div className="usuarios-stat-card">
+          <div className="usuarios-stat-icon usuarios-stat-total">
+            <User size={20} />
+          </div>
+          <div className="usuarios-stat-content">
+            <div className="usuarios-stat-value">{stats.total}</div>
+            <div className="usuarios-stat-label">Total</div>
+          </div>
+        </div>
+        
+        <div className="usuarios-stat-card">
+          <div className="usuarios-stat-icon usuarios-stat-active">
+            <UserCheck size={20} />
+          </div>
+          <div className="usuarios-stat-content">
+            <div className="usuarios-stat-value">{stats.ativos}</div>
+            <div className="usuarios-stat-label">Ativos</div>
+          </div>
+        </div>
+        
+        <div className="usuarios-stat-card">
+          <div className="usuarios-stat-icon usuarios-stat-inactive">
+            <UserX size={20} />
+          </div>
+          <div className="usuarios-stat-content">
+            <div className="usuarios-stat-value">{stats.inativos}</div>
+            <div className="usuarios-stat-label">Inativos</div>
+          </div>
+        </div>
+        
+        <div className="usuarios-stat-card">
+          <div className="usuarios-stat-icon usuarios-stat-admin">
+            <Shield size={20} />
+          </div>
+          <div className="usuarios-stat-content">
+            <div className="usuarios-stat-value">{stats.admins}</div>
+            <div className="usuarios-stat-label">Administradores</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filtros e Busca */}
+      <div className="usuarios-filters">
+        <div className="usuarios-search">
+          <div className="usuarios-search-wrapper">
+            <Search className="usuarios-search-icon" size={20} />
+            <input
+              type="text"
+              placeholder="Buscar por nome, email ou telefone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="usuarios-search-input"
+            />
+          </div>
+        </div>
+
+        <div className="usuarios-filters-row">
+          <div className="usuarios-filter">
+            <label htmlFor="roleFilter">Função:</label>
+            <select
+              id="roleFilter"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="usuarios-filter-select"
+            >
+              <option value="todos">Todas</option>
+              <option value="admin">Administrador</option>
+              <option value="advogado">Advogado</option>
+              <option value="assistente">Assistente</option>
+            </select>
+          </div>
+
+          <div className="usuarios-filter">
+            <label htmlFor="statusFilter">Status:</label>
+            <select
+              id="statusFilter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="usuarios-filter-select"
+            >
+              <option value="todos">Todos</option>
+              <option value="ativo">Ativos</option>
+              <option value="inativo">Inativos</option>
+            </select>
+          </div>
+
+          <div className="usuarios-filter">
+            <label htmlFor="sortBy">Ordenar por:</label>
+            <select
+              id="sortBy"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="usuarios-filter-select"
+            >
+              <option value="nome">Nome</option>
+              <option value="ultimoAcesso">Último Acesso</option>
+              <option value="createdAt">Data de Criação</option>
+              <option value="processosAtivos">Processos Ativos</option>
+            </select>
+          </div>
+
+          <div className="usuarios-filter">
+            <label htmlFor="sortOrder">Ordem:</label>
+            <select
+              id="sortOrder"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="usuarios-filter-select"
+            >
+              <option value="asc">Crescente</option>
+              <option value="desc">Decrescente</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de Usuários */}
+      <div className="usuarios-content">
+        {sortedUsuarios.length === 0 ? (
+          <div className="usuarios-empty">
+            <User size={48} />
+            <h3>Nenhum usuário encontrado</h3>
+            <p>
+              {searchTerm || roleFilter !== 'todos' || statusFilter !== 'todos'
+                ? 'Tente ajustar os filtros de busca.'
+                : 'Comece adicionando o primeiro usuário.'
+              }
+            </p>
+            {!searchTerm && roleFilter === 'todos' && statusFilter === 'todos' && (
+              <button className="btn btn-primary">
+                <Plus size={20} />
+                Adicionar Primeiro Usuário
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="usuarios-grid">
+            {sortedUsuarios.map(usuario => (
+              <div key={usuario.id} className="usuario-card">
+                <div className="usuario-card-header">
+                  <div className="usuario-card-avatar">
+                    <User size={24} />
+                  </div>
+                  <div className="usuario-card-info">
+                    <h4 className="usuario-card-name">{usuario.nome}</h4>
+                    <div className="usuario-card-role">
+                      <span className={`usuario-role-badge usuario-role-${getRoleColor(usuario.role)}`}>
+                        {getRoleText(usuario.role)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="usuario-card-actions">
+                    <button
+                      className="usuario-action-btn usuario-action-toggle"
+                      onClick={() => handleToggleStatus(usuario.id)}
+                      title={usuario.status === 'ativo' ? 'Desativar usuário' : 'Ativar usuário'}
+                    >
+                      {usuario.status === 'ativo' ? <UserX size={16} /> : <UserCheck size={16} />}
+                    </button>
+                    <button
+                      className="usuario-action-btn usuario-action-edit"
+                      onClick={() => handleEdit(usuario.id)}
+                      title="Editar usuário"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      className="usuario-action-btn usuario-action-delete"
+                      onClick={() => handleDelete(usuario.id)}
+                      title="Excluir usuário"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="usuario-card-content">
+                  <div className="usuario-card-details">
+                    <div className="usuario-detail-item">
+                      <Mail size={14} />
+                      <span>{usuario.email}</span>
+                    </div>
+                    <div className="usuario-detail-item">
+                      <Phone size={14} />
+                      <span>{usuario.telefone}</span>
+                    </div>
+                    <div className="usuario-detail-item">
+                      <span className="usuario-detail-label">Processos Ativos:</span>
+                      <span className="usuario-detail-value">{usuario.processosAtivos}</span>
+                    </div>
+                  </div>
+
+                  <div className="usuario-card-footer">
+                    <div className="usuario-card-status">
+                      <span className={`usuario-status-badge usuario-status-${getStatusColor(usuario.status)}`}>
+                        {getStatusText(usuario.status)}
+                      </span>
+                    </div>
+                    <div className="usuario-card-meta">
+                      <span className="usuario-card-last-access">
+                        Último acesso: {formatDate(usuario.ultimoAcesso)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Usuarios;
