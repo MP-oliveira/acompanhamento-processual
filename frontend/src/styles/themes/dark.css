@@ -1,0 +1,137 @@
+/* Tema Dark - Variáveis CSS */
+.dark-theme {
+  /* Cores primárias */
+  --primary-color: #4A90E2;
+  --primary-hover: #357ABD;
+  --primary-light: #6BA3E8;
+  --primary-dark: #2E5B8A;
+
+  /* Cores secundárias */
+  --secondary-color: #7B68EE;
+  --secondary-hover: #6A5ACD;
+  --secondary-light: #9370DB;
+  --secondary-dark: #483D8B;
+
+  /* Cores de fundo */
+  --bg-primary: #1A1A1A;
+  --bg-secondary: #2D2D2D;
+  --bg-tertiary: #3A3A3A;
+  --bg-card: #2A2A2A;
+  --bg-hover: #404040;
+  --bg-input: #3A3A3A;
+  --bg-sidebar: #1E1E1E;
+  --bg-topbar: #252525;
+
+  /* Cores de texto */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-muted: #808080;
+  --text-inverse: #1A1A1A;
+  --text-link: #4A90E2;
+  --text-link-hover: #357ABD;
+
+  /* Cores de borda */
+  --border-light: #404040;
+  --border-medium: #555555;
+  --border-dark: #666666;
+  --border-focus: #4A90E2;
+
+  /* Cores de status */
+  --success-color: #4CAF50;
+  --success-bg: #1B5E20;
+  --success-light: #81C784;
+  
+  --warning-color: #FF9800;
+  --warning-bg: #E65100;
+  --warning-light: #FFB74D;
+  
+  --error-color: #F44336;
+  --error-bg: #B71C1C;
+  --error-light: #EF5350;
+  
+  --info-color: #2196F3;
+  --info-bg: #0D47A1;
+  --info-light: #64B5F6;
+
+  /* Cores de prioridade */
+  --priority-urgent: #F44336;
+  --priority-high: #FF9800;
+  --priority-medium: #FFC107;
+  --priority-low: #4CAF50;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  --gradient-secondary: linear-gradient(135deg, #7B68EE 0%, #6A5ACD 100%);
+  --gradient-card: linear-gradient(135deg, #2A2A2A 0%, #3A3A3A 100%);
+
+  /* Transparências */
+  --overlay-light: rgba(0, 0, 0, 0.1);
+  --overlay-medium: rgba(0, 0, 0, 0.3);
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-modal: rgba(0, 0, 0, 0.8);
+
+  /* Cores específicas para componentes */
+  --sidebar-bg: #1E1E1E;
+  --sidebar-hover: #2A2A2A;
+  --sidebar-active: #4A90E2;
+  --sidebar-text: #B0B0B0;
+  --sidebar-text-active: #FFFFFF;
+
+  --topbar-bg: #252525;
+  --topbar-border: #404040;
+  --topbar-text: #FFFFFF;
+  --topbar-hover: #3A3A3A;
+
+  --card-bg: #2A2A2A;
+  --card-border: #404040;
+  --card-hover: #3A3A3A;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --input-bg: #3A3A3A;
+  --input-border: #555555;
+  --input-focus: #4A90E2;
+  --input-text: #FFFFFF;
+  --input-placeholder: #808080;
+
+  --button-primary-bg: #4A90E2;
+  --button-primary-hover: #357ABD;
+  --button-primary-text: #FFFFFF;
+  
+  --button-secondary-bg: #3A3A3A;
+  --button-secondary-hover: #4A4A4A;
+  --button-secondary-text: #FFFFFF;
+  --button-secondary-border: #555555;
+
+  --dropdown-bg: #2A2A2A;
+  --dropdown-border: #404040;
+  --dropdown-hover: #3A3A3A;
+  --dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  --modal-bg: #2A2A2A;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-border: #404040;
+  --modal-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+  --table-bg: #2A2A2A;
+  --table-header-bg: #3A3A3A;
+  --table-row-hover: #3A3A3A;
+  --table-border: #404040;
+
+  --notification-bg: #2A2A2A;
+  --notification-border: #404040;
+  --notification-hover: #3A3A3A;
+  --notification-unread: #4A90E2;
+
+  --badge-bg: #4A90E2;
+  --badge-text: #FFFFFF;
+  --badge-success: #4CAF50;
+  --badge-warning: #FF9800;
+  --badge-error: #F44336;
+  --badge-info: #2196F3;
+}

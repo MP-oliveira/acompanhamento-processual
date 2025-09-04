@@ -12,6 +12,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Perfil.css';
 
 const Perfil = () => {
@@ -315,6 +316,19 @@ const Perfil = () => {
                 <div className="perfil-form-group">
                   <label>Data de Admissão</label>
                   <span className="perfil-value">{formatDate(user.dataAdmissao)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Seção de Configurações */}
+            <div className="perfil-section">
+              <div className="perfil-section-header">
+                <h3>Configurações</h3>
+              </div>
+              <div className="perfil-section-content">
+                <div className="perfil-form-group">
+                  <label>Tema da Interface</label>
+                  <ThemeToggle />
                 </div>
               </div>
             </div>

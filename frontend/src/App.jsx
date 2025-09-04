@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { authService } from './services/api';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -115,9 +116,10 @@ function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="app">
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <div className="app">
           {!isAuthenticated ? (
             // Páginas de Autenticação
             <div className="login-page">
@@ -175,9 +177,10 @@ function App() {
               },
             }}
           />
-        </div>
-      </Router>
-    </QueryClientProvider>
+          </div>
+        </Router>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

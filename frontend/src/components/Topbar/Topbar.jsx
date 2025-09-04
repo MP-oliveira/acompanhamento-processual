@@ -24,8 +24,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
         
         // Converter alertas em notificações (apenas não lidas)
         const unreadAlerts = alerts.filter(alert => !alert.lido);
-        console.log('🔔 Busca inicial - Total de alertas:', alerts.length);
-        console.log('🔔 Alertas não lidos:', unreadAlerts.length);
         const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
           id: alert.id,
           type: 'alerta',
@@ -36,7 +34,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           alertId: alert.id,
           icon: AlertTriangle
         }));
-        console.log('🔔 Notificações iniciais:', notificationsData.length);
         setNotifications(notificationsData);
       } catch (error) {
         console.error('🔔 Erro ao buscar notificações:', error);

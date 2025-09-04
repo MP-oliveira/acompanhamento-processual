@@ -1,3 +1,7 @@
+/* ===== IMPORTAÇÕES DE TEMAS ===== */
+@import './themes/light.css';
+@import './themes/dark.css';
+
 /* ===== RESET E BASE ===== */
 * {
   margin: 0;

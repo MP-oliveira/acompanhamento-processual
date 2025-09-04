@@ -54,7 +54,7 @@ export const authService = {
   },
 
   async getProfile() {
-    const response = await api.get('/auth/profile');
+    const response = await api.get('/auth/me');
     return response.data;
   }
 };
