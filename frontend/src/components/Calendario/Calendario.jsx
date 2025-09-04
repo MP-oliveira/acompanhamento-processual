@@ -21,6 +21,16 @@ const Calendario = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEventModal, setShowEventModal] = useState(false);
+  const [newEvent, setNewEvent] = useState({
+    title: '',
+    type: 'audiencia',
+    date: '',
+    time: '',
+    duration: 60,
+    description: '',
+    processo: null,
+    status: 'agendado'
+  });
 
   // Dados mockados para demonstração
   const mockEvents = [
@@ -217,6 +227,70 @@ const Calendario = () => {
     return ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   };
 
+  const handleNewEvent = () => {
+    // Preenche a data com a data selecionada
+    const dateString = selectedDate.toISOString().split('T')[0];
+    setNewEvent(prev => ({
+      ...prev,
+      date: dateString,
+      time: '09:00'
+    }));
+    setShowEventModal(true);
+  };
+
+  const handleEventInputChange = (field, value) => {
+    setNewEvent(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveEvent = () => {
+    if (!newEvent.title || !newEvent.date || !newEvent.time) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    const event = {
+      id: Date.now(), // ID temporário
+      ...newEvent,
+      processo: newEvent.processo || {
+        id: null,
+        numero: 'Evento Personalizado',
+        classe: 'Evento não processual'
+      }
+    };
+
+    setEvents(prev => [...prev, event]);
+    setShowEventModal(false);
+    setNewEvent({
+      title: '',
+      type: 'audiencia',
+      date: '',
+      time: '',
+      duration: 60,
+      description: '',
+      processo: null,
+      status: 'agendado'
+    });
+    
+    alert('Evento criado com sucesso!');
+  };
+
+  const handleCancelEvent = () => {
+    setShowEventModal(false);
+    setNewEvent({
+      title: '',
+      type: 'audiencia',
+      date: '',
+      time: '',
+      duration: 60,
+      description: '',
+      processo: null,
+      status: 'agendado'
+    });
+  };
+
   const days = getDaysInMonth(currentDate);
   const selectedDateEvents = getEventsForDate(selectedDate);
 
@@ -245,7 +319,10 @@ const Calendario = () => {
           </p>
         </div>
         <div className="page-header-actions">
-          <button className="btn btn-primary">
+          <button 
+            className="btn btn-primary"
+            onClick={handleNewEvent}
+          >
             <Plus size={20} />
             Novo Evento
           </button>
@@ -419,6 +496,114 @@ const Calendario = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal para Novo Evento */}
+      {showEventModal && (
+        <div className="modal-overlay" onClick={handleCancelEvent}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Novo Evento</h2>
+              <button 
+                className="modal-close"
+                onClick={handleCancelEvent}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label required">Título do Evento</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newEvent.title}
+                  onChange={(e) => handleEventInputChange('title', e.target.value)}
+                  placeholder="Ex: Audiência de Conciliação"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label required">Data</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={newEvent.date}
+                    onChange={(e) => handleEventInputChange('date', e.target.value)}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label required">Hora</label>
+                  <input
+                    type="time"
+                    className="form-input"
+                    value={newEvent.time}
+                    onChange={(e) => handleEventInputChange('time', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Tipo</label>
+                  <select
+                    className="form-select"
+                    value={newEvent.type}
+                    onChange={(e) => handleEventInputChange('type', e.target.value)}
+                  >
+                    <option value="audiencia">Audiência</option>
+                    <option value="prazo">Prazo</option>
+                    <option value="reuniao">Reunião</option>
+                    <option value="sentenca">Sentença</option>
+                    <option value="outro">Outro</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Duração (minutos)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={newEvent.duration}
+                    onChange={(e) => handleEventInputChange('duration', parseInt(e.target.value) || 0)}
+                    min="0"
+                    step="15"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Descrição</label>
+                <textarea
+                  className="form-textarea"
+                  value={newEvent.description}
+                  onChange={(e) => handleEventInputChange('description', e.target.value)}
+                  placeholder="Descrição do evento..."
+                  rows="3"
+                />
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary"
+                onClick={handleCancelEvent}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSaveEvent}
+              >
+                <Plus size={20} />
+                Criar Evento
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
