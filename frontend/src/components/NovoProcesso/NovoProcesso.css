@@ -10,7 +10,9 @@
 
 .page-header-content {
   display: flex;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 10rem;
   gap: var(--spacing-lg);
 }
 

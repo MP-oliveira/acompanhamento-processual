@@ -48,6 +48,7 @@ const NovoProcesso = () => {
       {/* Header da Página */}
       <div className="page-header">
         <div className="page-header-content">
+          <div></div>
           <button
             className="page-header-back"
             onClick={() => navigate('/processos')}
@@ -56,13 +57,6 @@ const NovoProcesso = () => {
             <ArrowLeft size={20} />
             Voltar
           </button>
-          
-          <div className="page-header-main">
-            <h1 className="page-title">
-              <Plus size={24} />
-              Novo Processo
-            </h1>
-          </div>
         </div>
       </div>
 
