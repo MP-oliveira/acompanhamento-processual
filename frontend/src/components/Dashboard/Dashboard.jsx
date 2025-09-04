@@ -141,7 +141,7 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="page-header-actions">
-          <Link to="/novo-processo" className="btn btn-primary">
+          <Link to="/processos/novo" className="btn btn-primary">
             <Plus size={20} />
             Novo Processo
           </Link>
