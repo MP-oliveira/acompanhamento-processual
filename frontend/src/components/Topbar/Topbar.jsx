@@ -9,6 +9,8 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [notificationTimeout, setNotificationTimeout] = useState(null);
+  const [userMenuTimeout, setUserMenuTimeout] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -17,25 +19,24 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        console.log('🔔 Buscando notificações...');
         const response = await alertService.getAll();
-        console.log('🔔 Resposta da API:', response);
-        const alerts = response.alerts || [];
-        console.log('🔔 Alertas encontrados:', alerts.length);
+        const alerts = response.alertas || [];
         
-        // Converter alertas em notificações
-        const notificationsData = alerts.slice(0, 5).map(alert => ({
+        // Converter alertas em notificações (apenas não lidas)
+        const unreadAlerts = alerts.filter(alert => !alert.lido);
+        console.log('🔔 Busca inicial - Total de alertas:', alerts.length);
+        console.log('🔔 Alertas não lidos:', unreadAlerts.length);
+        const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
           id: alert.id,
           type: 'alerta',
           title: alert.titulo,
           message: alert.mensagem,
           time: formatTimeAgo(alert.createdAt),
-          unread: !alert.lido,
+          unread: true, // Todas são não lidas por definição
           alertId: alert.id,
           icon: AlertTriangle
         }));
-        
-        console.log('🔔 Notificações processadas:', notificationsData);
+        console.log('🔔 Notificações iniciais:', notificationsData.length);
         setNotifications(notificationsData);
       } catch (error) {
         console.error('🔔 Erro ao buscar notificações:', error);
@@ -47,6 +48,18 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
 
     fetchNotifications();
   }, []);
+
+  // Cleanup dos timeouts quando o componente for desmontado
+  useEffect(() => {
+    return () => {
+      if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+      }
+      if (userMenuTimeout) {
+        clearTimeout(userMenuTimeout);
+      }
+    };
+  }, [notificationTimeout, userMenuTimeout]);
 
   const formatTimeAgo = (dateString) => {
     const now = new Date();
@@ -75,11 +88,35 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
 
   // Fechar dropdowns ao sair do mouse
   const handleUserMenuMouseLeave = () => {
-    setShowUserDropdown(false);
+    // Delay para permitir que o usuário mova o mouse entre os elementos
+    const timeout = setTimeout(() => {
+      setShowUserDropdown(false);
+    }, 300);
+    setUserMenuTimeout(timeout);
+  };
+
+  const handleUserMenuMouseEnter = () => {
+    // Cancelar o timeout se o usuário voltar ao menu
+    if (userMenuTimeout) {
+      clearTimeout(userMenuTimeout);
+      setUserMenuTimeout(null);
+    }
   };
 
   const handleNotificationMenuMouseLeave = () => {
-    setShowNotifications(false);
+    // Delay para permitir que o usuário mova o mouse entre os elementos
+    const timeout = setTimeout(() => {
+      setShowNotifications(false);
+    }, 300);
+    setNotificationTimeout(timeout);
+  };
+
+  const handleNotificationMenuMouseEnter = () => {
+    // Cancelar o timeout se o usuário voltar ao menu
+    if (notificationTimeout) {
+      clearTimeout(notificationTimeout);
+      setNotificationTimeout(null);
+    }
   };
 
   const handleLogout = () => {
@@ -104,14 +141,25 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     if (notification.unread && notification.alertId) {
       try {
         await alertService.markAsRead(notification.alertId);
-        // Atualizar a notificação local
-        setNotifications(prev => 
-          prev.map(n => 
-            n.id === notification.id 
-              ? { ...n, unread: false }
-              : n
-          )
-        );
+        
+        // Recarregar notificações para atualizar a lista (remover a notificação lida)
+        const response = await alertService.getAll();
+        const alerts = response.alertas || [];
+        const unreadAlerts = alerts.filter(alert => !alert.lido);
+        console.log('🔄 Após marcar como lida - Total de alertas:', alerts.length);
+        console.log('🔄 Alertas não lidos:', unreadAlerts.length);
+        const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
+          id: alert.id,
+          type: 'alerta',
+          title: alert.titulo,
+          message: alert.mensagem,
+          time: formatTimeAgo(alert.createdAt),
+          unread: true,
+          alertId: alert.id,
+          icon: AlertTriangle
+        }));
+        console.log('🔄 Notificações atualizadas:', notificationsData.length);
+        setNotifications(notificationsData);
       } catch (error) {
         console.error('Erro ao marcar notificação como lida:', error);
       }
@@ -140,8 +188,8 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     return location.pathname.startsWith(path);
   };
 
-  const unreadCount = notifications.filter(n => n.unread).length;
-  console.log('🔔 Contador de notificações não lidas:', unreadCount);
+  const unreadCount = notifications.length; // Todas as notificações são não lidas por definição
+  console.log('🔔 Contador de notificações:', unreadCount);
 
   return (
     <header className="topbar">
@@ -193,6 +241,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           {/* Notificações */}
           <div 
             className="topbar-notification-menu"
+            onMouseEnter={handleNotificationMenuMouseEnter}
             onMouseLeave={handleNotificationMenuMouseLeave}
           >
             <button 
@@ -210,7 +259,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
             <div className={`topbar-notification-dropdown ${showNotifications ? 'show' : ''}`}>
               <div className="topbar-notification-header">
                 <h3>Notificações</h3>
-                <span className="topbar-notification-count">{unreadCount} não lidas</span>
+                <span className="topbar-notification-count">{unreadCount} {unreadCount === 1 ? 'não lida' : 'não lidas'}</span>
               </div>
               
               <div className="topbar-notification-list">
@@ -260,6 +309,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           {/* Menu do Usuário */}
           <div 
             className="topbar-user-menu"
+            onMouseEnter={handleUserMenuMouseEnter}
             onMouseLeave={handleUserMenuMouseLeave}
           >
             <button 
