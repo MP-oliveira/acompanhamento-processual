@@ -103,7 +103,8 @@
 }
 
 .processos-stat-archived {
-  background-color: var(--neutral-500);
+  background-color: var(--neutral-200);
+  border: 2px solid white;
 }
 
 .processos-stat-suspended {

@@ -49,8 +49,15 @@
   border-left: 4px solid var(--primary-500);
 }
 
-/* Card vencido - ícone com borda branca */
+/* Card vencido - ícone com borda branca e fundo neutral-200 */
 .alert-card-overdue .alert-card-icon {
+  background-color: var(--neutral-200) !important;
+  border: 2px solid white;
+}
+
+/* Fallback para ícones de cards vencidos (sem classe específica) */
+.alert-card .alert-card-icon[style*="background-color: var(--error-500)"] {
+  background-color: var(--neutral-200) !important;
   border: 2px solid white;
 }
 
