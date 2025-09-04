@@ -1,5 +1,5 @@
 /* Tema Light - Variáveis CSS (tema padrão atual) */
-.light-theme {
+[data-theme="light"] {
   /* Cores primárias */
   --primary-color: #4A90E2;
   --primary-hover: #357ABD;

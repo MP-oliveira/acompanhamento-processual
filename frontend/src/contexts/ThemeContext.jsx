@@ -25,13 +25,11 @@ export const ThemeProvider = ({ children }) => {
     // Salva a preferência no localStorage
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
-    // Aplica a classe no body
+    // Aplica o atributo data-theme no html
     if (isDarkMode) {
-      document.body.classList.add('dark-theme');
-      document.body.classList.remove('light-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
     } else {
-      document.body.classList.add('light-theme');
-      document.body.classList.remove('dark-theme');
+      document.documentElement.setAttribute('data-theme', 'light');
     }
   }, [isDarkMode]);
 

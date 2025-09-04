@@ -1,5 +1,5 @@
 /* Tema Dark - Variáveis CSS */
-.dark-theme {
+[data-theme="dark"] {
   /* Cores primárias */
   --primary-color: #4A90E2;
   --primary-hover: #357ABD;
@@ -12,21 +12,21 @@
   --secondary-light: #9370DB;
   --secondary-dark: #483D8B;
 
-  /* Cores de fundo */
-  --bg-primary: #1A1A1A;
-  --bg-secondary: #2D2D2D;
-  --bg-tertiary: #3A3A3A;
-  --bg-card: #2A2A2A;
-  --bg-hover: #404040;
-  --bg-input: #3A3A3A;
-  --bg-sidebar: #1E1E1E;
-  --bg-topbar: #252525;
+  /* Cores de fundo - Tons mais suaves */
+  --bg-primary: #2A2A2A;
+  --bg-secondary: #3A3A3A;
+  --bg-tertiary: #4A4A4A;
+  --bg-card: #3A3A3A;
+  --bg-hover: #4A4A4A;
+  --bg-input: #4A4A4A;
+  --bg-sidebar: #2A2A2A;
+  --bg-topbar: #2A2A2A;
 
   /* Cores de texto */
-  --text-primary: #FFFFFF;
-  --text-secondary: #B0B0B0;
-  --text-muted: #808080;
-  --text-inverse: #1A1A1A;
+  --text-primary: #E8E8E8;
+  --text-secondary: #C0C0C0;
+  --text-muted: #A0A0A0;
+  --text-inverse: #2A2A2A;
   --text-link: #4A90E2;
   --text-link-hover: #357ABD;
 
@@ -77,55 +77,55 @@
   --overlay-modal: rgba(0, 0, 0, 0.8);
 
   /* Cores específicas para componentes */
-  --sidebar-bg: #1E1E1E;
-  --sidebar-hover: #2A2A2A;
+  --sidebar-bg: #2A2A2A;
+  --sidebar-hover: #3A3A3A;
   --sidebar-active: #4A90E2;
-  --sidebar-text: #B0B0B0;
-  --sidebar-text-active: #FFFFFF;
+  --sidebar-text: #C0C0C0;
+  --sidebar-text-active: #E8E8E8;
 
-  --topbar-bg: #252525;
-  --topbar-border: #404040;
-  --topbar-text: #FFFFFF;
+  --topbar-bg: #2A2A2A;
+  --topbar-border: #4A4A4A;
+  --topbar-text: #E8E8E8;
   --topbar-hover: #3A3A3A;
 
-  --card-bg: #2A2A2A;
-  --card-border: #404040;
-  --card-hover: #3A3A3A;
+  --card-bg: #3A3A3A;
+  --card-border: #4A4A4A;
+  --card-hover: #4A4A4A;
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
-  --input-bg: #3A3A3A;
-  --input-border: #555555;
+  --input-bg: #4A4A4A;
+  --input-border: #5A5A5A;
   --input-focus: #4A90E2;
-  --input-text: #FFFFFF;
-  --input-placeholder: #808080;
+  --input-text: #E8E8E8;
+  --input-placeholder: #A0A0A0;
 
   --button-primary-bg: #4A90E2;
   --button-primary-hover: #357ABD;
   --button-primary-text: #FFFFFF;
   
-  --button-secondary-bg: #3A3A3A;
-  --button-secondary-hover: #4A4A4A;
-  --button-secondary-text: #FFFFFF;
-  --button-secondary-border: #555555;
+  --button-secondary-bg: #4A4A4A;
+  --button-secondary-hover: #5A5A5A;
+  --button-secondary-text: #E8E8E8;
+  --button-secondary-border: #5A5A5A;
 
-  --dropdown-bg: #2A2A2A;
-  --dropdown-border: #404040;
-  --dropdown-hover: #3A3A3A;
+  --dropdown-bg: #3A3A3A;
+  --dropdown-border: #4A4A4A;
+  --dropdown-hover: #4A4A4A;
   --dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 
-  --modal-bg: #2A2A2A;
+  --modal-bg: #3A3A3A;
   --modal-overlay: rgba(0, 0, 0, 0.8);
-  --modal-border: #404040;
+  --modal-border: #4A4A4A;
   --modal-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 
-  --table-bg: #2A2A2A;
-  --table-header-bg: #3A3A3A;
-  --table-row-hover: #3A3A3A;
-  --table-border: #404040;
+  --table-bg: #3A3A3A;
+  --table-header-bg: #4A4A4A;
+  --table-row-hover: #4A4A4A;
+  --table-border: #4A4A4A;
 
-  --notification-bg: #2A2A2A;
-  --notification-border: #404040;
-  --notification-hover: #3A3A3A;
+  --notification-bg: #3A3A3A;
+  --notification-border: #4A4A4A;
+  --notification-hover: #4A4A4A;
   --notification-unread: #4A90E2;
 
   --badge-bg: #4A90E2;
