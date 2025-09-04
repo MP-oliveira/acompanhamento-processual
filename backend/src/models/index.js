@@ -3,6 +3,7 @@ import User from './User.js';
 import Processo from './Processo.js';
 import Alert from './Alert.js';
 import Consulta from './Consulta.js';
+import Relatorio from './Relatorio.js';
 
 // Definindo associações
 User.hasMany(Processo, { foreignKey: 'userId', as: 'processos' });
@@ -17,4 +18,7 @@ Alert.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(Consulta, { foreignKey: 'userId', as: 'consultas' });
 Consulta.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-export { sequelize, User, Processo, Alert, Consulta };
+User.hasMany(Relatorio, { foreignKey: 'userId', as: 'relatorios' });
+Relatorio.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+export { sequelize, User, Processo, Alert, Consulta, Relatorio };

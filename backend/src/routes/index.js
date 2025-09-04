@@ -3,6 +3,7 @@ import authRoutes from './authRoutes.js';
 import processoRoutes from './processoRoutes.js';
 import alertRoutes from './alertRoutes.js';
 import consultaRoutes from './consultaRoutes.js';
+import relatorioRoutes from './relatorioRoutes.js';
 import externalRoutes from './externalRoutes.js';
 
 const router = Router();
@@ -14,6 +15,7 @@ router.use('/auth', authRoutes);
 router.use('/processos', processoRoutes);
 router.use('/alerts', alertRoutes);
 router.use('/consultas', consultaRoutes);
+router.use('/relatorios', relatorioRoutes);
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

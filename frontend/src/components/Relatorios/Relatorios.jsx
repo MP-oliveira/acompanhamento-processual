@@ -13,115 +13,46 @@ import {
   AlertTriangle,
   Filter,
   RefreshCw,
-  Eye
+  Eye,
+  Plus
 } from 'lucide-react';
+import { relatorioService } from '../../services/api';
 import './Relatorios.css';
 
 const Relatorios = () => {
   const [relatorios, setRelatorios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState('mes');
+  const [selectedPeriod, setSelectedPeriod] = useState('todos');
   const [selectedType, setSelectedType] = useState('todos');
   const [showFilters, setShowFilters] = useState(false);
+  const [showNewReportModal, setShowNewReportModal] = useState(false);
+  const [newReport, setNewReport] = useState({
+    tipo: 'processos',
+    titulo: '',
+    descricao: '',
+    periodo: new Date().toISOString().slice(0, 7) // YYYY-MM
+  });
 
-  // Dados mockados para demonstração
-  const mockRelatorios = [
-    {
-      id: 1,
-      tipo: 'processos',
-      titulo: 'Relatório de Processos por Status',
-      descricao: 'Análise da distribuição de processos por status (ativo, arquivado, suspenso)',
-      periodo: '2024-03',
-      dataGeracao: '2024-03-14T10:30:00Z',
-      status: 'concluido',
-      dados: {
-        total: 150,
-        ativos: 120,
-        arquivados: 25,
-        suspensos: 5,
-        crescimento: 12.5
-      }
-    },
-    {
-      id: 2,
-      tipo: 'prazos',
-      titulo: 'Relatório de Prazos Vencidos',
-      descricao: 'Lista de prazos vencidos e próximos ao vencimento',
-      periodo: '2024-03',
-      dataGeracao: '2024-03-14T09:15:00Z',
-      status: 'concluido',
-      dados: {
-        vencidos: 8,
-        proximos: 15,
-        total: 45,
-        crescimento: -5.2
-      }
-    },
-    {
-      id: 3,
-      tipo: 'alertas',
-      titulo: 'Relatório de Alertas por Prioridade',
-      descricao: 'Distribuição de alertas por nível de prioridade',
-      periodo: '2024-03',
-      dataGeracao: '2024-03-13T16:20:00Z',
-      status: 'concluido',
-      dados: {
-        urgentes: 3,
-        altos: 8,
-        medios: 12,
-        baixos: 5,
-        crescimento: 8.3
-      }
-    },
-    {
-      id: 4,
-      tipo: 'consultas',
-      titulo: 'Relatório de Consultas Externas',
-      descricao: 'Estatísticas de consultas realizadas em sistemas externos',
-      periodo: '2024-03',
-      dataGeracao: '2024-03-13T14:30:00Z',
-      status: 'processando',
-      dados: {
-        total: 45,
-        encontrados: 38,
-        naoEncontrados: 7,
-        crescimento: 15.7
-      }
-    },
-    {
-      id: 5,
-      tipo: 'usuarios',
-      titulo: 'Relatório de Atividade dos Usuários',
-      descricao: 'Análise da atividade dos usuários no sistema',
-      periodo: '2024-03',
-      dataGeracao: '2024-03-12T11:45:00Z',
-      status: 'concluido',
-      dados: {
-        usuariosAtivos: 8,
-        logins: 156,
-        acoes: 1240,
-        crescimento: 22.1
-      }
-    }
-  ];
-
+  // Buscar relatórios do backend
   useEffect(() => {
-    // Simula carregamento de dados
-    const loadRelatorios = async () => {
-      setLoading(true);
+    const fetchRelatorios = async () => {
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setRelatorios(mockRelatorios);
+        setLoading(true);
+        const response = await relatorioService.getAll({
+          tipo: selectedType !== 'todos' ? selectedType : undefined,
+          status: 'todos'
+        });
+        setRelatorios(response.relatorios || []);
       } catch (error) {
-        console.error('Erro ao carregar relatórios:', error);
+        console.error('Erro ao buscar relatórios:', error);
+        setRelatorios([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadRelatorios();
-  }, []);
+    fetchRelatorios();
+  }, [selectedType, selectedPeriod]);
 
   const filteredRelatorios = relatorios.filter(relatorio => {
     const matchesType = selectedType === 'todos' || relatorio.tipo === selectedType;
@@ -131,41 +62,75 @@ const Relatorios = () => {
   });
 
   const handleGerarRelatorio = () => {
-    console.log('Gerar novo relatório');
-    // Aqui você pode abrir um modal ou navegar para uma página de geração de relatório
+    setShowNewReportModal(true);
   };
 
-  const handleDownload = (relatorioId) => {
-    console.log('Download relatório:', relatorioId);
-    // Aqui você pode implementar o download do relatório
-  };
-
-  const handleVisualizar = (relatorioId) => {
-    console.log('Visualizar relatório:', relatorioId);
-    // Aqui você pode abrir o relatório em uma nova aba ou modal
-  };
-
-  const handleRefresh = async () => {
-    setLoading(true);
+  const handleCreateReport = async () => {
     try {
-      // Simula refresh
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Relatórios atualizados');
+      setLoading(true);
+      await relatorioService.create(newReport);
+      setShowNewReportModal(false);
+      setNewReport({
+        tipo: 'processos',
+        titulo: '',
+        descricao: '',
+        periodo: new Date().toISOString().slice(0, 7)
+      });
+      // Recarregar relatórios
+      const response = await relatorioService.getAll();
+      setRelatorios(response.relatorios || []);
+    } catch (error) {
+      console.error('Erro ao criar relatório:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getStats = () => {
-    const total = relatorios.length;
-    const concluidos = relatorios.filter(r => r.status === 'concluido').length;
-    const processando = relatorios.filter(r => r.status === 'processando').length;
-    const erro = relatorios.filter(r => r.status === 'erro').length;
-    
-    return { total, concluidos, processando, erro };
+  const handleDownload = (relatorioId) => {
+    console.log('Download relatório:', relatorioId);
+    // Implementar download quando necessário
   };
 
-  const stats = getStats();
+  const handleVisualizar = (relatorioId) => {
+    console.log('Visualizar relatório:', relatorioId);
+    // Implementar visualização quando necessário
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setLoading(true);
+      const response = await relatorioService.getAll({
+        tipo: selectedType !== 'todos' ? selectedType : undefined,
+        status: 'todos'
+      });
+      setRelatorios(response.relatorios || []);
+    } catch (error) {
+      console.error('Erro ao atualizar relatórios:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [stats, setStats] = useState({
+    total: 0,
+    concluidos: 0,
+    processando: 0,
+    erro: 0
+  });
+
+  // Buscar estatísticas do backend
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await relatorioService.getStats();
+        setStats(response);
+      } catch (error) {
+        console.error('Erro ao buscar estatísticas:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -479,6 +444,89 @@ const Relatorios = () => {
           </div>
         )}
       </div>
+
+      {/* Modal para Novo Relatório */}
+      {showNewReportModal && (
+        <div className="modal-overlay" onClick={() => setShowNewReportModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Gerar Novo Relatório</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowNewReportModal(false)}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label required">Tipo de Relatório</label>
+                <select
+                  className="form-input"
+                  value={newReport.tipo}
+                  onChange={(e) => setNewReport({...newReport, tipo: e.target.value})}
+                >
+                  <option value="processos">Processos</option>
+                  <option value="prazos">Prazos</option>
+                  <option value="alertas">Alertas</option>
+                  <option value="consultas">Consultas</option>
+                  <option value="usuarios">Usuários</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Título</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newReport.titulo}
+                  onChange={(e) => setNewReport({...newReport, titulo: e.target.value})}
+                  placeholder="Ex: Relatório de Processos por Status"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Descrição</label>
+                <textarea
+                  className="form-input"
+                  rows="3"
+                  value={newReport.descricao}
+                  onChange={(e) => setNewReport({...newReport, descricao: e.target.value})}
+                  placeholder="Descrição do relatório..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Período</label>
+                <input
+                  type="month"
+                  className="form-input"
+                  value={newReport.periodo}
+                  onChange={(e) => setNewReport({...newReport, periodo: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowNewReportModal(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleCreateReport}
+                disabled={!newReport.titulo || !newReport.periodo}
+              >
+                <Plus size={16} />
+                Gerar Relatório
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -138,4 +138,32 @@ export const consultaService = {
   }
 };
 
+// Serviços de relatórios
+export const relatorioService = {
+  async getAll(params = {}) {
+    const response = await api.get('/relatorios', { params });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await api.get(`/relatorios/${id}`);
+    return response.data;
+  },
+
+  async create(data) {
+    const response = await api.post('/relatorios', data);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/relatorios/${id}`);
+    return response.data;
+  },
+
+  async getStats() {
+    const response = await api.get('/relatorios/stats');
+    return response.data;
+  }
+};
+
 export default api;
