@@ -17,7 +17,6 @@ import {
   X
 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import './Consultas.css';
 
@@ -35,7 +34,7 @@ const Consultas = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Dados mockados para demonstração
-  const mockConsultas = [
+  const mockConsultas = React.useMemo(() => [
     {
       id: 1,
       tipo: 'processo',
@@ -109,7 +108,7 @@ const Consultas = () => {
         ultimaAtualizacao: '2024-02-15T00:00:00Z'
       }
     }
-  ];
+  ], []);
 
   useEffect(() => {
     // Simula carregamento de dados
@@ -127,7 +126,7 @@ const Consultas = () => {
     };
 
     loadConsultas();
-  }, []);
+  }, [mockConsultas]);
 
   const filteredConsultas = consultas.filter(consulta => {
     const matchesSearch = 
@@ -184,10 +183,6 @@ const Consultas = () => {
     // Aqui você pode abrir um modal ou navegar para uma página de nova consulta
   };
 
-  const handleExportar = () => {
-    console.log('Exportar consultas');
-    // Aqui você pode implementar a exportação
-  };
 
   const handleRefresh = async () => {
     setLoading(true);
@@ -211,37 +206,80 @@ const Consultas = () => {
   };
 
   // Função para exportar em PDF
-  const handleExportPDF = async () => {
+  const handleExportPDF = () => {
     if (!selectedConsulta) return;
 
     try {
-      const modalElement = document.querySelector('.consulta-modal');
-      if (!modalElement) return;
-
-      const canvas = await html2canvas(modalElement, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true
-      });
-
-      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
+      let yPosition = margin;
+
+      // Função para adicionar texto com quebra de linha
+      const addText = (text, fontSize = 12, isBold = false, color = '#000000') => {
+        pdf.setFontSize(fontSize);
+        pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
+        pdf.setTextColor(color);
+        
+        const lines = pdf.splitTextToSize(text, contentWidth);
+        pdf.text(lines, margin, yPosition);
+        yPosition += lines.length * (fontSize * 0.4) + 5;
+      };
+
+      // Função para adicionar linha separadora
+      const addSeparator = () => {
+        yPosition += 5;
+        pdf.setDrawColor(200, 200, 200);
+        pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+        yPosition += 10;
+      };
+
+      // Título
+      addText('Relatório de Consulta', 18, true, '#2c3e50');
+      addText(`Data: ${formatDate(selectedConsulta.dataConsulta)}`, 12, false, '#7f8c8d');
+      yPosition += 10;
+
+      // Informações Básicas
+      addText('Informações Básicas', 14, true, '#34495e');
+      addSeparator();
       
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
+      addText(`Tipo: ${getTipoText(selectedConsulta.tipo)}`, 12, false);
+      addText(`Número: ${selectedConsulta.numero}`, 12, false);
+      addText(`Classe: ${selectedConsulta.classe}`, 12, false);
+      addText(`Tribunal: ${selectedConsulta.tribunal}`, 12, false);
+      addText(`Comarca: ${selectedConsulta.comarca}`, 12, false);
+      addText(`Status: ${getStatusText(selectedConsulta.status)}`, 12, false);
+      
+      yPosition += 10;
 
-      let position = 0;
+      // Resultado da Consulta
+      if (selectedConsulta.resultado) {
+        addText('Resultado da Consulta', 14, true, '#34495e');
+        addSeparator();
 
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        if (selectedConsulta.tipo === 'processo') {
+          addText(`Status do Processo: ${selectedConsulta.resultado.status}`, 12, false);
+          addText(`Última Movimentação: ${formatDate(selectedConsulta.resultado.ultimaMovimentacao)}`, 12, false);
+          addText(`Valor da Causa: ${selectedConsulta.resultado.valorCausa}`, 12, false);
+          addText('Partes Envolvidas:', 12, true);
+          
+          selectedConsulta.resultado.partes.forEach(parte => {
+            addText(`• ${parte.nome} (${parte.tipo})`, 11, false, '#7f8c8d');
+          });
+        } else if (selectedConsulta.tipo === 'pessoa') {
+          addText(`Nome: ${selectedConsulta.resultado.nome}`, 12, false);
+          addText(`Situação: ${selectedConsulta.resultado.situacao}`, 12, false);
+          addText(`Última Atualização: ${formatDate(selectedConsulta.resultado.ultimaAtualizacao)}`, 12, false);
+        } else if (selectedConsulta.tipo === 'empresa') {
+          addText(`Razão Social: ${selectedConsulta.resultado.razaoSocial}`, 12, false);
+          addText(`Situação: ${selectedConsulta.resultado.situacao}`, 12, false);
+          addText(`Última Atualização: ${formatDate(selectedConsulta.resultado.ultimaAtualizacao)}`, 12, false);
+        }
+      } else {
+        addText('Resultado da Consulta', 14, true, '#34495e');
+        addSeparator();
+        addText('Nenhum resultado encontrado para esta consulta.', 12, false, '#7f8c8d');
       }
 
       const fileName = `consulta_${selectedConsulta.numero}_${new Date().toISOString().split('T')[0]}.pdf`;
@@ -487,10 +525,6 @@ const Consultas = () => {
           <button className="btn btn-secondary" onClick={handleRefresh} disabled={loading}>
             <RefreshCw size={20} />
             Atualizar
-          </button>
-          <button className="btn btn-secondary" onClick={handleExportar}>
-            <Download size={20} />
-            Exportar
           </button>
           <button className="btn btn-primary" onClick={handleNovaConsulta}>
             <Plus size={20} />
@@ -760,10 +794,6 @@ const Consultas = () => {
                   >
                     <ExternalLink size={16} />
                     Ver Detalhes
-                  </button>
-                  <button className="btn btn-sm btn-outline">
-                    <Download size={16} />
-                    Exportar
                   </button>
                 </div>
               </div>
