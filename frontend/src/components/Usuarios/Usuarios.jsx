@@ -12,7 +12,8 @@ import {
   Trash2,
   Eye,
   UserCheck,
-  UserX
+  UserX,
+  XCircle
 } from 'lucide-react';
 import './Usuarios.css';
 
@@ -24,6 +25,16 @@ const Usuarios = () => {
   const [statusFilter, setStatusFilter] = useState('todos');
   const [sortBy, setSortBy] = useState('nome');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [showNewUserModal, setShowNewUserModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    role: 'advogado',
+    status: 'ativo',
+    senha: '',
+    confirmarSenha: ''
+  });
 
   // Dados mockados para demonstração
   const mockUsuarios = [
@@ -223,6 +234,122 @@ const Usuarios = () => {
 
   const stats = getStats();
 
+  const handleNewUser = () => {
+    setNewUser({
+      nome: '',
+      email: '',
+      telefone: '',
+      role: 'advogado',
+      status: 'ativo',
+      senha: '',
+      confirmarSenha: ''
+    });
+    setShowNewUserModal(true);
+  };
+
+  const handleUserInputChange = (field, value) => {
+    setNewUser(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const validateNewUser = () => {
+    const errors = [];
+
+    if (!newUser.nome.trim()) {
+      errors.push('Nome é obrigatório');
+    }
+
+    if (!newUser.email.trim()) {
+      errors.push('Email é obrigatório');
+    } else if (!/\S+@\S+\.\S+/.test(newUser.email)) {
+      errors.push('Email deve ser válido');
+    }
+
+    if (!newUser.telefone.trim()) {
+      errors.push('Telefone é obrigatório');
+    }
+
+    if (!newUser.senha.trim()) {
+      errors.push('Senha é obrigatória');
+    } else if (newUser.senha.length < 6) {
+      errors.push('Senha deve ter pelo menos 6 caracteres');
+    }
+
+    if (newUser.senha !== newUser.confirmarSenha) {
+      errors.push('Senhas não coincidem');
+    }
+
+    // Verificar se email já existe
+    const emailExists = usuarios.some(u => u.email.toLowerCase() === newUser.email.toLowerCase());
+    if (emailExists) {
+      errors.push('Este email já está em uso');
+    }
+
+    return errors;
+  };
+
+  const handleSaveUser = async () => {
+    const errors = validateNewUser();
+    
+    if (errors.length > 0) {
+      alert('Por favor, corrija os seguintes erros:\n\n' + errors.join('\n'));
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Simula delay da API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const user = {
+        id: Date.now(), // ID temporário
+        nome: newUser.nome.trim(),
+        email: newUser.email.trim().toLowerCase(),
+        telefone: newUser.telefone.trim(),
+        role: newUser.role,
+        status: newUser.status,
+        ultimoAcesso: null,
+        processosAtivos: 0,
+        createdAt: new Date().toISOString()
+      };
+
+      setUsuarios(prev => [...prev, user]);
+      setShowNewUserModal(false);
+      setNewUser({
+        nome: '',
+        email: '',
+        telefone: '',
+        role: 'advogado',
+        status: 'ativo',
+        senha: '',
+        confirmarSenha: ''
+      });
+      
+      alert('Usuário criado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      alert('Erro ao criar usuário. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelUser = () => {
+    setShowNewUserModal(false);
+    setNewUser({
+      nome: '',
+      email: '',
+      telefone: '',
+      role: 'advogado',
+      status: 'ativo',
+      senha: '',
+      confirmarSenha: ''
+    });
+  };
+
   if (loading) {
     return (
       <div className="usuarios">
@@ -245,7 +372,10 @@ const Usuarios = () => {
           </p>
         </div>
         <div className="page-header-actions">
-          <button className="btn btn-primary">
+          <button 
+            className="btn btn-primary"
+            onClick={handleNewUser}
+          >
             <Plus size={20} />
             Novo Usuário
           </button>
@@ -383,7 +513,10 @@ const Usuarios = () => {
               }
             </p>
             {!searchTerm && roleFilter === 'todos' && statusFilter === 'todos' && (
-              <button className="btn btn-primary">
+              <button 
+                className="btn btn-primary"
+                onClick={handleNewUser}
+              >
                 <Plus size={20} />
                 Adicionar Primeiro Usuário
               </button>
@@ -464,6 +597,125 @@ const Usuarios = () => {
           </div>
         )}
       </div>
+
+      {/* Modal para Novo Usuário */}
+      {showNewUserModal && (
+        <div className="modal-overlay" onClick={handleCancelUser}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Novo Usuário</h2>
+              <button 
+                className="modal-close"
+                onClick={handleCancelUser}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label required">Nome Completo</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newUser.nome}
+                  onChange={(e) => handleUserInputChange('nome', e.target.value)}
+                  placeholder="Ex: Dr. João Silva"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Email</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={newUser.email}
+                  onChange={(e) => handleUserInputChange('email', e.target.value)}
+                  placeholder="usuario@exemplo.com"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Telefone</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newUser.telefone}
+                  onChange={(e) => handleUserInputChange('telefone', e.target.value)}
+                  placeholder="(00) 0000-0000"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label required">Função</label>
+                  <select
+                    className="form-select"
+                    value={newUser.role}
+                    onChange={(e) => handleUserInputChange('role', e.target.value)}
+                  >
+                    <option value="advogado">Advogado</option>
+                    <option value="assistente">Assistente</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Status</label>
+                  <select
+                    className="form-select"
+                    value={newUser.status}
+                    onChange={(e) => handleUserInputChange('status', e.target.value)}
+                  >
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Senha</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={newUser.senha}
+                  onChange={(e) => handleUserInputChange('senha', e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Confirmar Senha</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={newUser.confirmarSenha}
+                  onChange={(e) => handleUserInputChange('confirmarSenha', e.target.value)}
+                  placeholder="Digite a senha novamente"
+                />
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary"
+                onClick={handleCancelUser}
+                disabled={loading}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSaveUser}
+                disabled={loading}
+              >
+                <Plus size={20} />
+                {loading ? 'Criando...' : 'Criar Usuário'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
