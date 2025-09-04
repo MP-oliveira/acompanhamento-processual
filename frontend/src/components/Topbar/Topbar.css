@@ -140,6 +140,179 @@
   justify-content: center;
 }
 
+/* ===== MENU DE NOTIFICAÇÕES ===== */
+.topbar-notification-menu {
+  position: relative;
+}
+
+.topbar-notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-sm);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 360px;
+  max-width: 400px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all var(--transition-normal);
+}
+
+.topbar-notification-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.topbar-notification-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-notification-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.topbar-notification-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  background-color: var(--neutral-100);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+}
+
+.topbar-notification-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.topbar-notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.topbar-notification-item:last-child {
+  border-bottom: none;
+}
+
+.topbar-notification-item:hover {
+  background-color: var(--neutral-50);
+}
+
+.topbar-notification-item.unread {
+  background-color: var(--primary-25);
+}
+
+.topbar-notification-item.unread:hover {
+  background-color: var(--primary-50);
+}
+
+.topbar-notification-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background-color: var(--neutral-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.topbar-notification-item.unread .topbar-notification-icon {
+  background-color: var(--primary-100);
+  color: var(--primary-600);
+}
+
+.topbar-notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar-notification-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.topbar-notification-message {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  margin-bottom: var(--spacing-xs);
+}
+
+.topbar-notification-time {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.topbar-notification-dot {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-lg);
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-500);
+  border-radius: var(--radius-full);
+}
+
+.topbar-notification-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.topbar-notification-empty p {
+  margin: var(--spacing-sm) 0 0 0;
+  font-size: 0.875rem;
+}
+
+.topbar-notification-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+  text-align: center;
+}
+
+.topbar-notification-link {
+  color: var(--primary-600);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.topbar-notification-link:hover {
+  color: var(--primary-700);
+  text-decoration: none;
+}
+
 /* ===== MENU DO USUÁRIO ===== */
 .topbar-user-menu {
   position: relative;
@@ -307,6 +480,11 @@
     min-width: 240px;
     right: -10px;
   }
+  
+  .topbar-notification-dropdown {
+    min-width: 320px;
+    right: -10px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -331,6 +509,11 @@
   
   .topbar-user-dropdown {
     min-width: 200px;
+    right: -20px;
+  }
+  
+  .topbar-notification-dropdown {
+    min-width: 280px;
     right: -20px;
   }
 }

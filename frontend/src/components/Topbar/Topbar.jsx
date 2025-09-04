@@ -1,19 +1,46 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, Settings, Bell } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleUserDropdown = () => {
     setShowUserDropdown(!showUserDropdown);
+    setShowNotifications(false);
+  };
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    setShowUserDropdown(false);
   };
 
   const handleLogout = () => {
     setShowUserDropdown(false);
     onLogout();
+  };
+
+  const handleProfile = () => {
+    setShowUserDropdown(false);
+    navigate('/perfil');
+  };
+
+  const handleSettings = () => {
+    setShowUserDropdown(false);
+    navigate('/configuracoes');
+  };
+
+  const handleNotificationClick = (notification) => {
+    setShowNotifications(false);
+    if (notification.type === 'processo') {
+      navigate(`/processos/${notification.processId}`);
+    } else if (notification.type === 'alerta') {
+      navigate('/alertas');
+    }
   };
 
   const getInitials = (name) => {
@@ -31,6 +58,40 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
     }
     return location.pathname.startsWith(path);
   };
+
+  // Dados mockados para notificações
+  const notifications = [
+    {
+      id: 1,
+      type: 'alerta',
+      title: 'Prazo vencendo',
+      message: 'Processo 0001234-12.2024.8.05.0001 tem prazo vencendo em 2 dias',
+      time: '5 min atrás',
+      unread: true,
+      icon: AlertTriangle
+    },
+    {
+      id: 2,
+      type: 'processo',
+      title: 'Nova movimentação',
+      message: 'Processo 0001235-12.2024.8.05.0001 teve nova movimentação',
+      time: '1 hora atrás',
+      unread: true,
+      processId: 2,
+      icon: CheckCircle
+    },
+    {
+      id: 3,
+      type: 'alerta',
+      title: 'Audiência agendada',
+      message: 'Audiência de conciliação agendada para amanhã às 14h',
+      time: '3 horas atrás',
+      unread: false,
+      icon: Clock
+    }
+  ];
+
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
     <header className="topbar">
@@ -80,10 +141,61 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
         {/* Usuário e Notificações */}
         <div className="topbar-right">
           {/* Notificações */}
-          <button className="topbar-notification-btn" aria-label="Notificações">
-            <Bell size={20} />
-            <span className="topbar-notification-badge">3</span>
-          </button>
+          <div className="topbar-notification-menu">
+            <button 
+              className="topbar-notification-btn" 
+              onClick={toggleNotifications}
+              aria-label="Notificações"
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <span className="topbar-notification-badge">{unreadCount}</span>
+              )}
+            </button>
+
+            {/* Dropdown de Notificações */}
+            <div className={`topbar-notification-dropdown ${showNotifications ? 'show' : ''}`}>
+              <div className="topbar-notification-header">
+                <h3>Notificações</h3>
+                <span className="topbar-notification-count">{unreadCount} não lidas</span>
+              </div>
+              
+              <div className="topbar-notification-list">
+                {notifications.length === 0 ? (
+                  <div className="topbar-notification-empty">
+                    <Bell size={24} />
+                    <p>Nenhuma notificação</p>
+                  </div>
+                ) : (
+                  notifications.map(notification => (
+                    <button
+                      key={notification.id}
+                      className={`topbar-notification-item ${notification.unread ? 'unread' : ''}`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <div className="topbar-notification-icon">
+                        <notification.icon size={16} />
+                      </div>
+                      <div className="topbar-notification-content">
+                        <div className="topbar-notification-title">{notification.title}</div>
+                        <div className="topbar-notification-message">{notification.message}</div>
+                        <div className="topbar-notification-time">{notification.time}</div>
+                      </div>
+                      {notification.unread && (
+                        <div className="topbar-notification-dot"></div>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+              
+              <div className="topbar-notification-footer">
+                <Link to="/alertas" className="topbar-notification-link">
+                  Ver todas as notificações
+                </Link>
+              </div>
+            </div>
+          </div>
 
           {/* Menu do Usuário */}
           <div className="topbar-user-menu">
@@ -118,12 +230,18 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
               
               <div className="topbar-user-dropdown-divider"></div>
               
-              <button className="topbar-user-dropdown-item">
+              <button 
+                className="topbar-user-dropdown-item"
+                onClick={handleProfile}
+              >
                 <User size={16} />
                 <span>Meu Perfil</span>
               </button>
               
-              <button className="topbar-user-dropdown-item">
+              <button 
+                className="topbar-user-dropdown-item"
+                onClick={handleSettings}
+              >
                 <Settings size={16} />
                 <span>Configurações</span>
               </button>

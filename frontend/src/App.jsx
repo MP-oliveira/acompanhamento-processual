@@ -17,6 +17,7 @@ import Consultas from './components/Consultas/Consultas';
 import Relatorios from './components/Relatorios/Relatorios';
 import Usuarios from './components/Usuarios/Usuarios';
 import Configuracoes from './components/Configuracoes/Configuracoes';
+import Perfil from './components/Perfil/Perfil';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -117,6 +118,7 @@ function App() {
                     <Route path="/relatorios" element={<Relatorios />} />
                     <Route path="/usuarios" element={<Usuarios />} />
                     <Route path="/configuracoes" element={<Configuracoes />} />
+                    <Route path="/perfil" element={<Perfil />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </main>
