@@ -11,6 +11,8 @@ import Processos from './components/Processos/Processos';
 import NovoProcesso from './components/NovoProcesso/NovoProcesso';
 import Alertas from './components/Alertas/Alertas';
 import Calendario from './components/Calendario/Calendario';
+import Consultas from './components/Consultas/Consultas';
+import Relatorios from './components/Relatorios/Relatorios';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -107,8 +109,8 @@ function App() {
                     <Route path="/processos/:id" element={<div>Visualizar Processo (em desenvolvimento)</div>} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
-                    <Route path="/consultas" element={<div>Página de Consultas (em desenvolvimento)</div>} />
-                    <Route path="/relatorios" element={<div>Página de Relatórios (em desenvolvimento)</div>} />
+                    <Route path="/consultas" element={<Consultas />} />
+                    <Route path="/relatorios" element={<Relatorios />} />
                     <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
                     <Route path="/configuracoes" element={<div>Página de Configurações (em desenvolvimento)</div>} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
