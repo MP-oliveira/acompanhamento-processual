@@ -13,6 +13,7 @@ import {
   Eye,
   Trash2
 } from 'lucide-react';
+import { alertService } from '../../services/api';
 import AlertCard from '../AlertCard/AlertCard';
 import './Alertas.css';
 
@@ -26,80 +27,18 @@ const Alertas = () => {
   const [sortBy, setSortBy] = useState('dataVencimento');
   const [sortOrder, setSortOrder] = useState('asc');
 
-  // Dados mockados para demonstração
-  const mockAlertas = [
-    {
-      id: 1,
-      tipo: 'audiencia',
-      titulo: 'Audiência de Conciliação',
-      mensagem: 'Audiência de conciliação agendada para o processo 0001234-12.2024.8.05.0001',
-      prioridade: 'alta',
-      dataVencimento: '2024-03-15T09:00:00Z',
-      dataNotificacao: '2024-03-14T08:00:00Z',
-      lido: false,
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      }
-    },
-    {
-      id: 2,
-      tipo: 'prazo_recurso',
-      titulo: 'Prazo para Recurso',
-      mensagem: 'Prazo para interposição de recurso vence em breve',
-      prioridade: 'urgente',
-      dataVencimento: '2024-03-10T23:59:59Z',
-      dataNotificacao: '2024-03-09T08:00:00Z',
-      lido: false,
-      processo: {
-        id: 2,
-        numero: '0001235-12.2024.8.05.0001',
-        classe: 'Execução de Título Extrajudicial'
-      }
-    },
-    {
-      id: 3,
-      tipo: 'prazo_embargos',
-      titulo: 'Prazo para Embargos de Declaração',
-      mensagem: 'Prazo para embargos de declaração está próximo do vencimento',
-      prioridade: 'media',
-      dataVencimento: '2024-03-12T23:59:59Z',
-      dataNotificacao: '2024-03-11T08:00:00Z',
-      lido: true,
-      processo: {
-        id: 3,
-        numero: '0001236-12.2024.8.05.0001',
-        classe: 'Mandado de Segurança'
-      }
-    },
-    {
-      id: 4,
-      tipo: 'despacho',
-      titulo: 'Despacho com Prazo',
-      mensagem: 'Novo despacho com prazo para manifestação',
-      prioridade: 'baixa',
-      dataVencimento: '2024-03-20T23:59:59Z',
-      dataNotificacao: '2024-03-18T08:00:00Z',
-      lido: false,
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      }
-    }
-  ];
 
   useEffect(() => {
-    // Simula carregamento de dados
+    // Carrega alertas da API real
     const loadAlertas = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setAlertas(mockAlertas);
+        const response = await alertService.getAll();
+        setAlertas(response.alertas || []);
       } catch (error) {
         console.error('Erro ao carregar alertas:', error);
+        // Em caso de erro, mantém array vazio
+        setAlertas([]);
       } finally {
         setLoading(false);
       }
@@ -142,22 +81,37 @@ const Alertas = () => {
 
   const handleMarkAsRead = async (id) => {
     try {
+      // Chama a API para marcar como lido
+      await alertService.markAsRead(id);
+      
+      // Atualiza o estado local
       setAlertas(prev => prev.map(alerta => 
         alerta.id === id ? { ...alerta, lido: true } : alerta
       ));
       console.log('Alerta marcado como lido:', id);
     } catch (error) {
       console.error('Erro ao marcar alerta como lido:', error);
+      const errorMessage = error.response?.data?.message || 'Erro ao marcar alerta como lido. Tente novamente.';
+      alert(errorMessage);
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este alerta?')) {
       try {
+        // Chama a API para deletar o alerta
+        await alertService.delete(id);
+        
+        // Remove o alerta da lista local
         setAlertas(prev => prev.filter(alerta => alerta.id !== id));
         console.log('Alerta excluído:', id);
+        
+        // Mostra mensagem de sucesso
+        alert('Alerta excluído com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir alerta:', error);
+        const errorMessage = error.response?.data?.message || 'Erro ao excluir alerta. Tente novamente.';
+        alert(errorMessage);
       }
     }
   };

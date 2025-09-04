@@ -94,8 +94,18 @@ export const alertService = {
     return response.data;
   },
 
+  async getById(id) {
+    const response = await api.get(`/alerts/${id}`);
+    return response.data;
+  },
+
   async markAsRead(id) {
     const response = await api.patch(`/alerts/${id}/read`);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/alerts/${id}`);
     return response.data;
   }
 };
