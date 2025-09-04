@@ -1,4 +1,5 @@
 import cron from 'node-cron';
+import { Op } from 'sequelize';
 import { Alert, Processo, User } from '../models/index.js';
 import { addBusinessDays, formatDate } from '../utils/date.js';
 import logger from '../config/logger.js';
@@ -67,10 +68,10 @@ class AlertScheduler {
       const processosComPrazos = await Processo.findAll({
         where: {
           status: 'ativo',
-          $or: [
-            { proximaAudiencia: { $between: [hoje, amanha] } },
-            { prazoRecurso: { $between: [hoje, amanha] } },
-            { prazoEmbargos: { $between: [hoje, amanha] } }
+          [Op.or]: [
+            { proximaAudiencia: { [Op.between]: [hoje, amanha] } },
+            { prazoRecurso: { [Op.between]: [hoje, amanha] } },
+            { prazoEmbargos: { [Op.between]: [hoje, amanha] } }
           ]
         },
         include: [{ model: User, as: 'user' }]

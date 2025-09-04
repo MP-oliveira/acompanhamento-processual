@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { Op } from 'sequelize';
 import { Processo, User, Alert } from '../models/index.js';
 import { calcularPrazoRecurso, calcularPrazoEmbargos } from '../utils/date.js';
 import alertScheduler from '../services/alertScheduler.js';
@@ -39,12 +40,12 @@ export const listarProcessos = async (req, res) => {
     }
 
     if (search) {
-      whereClause.$or = [
-        { numero: { $iLike: `%${search}%` } },
-        { classe: { $iLike: `%${search}%` } },
-        { assunto: { $iLike: `%${search}%` } },
-        { tribunal: { $iLike: `%${search}%` } },
-        { comarca: { $iLike: `%${search}%` } }
+      whereClause[Op.or] = [
+        { numero: { [Op.iLike]: `%${search}%` } },
+        { classe: { [Op.iLike]: `%${search}%` } },
+        { assunto: { [Op.iLike]: `%${search}%` } },
+        { tribunal: { [Op.iLike]: `%${search}%` } },
+        { comarca: { [Op.iLike]: `%${search}%` } }
       ];
     }
 
@@ -203,7 +204,7 @@ export const atualizarProcesso = async (req, res) => {
       const processoExistente = await Processo.findOne({
         where: { 
           numero: value.numero,
-          id: { $ne: id }
+          id: { [Op.ne]: id }
         }
       });
       if (processoExistente) {

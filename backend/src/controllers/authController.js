@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
+import { Op } from 'sequelize';
 import { User } from '../models/index.js';
 import logger from '../config/logger.js';
 
@@ -196,7 +197,7 @@ export const updateProfile = async (req, res) => {
       const userExists = await User.findOne({ 
         where: { 
           email, 
-          id: { $ne: req.user.id } 
+          id: { [Op.ne]: req.user.id } 
         } 
       });
       if (userExists) {

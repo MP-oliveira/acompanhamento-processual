@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { Alert, Processo } from '../models/index.js';
 import logger from '../config/logger.js';
 
@@ -248,8 +249,8 @@ export const estatisticasAlertas = async (req, res) => {
         userId: req.user.id,
         lido: false,
         dataVencimento: {
-          $gte: new Date(),
-          $lt: new Date(new Date().setDate(new Date().getDate() + 1))
+          [Op.gte]: new Date(),
+          [Op.lt]: new Date(new Date().setDate(new Date().getDate() + 1))
         }
       }
     });
