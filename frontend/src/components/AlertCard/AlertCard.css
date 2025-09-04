@@ -54,6 +54,17 @@
   border: 2px solid white;
 }
 
+/* Check de lido - cor verde forte */
+.alert-card-check-read {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
 /* ===== HEADER ===== */
 .alert-card-header {
   display: flex;
@@ -298,8 +309,8 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: 0.75rem;
-  color: var(--success-600);
-  background-color: var(--success-50);
+  color: var(--success-700);
+  background-color: var(--success-100);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
   border: 1px solid var(--success-200);

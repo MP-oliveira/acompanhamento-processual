@@ -265,7 +265,7 @@
 /* Botão Secundário */
 .btn-secondary {
   background-color: var(--neutral-100);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   border: 1px solid var(--border-medium);
 }
 

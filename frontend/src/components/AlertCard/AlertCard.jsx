@@ -113,7 +113,11 @@ const AlertCard = ({
         </div>
         {showActions && (
           <div className="alert-card-actions">
-            {!alert.lido && (
+            {alert.lido ? (
+              <div className="alert-card-check-read">
+                <Check size={16} />
+              </div>
+            ) : (
               <button
                 className="alert-card-action-btn alert-card-action-read"
                 onClick={() => onMarkAsRead(alert.id)}
@@ -185,13 +189,6 @@ const AlertCard = ({
         </div>
       </div>
 
-      {/* Status de Lido */}
-      {alert.lido && (
-        <div className="alert-card-read-indicator">
-          <Check size={12} />
-          <span>Lido</span>
-        </div>
-      )}
     </div>
   );
 };
