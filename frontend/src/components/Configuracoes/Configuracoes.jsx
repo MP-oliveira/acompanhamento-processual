@@ -59,6 +59,8 @@ const Configuracoes = () => {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('sistema');
   const [hasChanges, setHasChanges] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const loadConfiguracoes = async () => {
@@ -77,6 +79,38 @@ const Configuracoes = () => {
     loadConfiguracoes();
   }, []);
 
+  const validateField = (section, field, value) => {
+    const newErrors = { ...errors };
+    const errorKey = `${section}.${field}`;
+    
+    // Remove erro anterior se existir
+    if (newErrors[errorKey]) {
+      delete newErrors[errorKey];
+    }
+    
+    // Validações específicas
+    if (section === 'sistema') {
+      if (field === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors[errorKey] = 'Email inválido';
+      }
+      if (field === 'cnpj' && value && !/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(value)) {
+        newErrors[errorKey] = 'CNPJ inválido (formato: 00.000.000/0000-00)';
+      }
+      if (field === 'telefone' && value && !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(value)) {
+        newErrors[errorKey] = 'Telefone inválido (formato: (00) 0000-0000)';
+      }
+    }
+    
+    if (section === 'integracao') {
+      if (field === 'datajudBase' && value && !/^https?:\/\/.+/.test(value)) {
+        newErrors[errorKey] = 'URL inválida (deve começar com http:// ou https://)';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (section, field, value) => {
     setConfiguracoes(prev => ({
       ...prev,
@@ -86,10 +120,20 @@ const Configuracoes = () => {
       }
     }));
     setHasChanges(true);
+    validateField(section, field, value);
   };
 
   const handleSave = async () => {
+    // Verifica se há erros de validação
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) {
+      alert('Por favor, corrija os erros antes de salvar.');
+      return;
+    }
+    
     setSaving(true);
+    setShowSuccess(false);
+    
     try {
       // Simula delay da API
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -98,7 +142,13 @@ const Configuracoes = () => {
       
       // Simula sucesso
       setHasChanges(false);
-      alert('Configurações salvas com sucesso!');
+      setShowSuccess(true);
+      
+      // Esconde a mensagem de sucesso após 3 segundos
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+      
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
       alert('Erro ao salvar configurações. Tente novamente.');
@@ -109,7 +159,43 @@ const Configuracoes = () => {
 
   const handleReset = () => {
     if (window.confirm('Tem certeza que deseja reverter todas as alterações?')) {
-      window.location.reload();
+      // Recarrega as configurações originais
+      setConfiguracoes({
+        sistema: {
+          nomeEmpresa: 'Advocacia & Associados',
+          cnpj: '12.345.678/0001-90',
+          endereco: 'Rua das Flores, 123 - Centro, Salvador/BA',
+          telefone: '(71) 3333-4444',
+          email: 'contato@advocacia.com',
+          site: 'www.advocacia.com.br'
+        },
+        notificacoes: {
+          emailAlertas: true,
+          emailPrazos: true,
+          emailAudiencias: true,
+          smsAlertas: false,
+          smsPrazos: false,
+          notificacaoPush: true,
+          diasAntecedencia: 3
+        },
+        seguranca: {
+          sessaoTimeout: 30,
+          tentativasLogin: 3,
+          senhaMinima: 8,
+          doisFatores: false,
+          logAtividades: true,
+          backupAutomatico: true
+        },
+        integracao: {
+          datajudAtivo: true,
+          datajudToken: '••••••••••••••••',
+          datajudBase: 'https://api.datajud.com.br',
+          sincronizacaoAutomatica: true,
+          intervalo: 60
+        }
+      });
+      setHasChanges(false);
+      alert('Configurações revertidas para os valores originais!');
     }
   };
 
@@ -142,6 +228,12 @@ const Configuracoes = () => {
           </p>
         </div>
         <div className="page-header-actions">
+          {showSuccess && (
+            <div className="configuracoes-success-message">
+              <CheckCircle size={16} />
+              Configurações salvas com sucesso!
+            </div>
+          )}
           <button 
             className="btn btn-secondary" 
             onClick={handleReset}
@@ -153,7 +245,7 @@ const Configuracoes = () => {
           <button 
             className="btn btn-primary" 
             onClick={handleSave}
-            disabled={saving || !hasChanges}
+            disabled={saving || !hasChanges || Object.keys(errors).length > 0}
           >
             <Save size={20} />
             {saving ? 'Salvando...' : 'Salvar'}
@@ -207,8 +299,12 @@ const Configuracoes = () => {
                     id="cnpj"
                     value={configuracoes.sistema.cnpj}
                     onChange={(e) => handleInputChange('sistema', 'cnpj', e.target.value)}
-                    className="configuracoes-input"
+                    className={`configuracoes-input ${errors['sistema.cnpj'] ? 'error' : ''}`}
+                    placeholder="00.000.000/0000-00"
                   />
+                  {errors['sistema.cnpj'] && (
+                    <span className="configuracoes-error">{errors['sistema.cnpj']}</span>
+                  )}
                 </div>
                 <div className="configuracoes-form-group configuracoes-form-group-full">
                   <label htmlFor="endereco">Endereço</label>
@@ -227,8 +323,12 @@ const Configuracoes = () => {
                     id="telefone"
                     value={configuracoes.sistema.telefone}
                     onChange={(e) => handleInputChange('sistema', 'telefone', e.target.value)}
-                    className="configuracoes-input"
+                    className={`configuracoes-input ${errors['sistema.telefone'] ? 'error' : ''}`}
+                    placeholder="(00) 0000-0000"
                   />
+                  {errors['sistema.telefone'] && (
+                    <span className="configuracoes-error">{errors['sistema.telefone']}</span>
+                  )}
                 </div>
                 <div className="configuracoes-form-group">
                   <label htmlFor="email">Email</label>
@@ -237,8 +337,11 @@ const Configuracoes = () => {
                     id="email"
                     value={configuracoes.sistema.email}
                     onChange={(e) => handleInputChange('sistema', 'email', e.target.value)}
-                    className="configuracoes-input"
+                    className={`configuracoes-input ${errors['sistema.email'] ? 'error' : ''}`}
                   />
+                  {errors['sistema.email'] && (
+                    <span className="configuracoes-error">{errors['sistema.email']}</span>
+                  )}
                 </div>
                 <div className="configuracoes-form-group">
                   <label htmlFor="site">Site</label>
@@ -484,8 +587,12 @@ const Configuracoes = () => {
                     id="datajudBase"
                     value={configuracoes.integracao.datajudBase}
                     onChange={(e) => handleInputChange('integracao', 'datajudBase', e.target.value)}
-                    className="configuracoes-input"
+                    className={`configuracoes-input ${errors['integracao.datajudBase'] ? 'error' : ''}`}
+                    placeholder="https://api.exemplo.com.br"
                   />
+                  {errors['integracao.datajudBase'] && (
+                    <span className="configuracoes-error">{errors['integracao.datajudBase']}</span>
+                  )}
                 </div>
                 <div className="configuracoes-form-group">
                   <label className="configuracoes-checkbox-label">

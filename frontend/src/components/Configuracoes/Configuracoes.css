@@ -161,6 +161,16 @@
   cursor: not-allowed;
 }
 
+.configuracoes-input.error {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 3px var(--error-100);
+}
+
+.configuracoes-input.error:focus {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 3px var(--error-100);
+}
+
 /* ===== CHECKBOXES ===== */
 .configuracoes-checkbox-label {
   display: flex;
@@ -205,6 +215,39 @@
 
 .configuracoes-checkbox-text {
   font-size: 0.875rem;
+}
+
+/* ===== MENSAGENS ===== */
+.configuracoes-error {
+  font-size: 0.75rem;
+  color: var(--error-600);
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+.configuracoes-success-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--success-100);
+  color: var(--success-700);
+  border: 1px solid var(--success-200);
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== STATUS ===== */
