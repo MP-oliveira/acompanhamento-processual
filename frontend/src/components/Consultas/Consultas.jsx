@@ -59,9 +59,9 @@ const Consultas = () => {
   const filteredConsultas = consultas.filter(consulta => {
     const matchesSearch = 
       consulta.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      consulta.classe.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      consulta.tribunal.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      consulta.comarca.toLowerCase().includes(searchTerm.toLowerCase());
+      (consulta.classe && consulta.classe.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (consulta.tribunal && consulta.tribunal.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (consulta.comarca && consulta.comarca.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesTipo = tipoFilter === 'todos' || consulta.tipo === tipoFilter;
     const matchesStatus = statusFilter === 'todos' || consulta.status === statusFilter;
@@ -89,6 +89,7 @@ const Consultas = () => {
 
     return matchesSearch && matchesTipo && matchesStatus && matchesData;
   });
+
 
   const sortedConsultas = [...filteredConsultas].sort((a, b) => {
     let aValue = a[sortBy];
@@ -623,15 +624,6 @@ const Consultas = () => {
                 : 'Comece fazendo sua primeira consulta.'
               }
             </p>
-            {!searchTerm && tipoFilter === 'todos' && statusFilter === 'todos' && dataFilter === 'todos' && (
-              <button 
-                className="btn btn-primary"
-                onClick={handleNovaConsulta}
-              >
-                <Plus size={20} />
-                Nova Consulta
-              </button>
-            )}
           </div>
         ) : (
           <div className="consultas-list">
