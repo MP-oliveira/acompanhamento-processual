@@ -292,26 +292,7 @@
 }
 
 /* ===== INDICADOR DE STATUS ===== */
-.processo-card-status-indicator {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 4px;
-  height: 100%;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-}
-
-.processo-card-status-active {
-  background-color: var(--success-500);
-}
-
-.processo-card-status-archived {
-  background-color: var(--neutral-400);
-}
-
-.processo-card-status-suspended {
-  background-color: var(--warning-500);
-}
+/* Removido - usando apenas borda esquerda para indicar status */
 
 /* ===== ANIMAÇÕES ===== */
 @keyframes pulse {

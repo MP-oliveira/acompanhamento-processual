@@ -221,8 +221,7 @@ const ProcessoCard = ({
         </div>
       </div>
 
-      {/* Indicador de Status */}
-      <div className={`processo-card-status-indicator processo-card-status-${statusColor}`} />
+      {/* Indicador de Status removido - usando apenas borda esquerda */}
     </div>
   );
 };
