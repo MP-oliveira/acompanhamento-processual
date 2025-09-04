@@ -12,6 +12,7 @@ import {
   Filter,
   Search
 } from 'lucide-react';
+import { processoService } from '../../services/api';
 import './Calendario.css';
 
 const Calendario = () => {
@@ -32,7 +33,92 @@ const Calendario = () => {
     status: 'agendado'
   });
 
-  // Dados mockados para demonstração
+  // Buscar processos do backend
+  useEffect(() => {
+    const fetchProcessos = async () => {
+      try {
+        setLoading(true);
+        const response = await processoService.getAll();
+        const processos = response.processos || [];
+        
+        // Converter processos em eventos do calendário
+        const eventos = [];
+        
+        processos.forEach(processo => {
+          // Evento de audiência
+          if (processo.proximaAudiencia) {
+            const dataAudiencia = new Date(processo.proximaAudiencia);
+            eventos.push({
+              id: `audiencia-${processo.id}`,
+              title: `Audiência - ${processo.classe}`,
+              type: 'audiencia',
+              date: dataAudiencia.toISOString().split('T')[0],
+              time: dataAudiencia.toTimeString().slice(0, 5),
+              duration: 120,
+              description: `Audiência do processo ${processo.numero}`,
+              processo: {
+                id: processo.id,
+                numero: processo.numero,
+                classe: processo.classe
+              },
+              status: 'agendado'
+            });
+          }
+          
+          // Evento de prazo de recurso
+          if (processo.prazoRecurso) {
+            const dataRecurso = new Date(processo.prazoRecurso);
+            eventos.push({
+              id: `recurso-${processo.id}`,
+              title: `Prazo Recurso - ${processo.classe}`,
+              type: 'prazo',
+              date: dataRecurso.toISOString().split('T')[0],
+              time: '23:59',
+              duration: 0,
+              description: `Prazo para interposição de recurso - ${processo.numero}`,
+              processo: {
+                id: processo.id,
+                numero: processo.numero,
+                classe: processo.classe
+              },
+              status: 'pendente'
+            });
+          }
+          
+          // Evento de prazo de embargos
+          if (processo.prazoEmbargos) {
+            const dataEmbargos = new Date(processo.prazoEmbargos);
+            eventos.push({
+              id: `embargos-${processo.id}`,
+              title: `Prazo Embargos - ${processo.classe}`,
+              type: 'prazo',
+              date: dataEmbargos.toISOString().split('T')[0],
+              time: '23:59',
+              duration: 0,
+              description: `Prazo para embargos de declaração - ${processo.numero}`,
+              processo: {
+                id: processo.id,
+                numero: processo.numero,
+                classe: processo.classe
+              },
+              status: 'pendente'
+            });
+          }
+        });
+        
+        setEvents(eventos);
+      } catch (error) {
+        console.error('Erro ao buscar processos:', error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProcessos();
+  }, []);
+
+  // Dados mockados para demonstração (mantidos como fallback)
   const mockEvents = [
     {
       id: 1,
@@ -96,23 +182,6 @@ const Calendario = () => {
     }
   ];
 
-  useEffect(() => {
-    // Simula carregamento de dados
-    const loadEvents = async () => {
-      setLoading(true);
-      try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setEvents(mockEvents);
-      } catch (error) {
-        console.error('Erro ao carregar eventos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadEvents();
-  }, []);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
