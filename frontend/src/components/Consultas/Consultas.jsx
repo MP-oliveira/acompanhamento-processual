@@ -13,8 +13,13 @@ import {
   AlertTriangle,
   Plus,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  X
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { saveAs } from 'file-saver';
 import './Consultas.css';
 
 const Consultas = () => {
@@ -204,6 +209,204 @@ const Consultas = () => {
   const handleCloseModal = () => {
     setShowDetailModal(false);
     setSelectedConsulta(null);
+  };
+
+  // Função para exportar em PDF
+  const handleExportPDF = async () => {
+    if (!selectedConsulta) return;
+
+    try {
+      const modalElement = document.querySelector('.consulta-modal');
+      if (!modalElement) return;
+
+      const canvas = await html2canvas(modalElement, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const fileName = `consulta_${selectedConsulta.numero}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+      alert('Erro ao exportar PDF. Tente novamente.');
+    }
+  };
+
+  // Função para exportar em Word
+  const handleExportWord = async () => {
+    if (!selectedConsulta) return;
+
+    try {
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "Relatório de Consulta",
+              heading: HeadingLevel.TITLE,
+            }),
+            new Paragraph({
+              text: `Data: ${formatDate(selectedConsulta.dataConsulta)}`,
+            }),
+            new Paragraph({
+              text: "",
+            }),
+            new Paragraph({
+              text: "Informações Básicas",
+              heading: HeadingLevel.HEADING_1,
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Tipo: ", bold: true }),
+                new TextRun({ text: getTipoText(selectedConsulta.tipo) }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Número: ", bold: true }),
+                new TextRun({ text: selectedConsulta.numero }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Classe: ", bold: true }),
+                new TextRun({ text: selectedConsulta.classe }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Tribunal: ", bold: true }),
+                new TextRun({ text: selectedConsulta.tribunal }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Comarca: ", bold: true }),
+                new TextRun({ text: selectedConsulta.comarca }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Status: ", bold: true }),
+                new TextRun({ text: getStatusText(selectedConsulta.status) }),
+              ],
+            }),
+            new Paragraph({
+              text: "",
+            }),
+            ...(selectedConsulta.resultado ? [
+              new Paragraph({
+                text: "Resultado da Consulta",
+                heading: HeadingLevel.HEADING_1,
+              }),
+              ...(selectedConsulta.tipo === 'processo' ? [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Status do Processo: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.status }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Última Movimentação: ", bold: true }),
+                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaMovimentacao) }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Valor da Causa: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.valorCausa }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Partes Envolvidas: ", bold: true }),
+                  ],
+                }),
+                ...selectedConsulta.resultado.partes.map(parte => 
+                  new Paragraph({
+                    children: [
+                      new TextRun({ text: `• ${parte.nome} (${parte.tipo})`, italics: true }),
+                    ],
+                  })
+                ),
+              ] : selectedConsulta.tipo === 'pessoa' ? [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Nome: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.nome }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Situação: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.situacao }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Última Atualização: ", bold: true }),
+                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaAtualizacao) }),
+                  ],
+                }),
+              ] : selectedConsulta.tipo === 'empresa' ? [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Razão Social: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.razaoSocial }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Situação: ", bold: true }),
+                    new TextRun({ text: selectedConsulta.resultado.situacao }),
+                  ],
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Última Atualização: ", bold: true }),
+                    new TextRun({ text: formatDate(selectedConsulta.resultado.ultimaAtualizacao) }),
+                  ],
+                }),
+              ] : [])
+            ] : [
+              new Paragraph({
+                text: "Nenhum resultado encontrado para esta consulta.",
+                italics: true,
+              }),
+            ]),
+          ],
+        }],
+      });
+
+      const buffer = await Packer.toBuffer(doc);
+      const fileName = `consulta_${selectedConsulta.numero}_${new Date().toISOString().split('T')[0]}.docx`;
+      saveAs(new Blob([buffer]), fileName);
+    } catch (error) {
+      console.error('Erro ao exportar Word:', error);
+      alert('Erro ao exportar Word. Tente novamente.');
+    }
   };
 
   const getStats = () => {
@@ -697,9 +900,13 @@ const Consultas = () => {
               <button className="btn btn-secondary" onClick={handleCloseModal}>
                 Fechar
               </button>
-              <button className="btn btn-primary">
+              <button className="btn btn-outline" onClick={handleExportPDF}>
                 <Download size={16} />
-                Exportar Detalhes
+                Exportar PDF
+              </button>
+              <button className="btn btn-primary" onClick={handleExportWord}>
+                <Download size={16} />
+                Exportar Word
               </button>
             </div>
           </div>
