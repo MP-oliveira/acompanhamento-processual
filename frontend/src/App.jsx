@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
+import { authService } from './services/api';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -32,37 +33,62 @@ const queryClient = new QueryClient({
   },
 });
 
-// Mock de usuário para demonstração
-const mockUser = {
-  id: 1,
-  nome: 'Dr. João Silva',
-  email: 'joao.silva@advocacia.com',
-  role: 'advogado'
-};
-
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Verifica se há token válido ao carregar a aplicação
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      
+      if (token && savedUser) {
+        try {
+          // Verifica se o token ainda é válido
+          const response = await authService.getProfile();
+          setUser(response.user);
+          setIsAuthenticated(true);
+        } catch (error) {
+          // Token inválido, remove dados salvos
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, []);
 
   const handleLogin = async (credentials) => {
-    // Simulação de login
-    console.log('Tentando fazer login com:', credentials);
-    
-    // Simula delay de API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock de validação
-    if (credentials.email === 'admin@teste.com' && credentials.password === '123456') {
-      setUser(mockUser);
+    try {
+      setLoading(true);
+      const response = await authService.login(credentials.email, credentials.password);
+      
+      // Salva token e dados do usuário
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
+      setUser(response.user);
       setIsAuthenticated(true);
+      
       return { success: true };
-    } else {
-      return { success: false, error: 'Email ou senha incorretos' };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogout = () => {
+    // Remove dados do localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
     setUser(null);
     setIsAuthenticated(false);
     setSidebarOpen(false);
@@ -76,6 +102,18 @@ function App() {
     setSidebarOpen(false);
   };
 
+  // Mostra loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="app">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
@@ -84,7 +122,7 @@ function App() {
             // Páginas de Autenticação
             <div className="login-page">
               <Routes>
-                <Route path="/login" element={<LoginForm onSubmit={handleLogin} />} />
+                <Route path="/login" element={<LoginForm onSubmit={handleLogin} loading={loading} />} />
                 <Route path="/register" element={<RegisterForm onSubmit={handleLogin} />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
