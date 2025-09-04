@@ -141,13 +141,26 @@ const Processos = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Tem certeza que deseja excluir este processo?')) {
+    const processo = processos.find(p => p.id === id);
+    const processoNome = processo ? `${processo.numero} - ${processo.classe}` : 'este processo';
+    
+    if (window.confirm(`Tem certeza que deseja excluir ${processoNome}?\n\nEsta ação não pode ser desfeita.`)) {
       try {
+        setLoading(true);
+        // Simula delay da API
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         // Simula exclusão
         setProcessos(prev => prev.filter(p => p.id !== id));
         console.log('Processo excluído:', id);
+        
+        // Mostra mensagem de sucesso
+        alert('Processo excluído com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir processo:', error);
+        alert('Erro ao excluir processo. Tente novamente.');
+      } finally {
+        setLoading(false);
       }
     }
   };

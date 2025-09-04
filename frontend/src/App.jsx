@@ -9,6 +9,7 @@ import RegisterForm from './components/RegisterForm/RegisterForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import Processos from './components/Processos/Processos';
 import NovoProcesso from './components/NovoProcesso/NovoProcesso';
+import EditarProcesso from './components/EditarProcesso/EditarProcesso';
 import VisualizarProcesso from './components/VisualizarProcesso/VisualizarProcesso';
 import Alertas from './components/Alertas/Alertas';
 import Calendario from './components/Calendario/Calendario';
@@ -106,7 +107,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/processos" element={<Processos />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
-                    <Route path="/processos/editar/:id" element={<div>Editar Processo (em desenvolvimento)</div>} />
+                    <Route path="/processos/editar/:id" element={<EditarProcesso />} />
                     <Route path="/processos/:id" element={<VisualizarProcesso />} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
