@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
+import { consultaService } from '../../services/api';
 import './Consultas.css';
 
 const Consultas = () => {
@@ -33,100 +34,27 @@ const Consultas = () => {
   const [selectedConsulta, setSelectedConsulta] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Dados mockados para demonstração
-  const mockConsultas = React.useMemo(() => [
-    {
-      id: 1,
-      tipo: 'processo',
-      numero: '0001234-12.2024.8.05.0001',
-      classe: 'Ação de Indenização por Dano Moral',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'encontrado',
-      dataConsulta: '2024-03-14T10:30:00Z',
-      resultado: {
-        status: 'Ativo',
-        ultimaMovimentacao: '2024-03-10T14:20:00Z',
-        valorCausa: 'R$ 50.000,00',
-        partes: ['João Silva (Autor)', 'Empresa XYZ Ltda (Réu)']
-      }
-    },
-    {
-      id: 2,
-      tipo: 'processo',
-      numero: '0001235-12.2024.8.05.0001',
-      classe: 'Execução de Título Extrajudicial',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'encontrado',
-      dataConsulta: '2024-03-14T09:15:00Z',
-      resultado: {
-        status: 'Ativo',
-        ultimaMovimentacao: '2024-03-12T16:45:00Z',
-        valorCausa: 'R$ 25.000,00',
-        partes: ['Maria Santos (Exequente)', 'João Costa (Executado)']
-      }
-    },
-    {
-      id: 3,
-      tipo: 'processo',
-      numero: '0009999-12.2024.8.05.0001',
-      classe: 'Processo Inexistente',
-      tribunal: 'Tribunal de Justiça da Bahia',
-      comarca: 'Salvador',
-      status: 'nao_encontrado',
-      dataConsulta: '2024-03-13T15:20:00Z',
-      resultado: null
-    },
-    {
-      id: 4,
-      tipo: 'pessoa',
-      numero: '123.456.789-00',
-      classe: 'Consulta de CPF',
-      tribunal: 'Receita Federal',
-      comarca: 'Brasil',
-      status: 'encontrado',
-      dataConsulta: '2024-03-12T11:45:00Z',
-      resultado: {
-        nome: 'João Silva Santos',
-        situacao: 'Regular',
-        ultimaAtualizacao: '2024-03-01T00:00:00Z'
-      }
-    },
-    {
-      id: 5,
-      tipo: 'empresa',
-      numero: '12.345.678/0001-90',
-      classe: 'Consulta de CNPJ',
-      tribunal: 'Receita Federal',
-      comarca: 'Brasil',
-      status: 'encontrado',
-      dataConsulta: '2024-03-11T14:30:00Z',
-      resultado: {
-        razaoSocial: 'Empresa XYZ Ltda',
-        situacao: 'Ativa',
-        ultimaAtualizacao: '2024-02-15T00:00:00Z'
-      }
-    }
-  ], []);
-
+  // Buscar consultas do backend
   useEffect(() => {
-    // Simula carregamento de dados
-    const loadConsultas = async () => {
-      setLoading(true);
+    const fetchConsultas = async () => {
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setConsultas(mockConsultas);
+        setLoading(true);
+        const response = await consultaService.getAll({
+          tipo: tipoFilter !== 'todos' ? tipoFilter : undefined,
+          status: statusFilter !== 'todos' ? statusFilter : undefined,
+          data: dataFilter !== 'todos' ? dataFilter : undefined
+        });
+        setConsultas(response.consultas || []);
       } catch (error) {
-        console.error('Erro ao carregar consultas:', error);
+        console.error('Erro ao buscar consultas:', error);
+        setConsultas([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadConsultas();
-  }, [mockConsultas]);
+    fetchConsultas();
+  }, [tipoFilter, statusFilter, dataFilter]);
 
   const filteredConsultas = consultas.filter(consulta => {
     const matchesSearch = 
@@ -185,11 +113,16 @@ const Consultas = () => {
 
 
   const handleRefresh = async () => {
-    setLoading(true);
     try {
-      // Simula refresh
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Consultas atualizadas');
+      setLoading(true);
+      const response = await consultaService.getAll({
+        tipo: tipoFilter !== 'todos' ? tipoFilter : undefined,
+        status: statusFilter !== 'todos' ? statusFilter : undefined,
+        data: dataFilter !== 'todos' ? dataFilter : undefined
+      });
+      setConsultas(response.consultas || []);
+    } catch (error) {
+      console.error('Erro ao atualizar consultas:', error);
     } finally {
       setLoading(false);
     }
@@ -436,20 +369,26 @@ const Consultas = () => {
     }
   };
 
-  const getStats = () => {
-    const total = consultas.length;
-    const encontrados = consultas.filter(c => c.status === 'encontrado').length;
-    const naoEncontrados = consultas.filter(c => c.status === 'nao_encontrado').length;
-    const hoje = consultas.filter(c => {
-      const consultaDate = new Date(c.dataConsulta);
-      const now = new Date();
-      return Math.floor((now - consultaDate) / (1000 * 60 * 60 * 24)) === 0;
-    }).length;
-    
-    return { total, encontrados, naoEncontrados, hoje };
-  };
+  const [stats, setStats] = useState({
+    total: 0,
+    encontrados: 0,
+    naoEncontrados: 0,
+    hoje: 0
+  });
 
-  const stats = getStats();
+  // Buscar estatísticas do backend
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await consultaService.getStats();
+        setStats(response);
+      } catch (error) {
+        console.error('Erro ao buscar estatísticas:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
