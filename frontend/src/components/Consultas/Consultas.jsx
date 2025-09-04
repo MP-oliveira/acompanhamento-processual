@@ -27,6 +27,8 @@ const Consultas = () => {
   const [sortBy, setSortBy] = useState('dataConsulta');
   const [sortOrder, setSortOrder] = useState('desc');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedConsulta, setSelectedConsulta] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Dados mockados para demonstração
   const mockConsultas = [
@@ -192,6 +194,16 @@ const Consultas = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewDetails = (consulta) => {
+    setSelectedConsulta(consulta);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowDetailModal(false);
+    setSelectedConsulta(null);
   };
 
   const getStats = () => {
@@ -550,7 +562,10 @@ const Consultas = () => {
                 )}
 
                 <div className="consulta-card-actions">
-                  <button className="btn btn-sm btn-outline">
+                  <button 
+                    className="btn btn-sm btn-outline"
+                    onClick={() => handleViewDetails(consulta)}
+                  >
                     <ExternalLink size={16} />
                     Ver Detalhes
                   </button>
@@ -564,6 +579,132 @@ const Consultas = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Detalhes */}
+      {showDetailModal && selectedConsulta && (
+        <div className="consulta-modal-overlay" onClick={handleCloseModal}>
+          <div className="consulta-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="consulta-modal-header">
+              <h3>Detalhes da Consulta</h3>
+              <button 
+                className="consulta-modal-close"
+                onClick={handleCloseModal}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="consulta-modal-content">
+              <div className="consulta-modal-section">
+                <h4>Informações Básicas</h4>
+                <div className="consulta-modal-info">
+                  <div className="consulta-modal-info-item">
+                    <strong>Tipo:</strong> {getTipoText(selectedConsulta.tipo)}
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Número:</strong> {selectedConsulta.numero}
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Classe:</strong> {selectedConsulta.classe}
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Tribunal:</strong> {selectedConsulta.tribunal}
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Comarca:</strong> {selectedConsulta.comarca}
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Status:</strong> 
+                    <span className={`consulta-modal-status ${selectedConsulta.status}`}>
+                      {getStatusIcon(selectedConsulta.status)}
+                      {getStatusText(selectedConsulta.status)}
+                    </span>
+                  </div>
+                  <div className="consulta-modal-info-item">
+                    <strong>Data da Consulta:</strong> {formatDate(selectedConsulta.dataConsulta)}
+                  </div>
+                </div>
+              </div>
+
+              {selectedConsulta.resultado && (
+                <div className="consulta-modal-section">
+                  <h4>Resultado da Consulta</h4>
+                  <div className="consulta-modal-result">
+                    {selectedConsulta.tipo === 'processo' && (
+                      <div className="consulta-modal-result-details">
+                        <div className="consulta-modal-result-item">
+                          <strong>Status do Processo:</strong> {selectedConsulta.resultado.status}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Última Movimentação:</strong> {formatDate(selectedConsulta.resultado.ultimaMovimentacao)}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Valor da Causa:</strong> {selectedConsulta.resultado.valorCausa}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Partes Envolvidas:</strong>
+                          <ul className="consulta-modal-list">
+                            {selectedConsulta.resultado.partes.map((parte, index) => (
+                              <li key={index}>{parte}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                    {selectedConsulta.tipo === 'pessoa' && (
+                      <div className="consulta-modal-result-details">
+                        <div className="consulta-modal-result-item">
+                          <strong>Nome:</strong> {selectedConsulta.resultado.nome}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Situação:</strong> {selectedConsulta.resultado.situacao}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Última Atualização:</strong> {formatDate(selectedConsulta.resultado.ultimaAtualizacao)}
+                        </div>
+                      </div>
+                    )}
+                    {selectedConsulta.tipo === 'empresa' && (
+                      <div className="consulta-modal-result-details">
+                        <div className="consulta-modal-result-item">
+                          <strong>Razão Social:</strong> {selectedConsulta.resultado.razaoSocial}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Situação:</strong> {selectedConsulta.resultado.situacao}
+                        </div>
+                        <div className="consulta-modal-result-item">
+                          <strong>Última Atualização:</strong> {formatDate(selectedConsulta.resultado.ultimaAtualizacao)}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {!selectedConsulta.resultado && (
+                <div className="consulta-modal-section">
+                  <h4>Resultado da Consulta</h4>
+                  <div className="consulta-modal-no-result">
+                    <XCircle size={48} />
+                    <p>Nenhum resultado encontrado para esta consulta.</p>
+                    <p>Verifique se o número ou dados informados estão corretos.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="consulta-modal-actions">
+              <button className="btn btn-secondary" onClick={handleCloseModal}>
+                Fechar
+              </button>
+              <button className="btn btn-primary">
+                <Download size={16} />
+                Exportar Detalhes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
