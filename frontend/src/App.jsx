@@ -5,7 +5,10 @@ import { Toaster } from 'react-hot-toast';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
+import RegisterForm from './components/RegisterForm/RegisterForm';
 import Dashboard from './components/Dashboard/Dashboard';
+import Processos from './components/Processos/Processos';
+import NovoProcesso from './components/NovoProcesso/NovoProcesso';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -64,26 +67,32 @@ function App() {
     setSidebarOpen(false);
   };
 
-  // Página de Login
+  // Páginas de Autenticação
   if (!isAuthenticated) {
     return (
       <QueryClientProvider client={queryClient}>
-        <div className="app">
-          <div className="login-page">
-            <LoginForm onSubmit={handleLogin} />
+        <Router>
+          <div className="app">
+            <div className="login-page">
+              <Routes>
+                <Route path="/login" element={<LoginForm onSubmit={handleLogin} />} />
+                <Route path="/register" element={<RegisterForm onSubmit={handleLogin} />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            </div>
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-light)',
+                },
+              }}
+            />
           </div>
-          <Toaster 
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-light)',
-              },
-            }}
-          />
-        </div>
+        </Router>
       </QueryClientProvider>
     );
   }
@@ -109,13 +118,16 @@ function App() {
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/processos" element={<div>Página de Processos</div>} />
-                <Route path="/alertas" element={<div>Página de Alertas</div>} />
-                <Route path="/calendario" element={<div>Página de Calendário</div>} />
-                <Route path="/consultas" element={<div>Página de Consultas</div>} />
-                <Route path="/relatorios" element={<div>Página de Relatórios</div>} />
-                <Route path="/usuarios" element={<div>Página de Usuários</div>} />
-                <Route path="/configuracoes" element={<div>Página de Configurações</div>} />
+                <Route path="/processos" element={<Processos />} />
+                <Route path="/processos/novo" element={<NovoProcesso />} />
+                <Route path="/processos/editar/:id" element={<div>Editar Processo (em desenvolvimento)</div>} />
+                <Route path="/processos/:id" element={<div>Visualizar Processo (em desenvolvimento)</div>} />
+                <Route path="/alertas" element={<div>Página de Alertas (em desenvolvimento)</div>} />
+                <Route path="/calendario" element={<div>Página de Calendário (em desenvolvimento)</div>} />
+                <Route path="/consultas" element={<div>Página de Consultas (em desenvolvimento)</div>} />
+                <Route path="/relatorios" element={<div>Página de Relatórios (em desenvolvimento)</div>} />
+                <Route path="/usuarios" element={<div>Página de Usuários (em desenvolvimento)</div>} />
+                <Route path="/configuracoes" element={<div>Página de Configurações (em desenvolvimento)</div>} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </main>
