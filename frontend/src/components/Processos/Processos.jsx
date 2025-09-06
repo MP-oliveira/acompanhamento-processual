@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
+import ModalVisualizarProcesso from '../ModalVisualizarProcesso/ModalVisualizarProcesso';
 import './Processos.css';
 
 const Processos = () => {
@@ -26,6 +27,7 @@ const Processos = () => {
   const [sortBy, setSortBy] = useState('dataDistribuicao');
   const [sortOrder, setSortOrder] = useState('desc');
   const [viewMode, setViewMode] = useState('grid'); // grid ou list
+  const [modalProcesso, setModalProcesso] = useState({ isOpen: false, processoId: null });
 
   useEffect(() => {
     // Carrega processos da API real
@@ -115,7 +117,11 @@ const Processos = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/processos/${id}`);
+    setModalProcesso({ isOpen: true, processoId: id });
+  };
+
+  const handleCloseModal = () => {
+    setModalProcesso({ isOpen: false, processoId: null });
   };
 
   const getStats = () => {
@@ -316,6 +322,13 @@ const Processos = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Visualização */}
+      <ModalVisualizarProcesso
+        isOpen={modalProcesso.isOpen}
+        onClose={handleCloseModal}
+        processoId={modalProcesso.processoId}
+      />
     </div>
   );
 };

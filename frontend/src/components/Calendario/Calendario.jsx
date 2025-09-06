@@ -452,56 +452,135 @@ const Calendario = () => {
         <div className="calendario-content">
           {/* Calendário */}
           <div className="calendario-main">
-            <div className="calendario-grid">
-              {/* Cabeçalho dos dias da semana */}
-              <div className="calendario-weekdays">
-                {getWeekDays().map(day => (
-                  <div key={day} className="calendario-weekday">
-                    {day}
-                  </div>
-                ))}
-              </div>
+            {viewMode === 'month' && (
+              <div className="calendario-grid">
+                {/* Cabeçalho dos dias da semana */}
+                <div className="calendario-weekdays">
+                  {getWeekDays().map(day => (
+                    <div key={day} className="calendario-weekday">
+                      {day}
+                    </div>
+                  ))}
+                </div>
 
-              {/* Dias do calendário */}
-              <div className="calendario-days">
-                {days.map((day, index) => {
-                  const dayEvents = getEventsForDate(day.date);
-                  return (
-                    <div
-                      key={index}
-                      className={`calendario-day ${
-                        !day.isCurrentMonth ? 'calendario-day-other-month' : ''
-                      } ${day.isToday ? 'calendario-day-today' : ''} ${
-                        day.isSelected ? 'calendario-day-selected' : ''
-                      }`}
-                      onClick={() => handleDateClick(day.date)}
-                    >
-                      <div className="calendario-day-number">
-                        {day.date.getDate()}
+                {/* Dias do calendário */}
+                <div className="calendario-days">
+                  {days.map((day, index) => {
+                    const dayEvents = getEventsForDate(day.date);
+                    return (
+                      <div
+                        key={index}
+                        className={`calendario-day ${
+                          !day.isCurrentMonth ? 'calendario-day-other-month' : ''
+                        } ${day.isToday ? 'calendario-day-today' : ''} ${
+                          day.isSelected ? 'calendario-day-selected' : ''
+                        }`}
+                        onClick={() => handleDateClick(day.date)}
+                      >
+                        <div className="calendario-day-number">
+                          {day.date.getDate()}
+                        </div>
+                        
+                        {dayEvents.length > 0 && (
+                          <div className="calendario-day-events">
+                            {dayEvents.slice(0, 3).map(event => (
+                              <div
+                                key={event.id}
+                                className="calendario-day-event"
+                                style={{ backgroundColor: getEventTypeColor(event.type) }}
+                                title={event.title}
+                              />
+                            ))}
+                            {dayEvents.length > 3 && (
+                              <div className="calendario-day-event-more">
+                                +{dayEvents.length - 3}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      
-                      {dayEvents.length > 0 && (
-                        <div className="calendario-day-events">
-                          {dayEvents.slice(0, 3).map(event => (
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {viewMode === 'week' && (
+              <div className="calendario-week-view">
+                <div className="calendario-week-header">
+                  {getWeekDays().map(day => (
+                    <div key={day} className="calendario-week-day-header">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="calendario-week-days">
+                  {getWeekDays().map((dayName, index) => {
+                    const dayDate = new Date(currentDate);
+                    const startOfWeek = new Date(dayDate);
+                    startOfWeek.setDate(dayDate.getDate() - dayDate.getDay());
+                    const dayDate2 = new Date(startOfWeek);
+                    dayDate2.setDate(startOfWeek.getDate() + index);
+                    
+                    const dayEvents = getEventsForDate(dayDate2);
+                    return (
+                      <div key={index} className="calendario-week-day">
+                        <div className="calendario-week-day-number">
+                          {dayDate2.getDate()}
+                        </div>
+                        <div className="calendario-week-day-events">
+                          {dayEvents.map(event => (
                             <div
                               key={event.id}
-                              className="calendario-day-event"
-                              style={{ backgroundColor: getEventTypeColor(event.type) }}
+                              className="calendario-week-event"
+                              style={{ color: getEventTypeColor(event.type) }}
                               title={event.title}
-                            />
-                          ))}
-                          {dayEvents.length > 3 && (
-                            <div className="calendario-day-event-more">
-                              +{dayEvents.length - 3}
+                            >
+                              {event.title}
                             </div>
-                          )}
+                          ))}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+
+            {viewMode === 'day' && (
+              <div className="calendario-day-view">
+                <div className="calendario-day-header">
+                  <h3>{selectedDate.toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</h3>
+                </div>
+                <div className="calendario-day-events-list">
+                  {getEventsForDate(selectedDate).map(event => (
+                    <div key={event.id} className="calendario-day-event-item">
+                      <div 
+                        className="calendario-day-event-color"
+                        style={{ backgroundColor: getEventTypeColor(event.type) }}
+                      ></div>
+                      <div className="calendario-day-event-content">
+                        <h4>{event.title}</h4>
+                        <p>{event.description}</p>
+                        <span className="calendario-day-event-time">
+                          {event.startTime} - {event.endTime}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {getEventsForDate(selectedDate).length === 0 && (
+                    <div className="calendario-day-no-events">
+                      Nenhum evento para este dia
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Painel Lateral - Eventos do Dia Selecionado */}

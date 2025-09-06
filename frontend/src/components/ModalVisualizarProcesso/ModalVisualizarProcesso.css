@@ -1,0 +1,520 @@
+/* ===== MODAL VISUALIZAR PROCESSO ===== */
+.modal-visualizar-processo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* ===== CLASSES ESPECÍFICAS DO MODAL ===== */
+.modal-visualizar-processo .processo-status-badge {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.modal-visualizar-processo .btn {
+  border: 1px solid var(--border-medium) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.modal-visualizar-processo .btn:focus {
+  outline: 2px solid var(--primary-500) !important;
+  outline-offset: 2px !important;
+}
+
+.modal-visualizar-processo .processo-info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: var(--spacing-lg) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.modal-visualizar-processo .info-card {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.modal-visualizar-processo .info-card-full {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+/* Remover qualquer elemento visual estranho */
+.modal-visualizar-processo * {
+  border-image: none !important;
+}
+
+.modal-visualizar-processo .processo-header {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Remover traços pretos específicos */
+.modal-visualizar-processo .processo-title::after,
+.modal-visualizar-processo .processo-title::before,
+.modal-visualizar-processo .processo-actions::before,
+.modal-visualizar-processo .processo-actions::after,
+.modal-visualizar-processo .info-item::after,
+.modal-visualizar-processo .info-item::before,
+.modal-visualizar-processo .status-badge::after,
+.modal-visualizar-processo .status-badge::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remover qualquer pseudo-elemento que possa estar causando traços */
+.modal-visualizar-processo *::before,
+.modal-visualizar-processo *::after {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Garantir que não há elementos visuais estranhos nos botões */
+.modal-visualizar-processo .btn::before,
+.modal-visualizar-processo .btn::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remover qualquer elemento que possa estar causando o traço preto */
+.modal-visualizar-processo .processo-actions {
+  position: relative;
+}
+
+.modal-visualizar-processo .processo-actions::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Forçar layout de 2 colunas que ocupe toda largura */
+.modal-visualizar-processo .processo-info-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: var(--spacing-lg) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Garantir que os cards ocupem toda a largura disponível */
+.modal-visualizar-processo .info-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+/* Remover qualquer margem ou padding que possa estar causando espaços */
+.modal-visualizar-processo .modal-content {
+  padding: var(--spacing-lg) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Forçar o modal a ocupar toda a largura disponível */
+.modal-visualizar-processo {
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* Override do container do modal */
+.modal-visualizar-processo .modal-container {
+  width: 95vw !important;
+  max-width: 95vw !important;
+  min-width: 90vw !important;
+  margin: 0 auto !important;
+}
+
+/* Override do overlay do modal */
+.modal-visualizar-processo .modal-overlay {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* Garantir que o container principal ocupe toda largura */
+.modal-visualizar-processo {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ===== LOADING ===== */
+.modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: var(--spacing-md);
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-light);
+  border-top: 3px solid var(--primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.modal-loading p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== ERROR ===== */
+.modal-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+}
+
+.modal-error p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ===== HEADER DO PROCESSO ===== */
+.processo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  margin-bottom: var(--spacing-md);
+}
+
+.processo-header-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.processo-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-sm);
+}
+
+.processo-title h3 {
+  font-family: 'Courier New', monospace;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  word-break: break-all;
+}
+
+.processo-status-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+}
+
+.processo-classe {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.processo-assunto {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.processo-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+/* ===== GRID DE INFORMAÇÕES ===== */
+.processo-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  width: 100%;
+  max-width: 100%;
+}
+
+.info-card {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.info-card-full {
+  grid-column: 1 / -1;
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.info-card-header svg {
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
+.info-card-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.info-card-content {
+  padding: var(--spacing-md);
+}
+
+/* ===== ITENS DE INFORMAÇÃO ===== */
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-item label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  width: fit-content;
+}
+
+/* ===== OBSERVAÇÕES ===== */
+.observacoes-content {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.observacoes-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+/* ===== BOTÕES ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  outline: none;
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1200px) {
+  .processo-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .processo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .processo-actions {
+    align-self: stretch;
+    justify-content: flex-start;
+  }
+
+  .processo-info-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .processo-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .processo-title h3 {
+    font-size: 1.125rem;
+  }
+
+  .info-card-header,
+  .info-card-content {
+    padding: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 640px) {
+  .processo-header {
+    padding: var(--spacing-md);
+  }
+
+  .processo-title h3 {
+    font-size: 1rem;
+  }
+
+  .info-card-header h4 {
+    font-size: 0.875rem;
+  }
+
+  .processo-actions {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .processo-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+.info-card {
+  animation: fadeIn var(--transition-normal) ease-out;
+  animation-fill-mode: both;
+}
+
+.info-card:nth-child(1) { animation-delay: 0.1s; }
+.info-card:nth-child(2) { animation-delay: 0.2s; }
+.info-card:nth-child(3) { animation-delay: 0.3s; }
+.info-card:nth-child(4) { animation-delay: 0.4s; }
+.info-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== ESTADOS DE HOVER ===== */
+.info-card:hover .info-card-header svg {
+  transform: scale(1.1);
+  transition: transform var(--transition-fast);
+}
+
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-reduced-motion: reduce) {
+  .info-card {
+    animation: none;
+  }
+  
+  .info-card:hover {
+    transform: none;
+  }
+  
+  .info-card:hover .info-card-header svg {
+    transform: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+}

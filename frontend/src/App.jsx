@@ -12,7 +12,6 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Processos from './components/Processos/Processos';
 import NovoProcesso from './components/NovoProcesso/NovoProcesso';
 import EditarProcesso from './components/EditarProcesso/EditarProcesso';
-import VisualizarProcesso from './components/VisualizarProcesso/VisualizarProcesso';
 import Alertas from './components/Alertas/Alertas';
 import Calendario from './components/Calendario/Calendario';
 import Consultas from './components/Consultas/Consultas';
@@ -151,7 +150,6 @@ function App() {
                     <Route path="/processos" element={<Processos />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
-                    <Route path="/processos/:id" element={<VisualizarProcesso />} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<Consultas />} />
