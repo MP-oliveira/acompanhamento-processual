@@ -10,11 +10,11 @@ import {
   Calendar,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
+  X
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
-import ModalVisualizarProcesso from '../ModalVisualizarProcesso/ModalVisualizarProcesso';
 import './Processos.css';
 
 const Processos = () => {
@@ -27,7 +27,7 @@ const Processos = () => {
   const [sortBy, setSortBy] = useState('dataDistribuicao');
   const [sortOrder, setSortOrder] = useState('desc');
   const [viewMode, setViewMode] = useState('grid'); // grid ou list
-  const [modalProcesso, setModalProcesso] = useState({ isOpen: false, processoId: null });
+  const [processoSelecionado, setProcessoSelecionado] = useState(null);
 
   useEffect(() => {
     // Carrega processos da API real
@@ -116,12 +116,18 @@ const Processos = () => {
     }
   };
 
-  const handleView = (id) => {
-    setModalProcesso({ isOpen: true, processoId: id });
+  const handleView = async (id) => {
+    try {
+      const response = await processoService.getById(id);
+      // A API retorna {processo: {...}}, então precisamos extrair o processo
+      setProcessoSelecionado(response.processo || response);
+    } catch (error) {
+      console.error('Erro ao carregar processo:', error);
+    }
   };
 
-  const handleCloseModal = () => {
-    setModalProcesso({ isOpen: false, processoId: null });
+  const handleCloseView = () => {
+    setProcessoSelecionado(null);
   };
 
   const getStats = () => {
@@ -323,12 +329,31 @@ const Processos = () => {
         )}
       </div>
 
-      {/* Modal de Visualização */}
-      <ModalVisualizarProcesso
-        isOpen={modalProcesso.isOpen}
-        onClose={handleCloseModal}
-        processoId={modalProcesso.processoId}
-      />
+      {/* Visualização do Processo */}
+      {processoSelecionado && (
+        <div className="processo-view-overlay">
+          <div className="processo-view-container">
+            <div className="processo-view-header">
+              <h2>Processo {processoSelecionado.numero}</h2>
+              <button 
+                className="modal-close-btn"
+                onClick={handleCloseView}
+                title="Fechar"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="processo-view-content">
+              <ProcessoCard 
+                processo={processoSelecionado}
+                showActions={false}
+                compact={false}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
