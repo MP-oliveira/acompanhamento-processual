@@ -20,9 +20,11 @@ const processoSchema = Joi.object({
   assunto: Joi.string().max(500).optional(),
   tribunal: Joi.string().max(100).optional(),
   comarca: Joi.string().max(100).optional(),
-  dataDistribuicao: Joi.date().optional(),
-  dataSentenca: Joi.date().optional(),
-  proximaAudiencia: Joi.date().optional(),
+  dataDistribuicao: Joi.date().allow(null, '').optional(),
+  dataSentenca: Joi.date().allow(null, '').optional(),
+  prazoRecurso: Joi.date().allow(null, '').optional(),
+  prazoEmbargos: Joi.date().allow(null, '').optional(),
+  proximaAudiencia: Joi.date().allow(null, '').optional(),
   observacoes: Joi.string().max(1000).optional()
 });
 
@@ -141,14 +143,28 @@ export const criarProcesso = async (req, res) => {
       });
     }
 
+    // Converter strings vazias em null para campos de data
+    const cleanValue = { ...value };
+    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia'].forEach(field => {
+      if (cleanValue[field] === '') {
+        cleanValue[field] = null;
+      }
+    });
+
+    // Se foi informada uma sentença mas não os prazos, calcula automaticamente
+    if (cleanValue.dataSentenca && !cleanValue.prazoRecurso && !cleanValue.prazoEmbargos) {
+      cleanValue.prazoRecurso = calcularPrazoRecurso(cleanValue.dataSentenca);
+      cleanValue.prazoEmbargos = calcularPrazoEmbargos(cleanValue.dataSentenca);
+    }
+
     // Cria o processo
     const processo = await Processo.create({
-      ...value,
+      ...cleanValue,
       userId: req.user.id
     });
 
-    // Se foi informada uma sentença, calcula os prazos
-    if (value.dataSentenca) {
+    // Se foi informada uma sentença, agenda os alertas
+    if (cleanValue.dataSentenca) {
       await alertScheduler.agendarAlertasSentenca(processo);
     }
 

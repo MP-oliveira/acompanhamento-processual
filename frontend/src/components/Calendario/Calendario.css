@@ -29,6 +29,11 @@
   }
 }
 
+/* ===== ANIMAÇÃO DE ROTAÇÃO ===== */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
 .calendario-loading p {
   color: var(--text-secondary);
   font-size: 1rem;

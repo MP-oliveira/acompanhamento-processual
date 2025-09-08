@@ -10,7 +10,8 @@ import {
   CheckCircle,
   XCircle,
   Filter,
-  Search
+  Search,
+  RefreshCw
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import './Calendario.css';
@@ -33,89 +34,128 @@ const Calendario = () => {
     status: 'agendado'
   });
 
-  // Buscar processos do backend
-  useEffect(() => {
-    const fetchProcessos = async () => {
-      try {
-        setLoading(true);
-        const response = await processoService.getAll();
-        const processos = response.processos || [];
-        
-        // Converter processos em eventos do calendário
-        const eventos = [];
-        
-        processos.forEach(processo => {
-          // Evento de audiência
-          if (processo.proximaAudiencia) {
-            const dataAudiencia = new Date(processo.proximaAudiencia);
-            eventos.push({
-              id: `audiencia-${processo.id}`,
-              title: `Audiência - ${processo.classe}`,
-              type: 'audiencia',
-              date: dataAudiencia.toISOString().split('T')[0],
-              time: dataAudiencia.toTimeString().slice(0, 5),
-              duration: 120,
-              description: `Audiência do processo ${processo.numero}`,
-              processo: {
-                id: processo.id,
-                numero: processo.numero,
-                classe: processo.classe
-              },
-              status: 'agendado'
-            });
-          }
-          
-          // Evento de prazo de recurso
-          if (processo.prazoRecurso) {
-            const dataRecurso = new Date(processo.prazoRecurso);
-            eventos.push({
-              id: `recurso-${processo.id}`,
-              title: `Prazo Recurso - ${processo.classe}`,
-              type: 'prazo',
-              date: dataRecurso.toISOString().split('T')[0],
-              time: '23:59',
-              duration: 0,
-              description: `Prazo para interposição de recurso - ${processo.numero}`,
-              processo: {
-                id: processo.id,
-                numero: processo.numero,
-                classe: processo.classe
-              },
-              status: 'pendente'
-            });
-          }
-          
-          // Evento de prazo de embargos
-          if (processo.prazoEmbargos) {
-            const dataEmbargos = new Date(processo.prazoEmbargos);
-            eventos.push({
-              id: `embargos-${processo.id}`,
-              title: `Prazo Embargos - ${processo.classe}`,
-              type: 'prazo',
-              date: dataEmbargos.toISOString().split('T')[0],
-              time: '23:59',
-              duration: 0,
-              description: `Prazo para embargos de declaração - ${processo.numero}`,
-              processo: {
-                id: processo.id,
-                numero: processo.numero,
-                classe: processo.classe
-              },
-              status: 'pendente'
-            });
-          }
-        });
-        
-        setEvents(eventos);
-      } catch (error) {
-        console.error('Erro ao buscar processos:', error);
-        setEvents([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Função utilitária para converter data UTC para data local
+  const convertUTCToLocal = (utcDateString) => {
+    const date = new Date(utcDateString);
+    // Criar uma nova data usando os componentes locais
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
 
+  // Função para buscar processos do backend
+  const fetchProcessos = async () => {
+    try {
+      setLoading(true);
+      const response = await processoService.getAll();
+      const processos = response.processos || [];
+      
+      
+      // Converter processos em eventos do calendário
+      const eventos = [];
+      
+      processos.forEach(processo => {
+        // Evento de distribuição
+        if (processo.dataDistribuicao) {
+          const dataDistribuicao = convertUTCToLocal(processo.dataDistribuicao);
+          eventos.push({
+            id: `distribuicao-${processo.id}`,
+            title: `Distribuição - ${processo.classe}`,
+            type: 'distribuicao',
+            date: dataDistribuicao.toISOString().split('T')[0],
+            time: '00:00',
+            duration: 0,
+            description: `Data de distribuição do processo ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'concluido'
+          });
+        }
+        
+        // Evento de audiência
+        if (processo.proximaAudiencia) {
+          const dataAudiencia = convertUTCToLocal(processo.proximaAudiencia);
+          const dataOriginal = new Date(processo.proximaAudiencia);
+          eventos.push({
+            id: `audiencia-${processo.id}`,
+            title: `Audiência - ${processo.classe}`,
+            type: 'audiencia',
+            date: dataAudiencia.toISOString().split('T')[0],
+            time: dataOriginal.toTimeString().slice(0, 5),
+            duration: 120,
+            description: `Audiência do processo ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'agendado'
+          });
+        }
+        
+        // Evento de prazo de recurso
+        if (processo.prazoRecurso) {
+          const dataRecurso = convertUTCToLocal(processo.prazoRecurso);
+          eventos.push({
+            id: `recurso-${processo.id}`,
+            title: `Prazo Recurso - ${processo.classe}`,
+            type: 'prazo',
+            date: dataRecurso.toISOString().split('T')[0],
+            time: '23:59',
+            duration: 0,
+            description: `Prazo para interposição de recurso - ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'pendente'
+          });
+        }
+        
+        // Evento de prazo de embargos
+        if (processo.prazoEmbargos) {
+          const dataEmbargos = convertUTCToLocal(processo.prazoEmbargos);
+          eventos.push({
+            id: `embargos-${processo.id}`,
+            title: `Prazo Embargos - ${processo.classe}`,
+            type: 'prazo',
+            date: dataEmbargos.toISOString().split('T')[0],
+            time: '23:59',
+            duration: 0,
+            description: `Prazo para embargos de declaração - ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'pendente'
+          });
+        }
+      });
+      
+      setEvents(eventos);
+    } catch (error) {
+      console.error('Erro ao buscar processos:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Buscar processos do backend na montagem do componente
+  useEffect(() => {
     fetchProcessos();
+  }, []);
+
+  // Atualizar automaticamente a cada 30 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchProcessos();
+    }, 30000); // 30 segundos
+
+    return () => clearInterval(interval);
   }, []);
 
   // Dados mockados para demonstração (mantidos como fallback)
@@ -236,7 +276,8 @@ const Calendario = () => {
 
   const getEventsForDate = (date) => {
     const dateString = date.toISOString().split('T')[0];
-    return events.filter(event => event.date === dateString);
+    const dayEvents = events.filter(event => event.date === dateString);
+    return dayEvents;
   };
 
   const getEventTypeColor = (type) => {
@@ -247,6 +288,8 @@ const Calendario = () => {
         return 'var(--warning-500)';
       case 'sentenca':
         return 'var(--success-500)';
+      case 'distribuicao':
+        return 'var(--info-500)';
       default:
         return 'var(--neutral-500)';
     }
@@ -279,6 +322,12 @@ const Calendario = () => {
     const today = new Date();
     setCurrentDate(today);
     setSelectedDate(today);
+  };
+
+  const navigateToSeptember2025 = () => {
+    const september2025 = new Date(2025, 8, 1); // Mês 8 = setembro (0-indexed)
+    setCurrentDate(september2025);
+    setSelectedDate(september2025);
   };
 
   const handleDateClick = (date) => {
@@ -362,6 +411,7 @@ const Calendario = () => {
 
   const days = getDaysInMonth(currentDate);
   const selectedDateEvents = getEventsForDate(selectedDate);
+  
 
   if (loading) {
     return (
@@ -385,6 +435,14 @@ const Calendario = () => {
           </h1>
         </div>
         <div className="page-header-actions">
+          <button 
+            className="btn btn-secondary"
+            onClick={fetchProcessos}
+            disabled={loading}
+          >
+            <RefreshCw size={20} className={loading ? 'spinning' : ''} />
+            Atualizar
+          </button>
           <button 
             className="btn btn-primary"
             onClick={handleNewEvent}
@@ -424,6 +482,12 @@ const Calendario = () => {
               onClick={navigateToday}
             >
               Hoje
+            </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={navigateToSeptember2025}
+            >
+              Set 2025
             </button>
             
             <div className="calendario-view-toggle">

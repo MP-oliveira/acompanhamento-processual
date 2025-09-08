@@ -130,19 +130,24 @@ const ProcessoForm = ({
     e.preventDefault();
     
     if (validateForm()) {
-      // Converter datas para formato ISO
+      // Converter datas para formato ISO (apenas se não estiverem vazias)
       const submitData = {
-        ...formData,
-        dataDistribuicao: formData.dataDistribuicao ? 
+        numero: formData.numero,
+        classe: formData.classe,
+        assunto: formData.assunto,
+        tribunal: formData.tribunal,
+        comarca: formData.comarca,
+        dataDistribuicao: formData.dataDistribuicao && formData.dataDistribuicao.trim() ? 
           new Date(formData.dataDistribuicao).toISOString() : null,
-        dataSentenca: formData.dataSentenca ? 
+        dataSentenca: formData.dataSentenca && formData.dataSentenca.trim() ? 
           new Date(formData.dataSentenca).toISOString() : null,
-        prazoRecurso: formData.prazoRecurso ? 
+        prazoRecurso: formData.prazoRecurso && formData.prazoRecurso.trim() ? 
           new Date(formData.prazoRecurso).toISOString() : null,
-        prazoEmbargos: formData.prazoEmbargos ? 
+        prazoEmbargos: formData.prazoEmbargos && formData.prazoEmbargos.trim() ? 
           new Date(formData.prazoEmbargos).toISOString() : null,
-        proximaAudiencia: formData.proximaAudiencia ? 
-          new Date(formData.proximaAudiencia).toISOString() : null
+        proximaAudiencia: formData.proximaAudiencia && formData.proximaAudiencia.trim() ? 
+          new Date(formData.proximaAudiencia).toISOString() : null,
+        observacoes: formData.observacoes
       };
 
       onSubmit(submitData);

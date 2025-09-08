@@ -602,13 +602,28 @@
 
 .processo-view-content .processo-card-status {
   font-size: 0.875rem;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-md);
+  padding: 0;
+  border-radius: 0;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   flex-shrink: 0;
   white-space: nowrap;
+  background-color: transparent;
+  border: none;
+}
+
+/* Status específicos com apenas cor do texto */
+.processo-view-content .processo-card-active .processo-card-status {
+  color: var(--success-500);
+}
+
+.processo-view-content .processo-card-archived .processo-card-status {
+  color: var(--neutral-500);
+}
+
+.processo-view-content .processo-card-suspended .processo-card-status {
+  color: var(--warning-500);
 }
 
 .processo-view-content .processo-card-title {
@@ -676,10 +691,12 @@
 .processo-view-content .processo-card-deadline-days {
   font-size: 1rem;
   font-weight: 600;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
+  padding: 0;
+  border-radius: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  background-color: transparent;
+  border: none;
 }
 
 .processo-view-content .processo-card-deadline-days.overdue {
@@ -689,13 +706,15 @@
 }
 
 .processo-view-content .processo-card-deadline-days.urgent {
-  background-color: var(--warning-500);
-  color: white;
+  background-color: transparent;
+  color: var(--warning-500);
+  border: none;
 }
 
 .processo-view-content .processo-card-deadline-days.normal {
-  background-color: var(--success-500);
-  color: white;
+  background-color: transparent;
+  color: var(--success-500);
+  border: none;
 }
 
 .processo-view-content .processo-card-observations {

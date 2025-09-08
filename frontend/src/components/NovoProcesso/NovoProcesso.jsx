@@ -29,8 +29,18 @@ const NovoProcesso = () => {
       
     } catch (err) {
       console.error('Erro ao criar processo:', err);
-      const errorMessage = err.response?.data?.message || 'Erro ao criar processo. Tente novamente.';
-      setError(errorMessage);
+      
+      // Tratamento específico de erros
+      if (err.response?.data?.error === 'Número do processo já cadastrado') {
+        setError('Este número de processo já está cadastrado. Por favor, use um número diferente.');
+      } else if (err.response?.data?.error === 'Dados inválidos') {
+        const details = err.response?.data?.details || [];
+        const errorMessages = details.map(detail => `${detail.field}: ${detail.message}`).join(', ');
+        setError(`Dados inválidos: ${errorMessages}`);
+      } else {
+        const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Erro ao criar processo. Tente novamente.';
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
