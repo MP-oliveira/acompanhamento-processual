@@ -1,0 +1,21 @@
+// Cole estas regras no Firestore > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Usuários podem ler/escrever apenas seus próprios dados
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Processos - usuários autenticados podem ler/escrever
+    match /processos/{processoId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Alertas - usuários autenticados podem ler/escrever
+    match /alertas/{alertaId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

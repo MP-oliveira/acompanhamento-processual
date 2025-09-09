@@ -5,14 +5,13 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 // Configuração do Firebase
-// IMPORTANTE: Substitua estas configurações pelas suas próprias do Firebase Console
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef123456"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyC-cfPPwUZ4k1JM42Enme0nydSRL3MIjL0",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "juris-acompanhamento-cliente.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "juris-acompanhamento-cliente",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "juris-acompanhamento-cliente.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "7719478506",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:7719478506:web:ea4758f2d09bcd6b372393"
 };
 
 // Inicializar Firebase
