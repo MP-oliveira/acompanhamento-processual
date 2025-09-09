@@ -158,69 +158,6 @@ const Calendario = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Dados mockados para demonstração (mantidos como fallback)
-  const mockEvents = [
-    {
-      id: 1,
-      title: 'Audiência de Conciliação',
-      type: 'audiencia',
-      date: '2024-03-15',
-      time: '09:00',
-      duration: 120,
-      description: 'Audiência de conciliação do processo 0001234-12.2024.8.05.0001',
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      },
-      status: 'agendado'
-    },
-    {
-      id: 2,
-      title: 'Prazo para Recurso',
-      type: 'prazo',
-      date: '2024-03-10',
-      time: '23:59',
-      duration: 0,
-      description: 'Prazo para interposição de recurso',
-      processo: {
-        id: 2,
-        numero: '0001235-12.2024.8.05.0001',
-        classe: 'Execução de Título Extrajudicial'
-      },
-      status: 'pendente'
-    },
-    {
-      id: 3,
-      title: 'Audiência de Instrução',
-      type: 'audiencia',
-      date: '2024-03-20',
-      time: '14:00',
-      duration: 180,
-      description: 'Audiência de instrução e julgamento',
-      processo: {
-        id: 3,
-        numero: '0001236-12.2024.8.05.0001',
-        classe: 'Mandado de Segurança'
-      },
-      status: 'agendado'
-    },
-    {
-      id: 4,
-      title: 'Prazo para Embargos',
-      type: 'prazo',
-      date: '2024-03-12',
-      time: '23:59',
-      duration: 0,
-      description: 'Prazo para embargos de declaração',
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      },
-      status: 'vencido'
-    }
-  ];
 
 
   const getDaysInMonth = (date) => {

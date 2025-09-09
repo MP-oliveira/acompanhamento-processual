@@ -66,9 +66,9 @@ const Configuracoes = () => {
     const loadConfiguracoes = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Configurações já carregadas no estado inicial
+        // TODO: Implementar carregamento de configurações via API
+        // Por enquanto, mantém os dados mockados
+        console.log('Carregando configurações...');
       } catch (error) {
         console.error('Erro ao carregar configurações:', error);
       } finally {
@@ -135,12 +135,12 @@ const Configuracoes = () => {
     setShowSuccess(false);
     
     try {
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      // TODO: Implementar salvamento de configurações via API
       console.log('Salvando configurações:', configuracoes);
       
-      // Simula sucesso
+      // Simula delay da API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setHasChanges(false);
       setShowSuccess(true);
       

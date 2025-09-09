@@ -166,4 +166,42 @@ export const relatorioService = {
   }
 };
 
+// Serviços de usuários
+export const userService = {
+  async getAll(params = {}) {
+    const response = await api.get('/users', { params });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  },
+
+  async create(userData) {
+    const response = await api.post('/users', userData);
+    return response.data;
+  },
+
+  async update(id, userData) {
+    const response = await api.put(`/users/${id}`, userData);
+    return response.data;
+  },
+
+  async updatePassword(id, passwordData) {
+    const response = await api.patch(`/users/${id}/password`, passwordData);
+    return response.data;
+  },
+
+  async deactivate(id) {
+    const response = await api.patch(`/users/${id}/deactivate`);
+    return response.data;
+  },
+
+  async activate(id) {
+    const response = await api.patch(`/users/${id}/activate`);
+    return response.data;
+  }
+};
+
 export default api;
