@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle, RefreshCw } from 'lucide-react';
 import { alertService } from '../../services/api';
 import './Topbar.css';
 
@@ -14,36 +14,47 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Buscar notificações reais dos alertas
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        const response = await alertService.getAll();
-        const alerts = response.alertas || [];
-        
-        // Converter alertas em notificações (apenas não lidas)
-        const unreadAlerts = alerts.filter(alert => !alert.lido);
-        const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
-          id: alert.id,
-          type: 'alerta',
-          title: alert.titulo,
-          message: alert.mensagem,
-          time: formatTimeAgo(alert.createdAt),
-          unread: true, // Todas são não lidas por definição
-          alertId: alert.id,
-          icon: AlertTriangle
-        }));
-        setNotifications(notificationsData);
-      } catch (error) {
-        console.error('🔔 Erro ao buscar notificações:', error);
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Função para buscar notificações
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const response = await alertService.getAll();
+      const alerts = response.alertas || [];
+      
+      // Converter alertas em notificações (apenas não lidas)
+      const unreadAlerts = alerts.filter(alert => !alert.lido);
+      const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
+        id: alert.id,
+        type: 'alerta',
+        title: alert.titulo,
+        message: alert.mensagem,
+        time: formatTimeAgo(alert.createdAt),
+        unread: true, // Todas são não lidas por definição
+        alertId: alert.id,
+        icon: AlertTriangle
+      }));
+      setNotifications(notificationsData);
+      console.log('🔔 Notificações atualizadas:', notificationsData.length);
+    } catch (error) {
+      console.error('🔔 Erro ao buscar notificações:', error);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Buscar notificações na montagem do componente
+  useEffect(() => {
     fetchNotifications();
+  }, []);
+
+  // Atualizar notificações a cada 30 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, 30000); // 30 segundos
+
+    return () => clearInterval(interval);
   }, []);
 
   // Cleanup dos timeouts quando o componente for desmontado
@@ -140,23 +151,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
         await alertService.markAsRead(notification.alertId);
         
         // Recarregar notificações para atualizar a lista (remover a notificação lida)
-        const response = await alertService.getAll();
-        const alerts = response.alertas || [];
-        const unreadAlerts = alerts.filter(alert => !alert.lido);
-        console.log('🔄 Após marcar como lida - Total de alertas:', alerts.length);
-        console.log('🔄 Alertas não lidos:', unreadAlerts.length);
-        const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
-          id: alert.id,
-          type: 'alerta',
-          title: alert.titulo,
-          message: alert.mensagem,
-          time: formatTimeAgo(alert.createdAt),
-          unread: true,
-          alertId: alert.id,
-          icon: AlertTriangle
-        }));
-        console.log('🔄 Notificações atualizadas:', notificationsData.length);
-        setNotifications(notificationsData);
+        await fetchNotifications();
       } catch (error) {
         console.error('Erro ao marcar notificação como lida:', error);
       }
@@ -256,7 +251,17 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
             <div className={`topbar-notification-dropdown ${showNotifications ? 'show' : ''}`}>
               <div className="topbar-notification-header">
                 <h3>Notificações</h3>
-                <span className="topbar-notification-count">{unreadCount} {unreadCount === 1 ? 'não lida' : 'não lidas'}</span>
+                <div className="topbar-notification-header-actions">
+                  <button 
+                    className="topbar-notification-refresh"
+                    onClick={fetchNotifications}
+                    disabled={loading}
+                    title="Atualizar notificações"
+                  >
+                    <RefreshCw size={16} className={loading ? 'spinning' : ''} />
+                  </button>
+                  <span className="topbar-notification-count">{unreadCount} {unreadCount === 1 ? 'não lida' : 'não lidas'}</span>
+                </div>
               </div>
               
               <div className="topbar-notification-list">
