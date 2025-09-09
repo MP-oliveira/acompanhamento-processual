@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Info
 } from 'lucide-react';
+import FirebaseConfig from '../FirebaseConfig/FirebaseConfig';
 import './Configuracoes.css';
 
 const Configuracoes = () => {
@@ -203,7 +204,8 @@ const Configuracoes = () => {
     { id: 'sistema', label: 'Sistema', icon: Settings },
     { id: 'notificacoes', label: 'Notificações', icon: Bell },
     { id: 'seguranca', label: 'Segurança', icon: Shield },
-    { id: 'integracao', label: 'Integração', icon: Database }
+    { id: 'integracao', label: 'Integração', icon: Database },
+    { id: 'firebase', label: 'Backend', icon: Database }
   ];
 
   if (loading) {
@@ -652,6 +654,12 @@ const Configuracoes = () => {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'firebase' && (
+          <div className="configuracoes-section">
+            <FirebaseConfig />
           </div>
         )}
       </div>
