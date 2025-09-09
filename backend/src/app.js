@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
@@ -47,6 +49,28 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Rate limiting para proteção contra ataques
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP por janela
+  message: {
+    error: 'Muitas tentativas. Tente novamente em 15 minutos.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Slow down para requests suspeitos
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  delayAfter: 50, // começar a atrasar após 50 requests
+  delayMs: 500, // atrasar 500ms por request adicional
+});
+
+// Aplicar rate limiting geral
+app.use(generalLimiter);
+app.use(speedLimiter);
 
 // Middlewares de parsing
 app.use(express.json({ limit: '10mb' }));

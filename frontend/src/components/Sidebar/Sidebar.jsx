@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, 
@@ -8,13 +8,41 @@ import {
   Settings, 
   Users,
   BarChart3,
-  Search,
-  Plus
+  Search
 } from 'lucide-react';
+import { processoService } from '../../services/api';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const [processosMes, setProcessosMes] = useState(0);
+  
+  // Buscar número de processos cadastrados no mês atual
+  useEffect(() => {
+    const fetchProcessosMes = async () => {
+      try {
+        const response = await processoService.getAll();
+        const processos = response.processos || [];
+        
+        // Filtrar processos do mês atual
+        const agora = new Date();
+        const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
+        const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 23, 59, 59);
+        
+        const processosDoMes = processos.filter(processo => {
+          const dataCriacao = new Date(processo.createdAt);
+          return dataCriacao >= inicioMes && dataCriacao <= fimMes;
+        });
+        
+        setProcessosMes(processosDoMes.length);
+      } catch (error) {
+        console.error('Erro ao buscar processos do mês:', error);
+        setProcessosMes(0);
+      }
+    };
+
+    fetchProcessosMes();
+  }, []);
   
   const menuItems = [
     {
@@ -29,9 +57,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     {
       section: 'Gestão',
       items: [
-        { icon: Plus, label: 'Novo Processo', href: '/processos/novo' },
         { icon: Search, label: 'Consultas', href: '/consultas' },
-        { icon: BarChart3, label: 'Relatórios', href: '/relatorios' },
+        { icon: BarChart3, label: `Relatórios (${processosMes})`, href: '/relatorios' },
       ]
     },
     {

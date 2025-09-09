@@ -60,7 +60,8 @@ const Dashboard = () => {
         change: '+12%',
         changeType: 'positive',
         icon: FileText,
-        color: 'primary'
+        color: 'primary',
+        link: '/processos'
       },
       {
         title: 'Alertas Ativos',
@@ -68,7 +69,8 @@ const Dashboard = () => {
         change: '+3',
         changeType: 'warning',
         icon: AlertTriangle,
-        color: 'warning'
+        color: 'warning',
+        link: '/alertas'
       },
       {
         title: 'Próximas Audiências',
@@ -76,7 +78,8 @@ const Dashboard = () => {
         change: 'Esta semana',
         changeType: 'info',
         icon: Calendar,
-        color: 'info'
+        color: 'info',
+        link: '/calendario'
       },
       {
         title: 'Taxa de Sucesso',
@@ -84,7 +87,8 @@ const Dashboard = () => {
         change: '+5%',
         changeType: 'positive',
         icon: TrendingUp,
-        color: 'success'
+        color: 'success',
+        link: '/relatorios'
       }
     ];
   };
@@ -267,22 +271,24 @@ const Dashboard = () => {
       {/* Cards de Estatísticas */}
       <div className="dashboard-stats">
         {stats.map((stat, index) => (
-          <div key={index} className={`stat-card stat-card-${stat.color}`}>
-            <div className="stat-card-header">
-              <div className={`stat-card-icon stat-card-icon-${stat.color}`}>
-                <stat.icon size={24} />
+          <Link key={index} to={stat.link} className="stat-card-link">
+            <div className={`stat-card stat-card-${stat.color}`}>
+              <div className="stat-card-header">
+                <div className={`stat-card-icon stat-card-icon-${stat.color}`}>
+                  <stat.icon size={24} />
+                </div>
+                <div className="stat-card-change">
+                  <span className={`stat-card-change-value stat-card-change-${stat.changeType}`}>
+                    {stat.change}
+                  </span>
+                </div>
               </div>
-              <div className="stat-card-change">
-                <span className={`stat-card-change-value stat-card-change-${stat.changeType}`}>
-                  {stat.change}
-                </span>
+              <div className="stat-card-content">
+                <h3 className="stat-card-title">{stat.title}</h3>
+                <div className="stat-card-value">{stat.value}</div>
               </div>
             </div>
-            <div className="stat-card-content">
-              <h3 className="stat-card-title">{stat.title}</h3>
-              <div className="stat-card-value">{stat.value}</div>
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
 

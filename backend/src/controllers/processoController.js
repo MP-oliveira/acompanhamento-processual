@@ -168,6 +168,11 @@ export const criarProcesso = async (req, res) => {
       await alertScheduler.agendarAlertasSentenca(processo);
     }
 
+    // Se foi informada uma data de distribuição, agenda os alertas
+    if (cleanValue.dataDistribuicao) {
+      await alertScheduler.agendarAlertasDistribuicao(processo);
+    }
+
     logger.info(`Processo criado: ${processo.numero} por ${req.user.email}`);
 
     res.status(201).json({

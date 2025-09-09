@@ -145,6 +145,24 @@
   line-height: 1;
 }
 
+/* ===== LINK DOS CARDS ===== */
+.stat-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all var(--transition-fast);
+}
+
+.stat-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.stat-card-link:hover .stat-card {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
 /* ===== CONTEÚDO PRINCIPAL ===== */
 .dashboard-content {
   margin-bottom: var(--spacing-2xl);
