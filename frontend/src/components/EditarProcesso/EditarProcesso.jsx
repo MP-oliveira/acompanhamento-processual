@@ -19,7 +19,7 @@ const EditarProcesso = () => {
       try {
         // Carrega o processo da API
         const response = await processoService.getById(id);
-        setProcesso(response);
+        setProcesso(response.processo || response);
       } catch (error) {
         console.error('Erro ao carregar processo:', error);
         // Processo não encontrado ou erro
@@ -116,7 +116,7 @@ const EditarProcesso = () => {
           )}
 
           <ProcessoForm
-            initialData={processo}
+            processo={processo}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
             loading={saving}
