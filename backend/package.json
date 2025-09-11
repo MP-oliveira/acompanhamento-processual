@@ -12,6 +12,7 @@
     "postinstall": "echo \"(optional) run migrations here\""
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
