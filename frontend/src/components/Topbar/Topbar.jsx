@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle, RefreshCw } from 'lucide-react';
 import { alertService } from '../../services/api';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
@@ -230,6 +231,11 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
 
         {/* Usuário e Notificações */}
         <div className="topbar-right">
+          {/* Tema Toggle */}
+          <div className="topbar-theme-toggle">
+            <ThemeToggle />
+          </div>
+          
           {/* Notificações */}
           <div 
             className="topbar-notification-menu"

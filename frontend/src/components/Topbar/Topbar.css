@@ -106,6 +106,12 @@
   gap: var(--spacing-md);
 }
 
+/* ===== THEME TOGGLE ===== */
+.topbar-theme-toggle {
+  display: flex;
+  align-items: center;
+}
+
 .topbar-notification-btn {
   position: relative;
   background: none;

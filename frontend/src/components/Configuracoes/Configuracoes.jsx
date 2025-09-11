@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Info
 } from 'lucide-react';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Configuracoes.css';
 
 const Configuracoes = () => {
@@ -349,6 +350,14 @@ const Configuracoes = () => {
                     onChange={(e) => handleInputChange('sistema', 'site', e.target.value)}
                     className="configuracoes-input"
                   />
+                </div>
+                
+                {/* Configuração de Tema */}
+                <div className="configuracoes-form-group configuracoes-form-group-full">
+                  <label>Tema da Interface</label>
+                  <div className="configuracoes-theme-toggle">
+                    <ThemeToggle />
+                  </div>
                 </div>
               </div>
             </div>
