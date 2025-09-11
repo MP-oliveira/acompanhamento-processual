@@ -219,5 +219,12 @@
 }
 
 [data-theme="dark"] .btn-primary {
+  background-color: var(--primary-600) !important;
+  color: var(--text-inverse) !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-700) !important;
   color: var(--text-inverse) !important;
 }
