@@ -66,7 +66,10 @@ const generalLimiter = rateLimit({
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutos
   delayAfter: 50, // começar a atrasar após 50 requests
-  delayMs: 500, // atrasar 500ms por request adicional
+  delayMs: (used, req) => {
+    const delayAfter = req.slowDown.limit;
+    return (used - delayAfter) * 500;
+  },
 });
 
 // Aplicar rate limiting geral
@@ -105,9 +108,11 @@ export const initializeApp = async () => {
     logger.info('Conexão com o banco de dados estabelecida com sucesso');
 
     // Sincroniza os modelos com o banco (em desenvolvimento)
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && process.env.SYNC_DATABASE !== 'false') {
       await sequelize.sync({ alter: true });
       logger.info('Modelos sincronizados com o banco de dados');
+    } else {
+      logger.info('Sincronização automática desabilitada - usando tabelas existentes');
     }
 
     // Inicia o agendador de alertas
