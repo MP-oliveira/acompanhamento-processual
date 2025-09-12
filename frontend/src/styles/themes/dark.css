@@ -228,3 +228,111 @@
   background-color: var(--primary-700) !important;
   color: var(--text-inverse) !important;
 }
+
+/* ===== CORREÇÕES ESPECÍFICAS PARA DARK MODE ===== */
+
+/* Dashboard - Botão + Novo Processo */
+[data-theme="dark"] .dashboard .btn-primary {
+  color: var(--text-inverse) !important;
+}
+
+/* Topbar - Hover do botão perfil */
+[data-theme="dark"] .topbar-user-trigger:hover .topbar-user-name {
+  color: var(--text-secondary) !important;
+}
+
+/* Topbar - Dropdown do usuário - Hover dos links */
+[data-theme="dark"] .topbar-user-dropdown-item:hover {
+  color: var(--text-secondary) !important;
+}
+
+/* Processos - Botão + Novo Processo */
+[data-theme="dark"] .processos .btn-primary {
+  color: var(--text-inverse) !important;
+}
+
+/* Processos - Ícone Arquivados mais transparente */
+[data-theme="dark"] .stat-card-icon-success {
+  background-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Processos - Ícone de editar com fundo transparente e sem borda */
+[data-theme="dark"] .process-card-actions .btn-icon {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Processos - Status 'Ativo' sem fundo e sem borda */
+[data-theme="dark"] .process-status-active {
+  background-color: transparent !important;
+  color: var(--success-500) !important;
+  border: none !important;
+}
+
+/* Calendário - Dia selecionado com fonte mais escura */
+[data-theme="dark"] .calendar-day.selected {
+  color: var(--text-primary) !important;
+  background-color: var(--primary-500) !important;
+}
+
+[data-theme="dark"] .calendar-day.selected .calendar-day-number {
+  color: var(--text-inverse) !important;
+}
+
+/* Relatórios - Botão Gerar Primeiro Relatório */
+[data-theme="dark"] .relatorios .btn-primary {
+  color: var(--text-inverse) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--spacing-sm) !important;
+}
+
+/* Usuários - Cards superiores seguindo padrão do Dashboard */
+[data-theme="dark"] .usuarios .stat-card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+/* Usuários - Botão + Novo Usuário */
+[data-theme="dark"] .usuarios .btn-primary {
+  color: var(--text-inverse) !important;
+}
+
+/* Usuários - Card inferior com novo padrão */
+[data-theme="dark"] .usuarios .user-card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+[data-theme="dark"] .usuarios .user-card-actions .btn-icon {
+  background-color: transparent !important;
+  border: 1px solid var(--border-medium) !important;
+}
+
+[data-theme="dark"] .usuarios .user-status-active {
+  background-color: transparent !important;
+  color: var(--success-500) !important;
+  border: 1px solid var(--success-500) !important;
+}
+
+/* Configurações - Melhorar legibilidade dos ícones */
+[data-theme="dark"] .configuracoes .status-icon {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .status-text {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-icon {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-title {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-description {
+  color: var(--text-secondary) !important;
+}

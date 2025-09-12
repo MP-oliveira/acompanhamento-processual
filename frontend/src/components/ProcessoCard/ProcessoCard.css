@@ -137,6 +137,12 @@
   color: var(--error-700);
 }
 
+/* ===== CLASSE PARA BOTÕES DE ÍCONE ===== */
+.btn-icon {
+  background-color: transparent;
+  border: 1px solid var(--border-medium);
+}
+
 /* ===== CONTEÚDO ===== */
 .processo-card-content {
   margin-bottom: var(--spacing-md);

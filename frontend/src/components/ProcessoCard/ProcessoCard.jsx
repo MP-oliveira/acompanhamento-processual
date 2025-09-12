@@ -107,7 +107,7 @@ const ProcessoCard = ({
           <div className="processo-card-number">
             {processo.numero}
           </div>
-          <div className="processo-card-status">
+          <div className={`processo-card-status process-status-${statusColor}`}>
             {getStatusText(processo.status)}
           </div>
         </div>
@@ -121,7 +121,7 @@ const ProcessoCard = ({
               <Eye size={16} />
             </button>
             <button
-              className="processo-card-action-btn processo-card-action-edit"
+              className="processo-card-action-btn processo-card-action-edit btn-icon"
               onClick={() => onEdit && onEdit(processo.id)}
               title="Editar processo"
             >

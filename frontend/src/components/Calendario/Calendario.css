@@ -385,8 +385,12 @@
 }
 
 .calendario-day-selected {
-  background-color: var(--primary-50);
+  background-color: var(--primary-500);
   border-color: var(--primary-500);
+}
+
+.calendario-day-selected .calendario-day-number {
+  color: var(--text-inverse);
 }
 
 .calendario-day-number {
