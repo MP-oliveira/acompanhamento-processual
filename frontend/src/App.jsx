@@ -19,6 +19,7 @@ import Relatorios from './components/Relatorios/Relatorios';
 import Usuarios from './components/Usuarios/Usuarios';
 import Configuracoes from './components/Configuracoes/Configuracoes';
 import Perfil from './components/Perfil/Perfil';
+import PWAInstaller from './components/PWAInstaller/PWAInstaller';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -175,6 +176,9 @@ function App() {
               },
             }}
           />
+          
+          {/* PWA Installer */}
+          <PWAInstaller />
           </div>
         </Router>
       </QueryClientProvider>

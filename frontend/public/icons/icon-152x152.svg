@@ -1,0 +1,31 @@
+
+<svg width="152" height="152" viewBox="0 0 152 152" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="152" height="152" rx="30.400000000000002" fill="url(#grad)"/>
+  
+  <!-- Ícone da balança -->
+  <g transform="translate(38, 38) scale(0.76)">
+    <path d="M50 10 L90 50 L50 90 L10 50 Z" fill="white" opacity="0.2"/>
+    <path d="M30 30 L70 30 L70 70 L30 70 Z" fill="white" opacity="0.3"/>
+    <path d="M40 40 L60 40 L60 60 L40 60 Z" fill="white"/>
+    
+    <!-- Balança -->
+    <circle cx="50" cy="50" r="3" fill="white"/>
+    <line x1="50" y1="50" x2="50" y2="35" stroke="white" stroke-width="2"/>
+    <line x1="35" y1="35" x2="65" y2="35" stroke="white" stroke-width="2"/>
+    <circle cx="35" cy="35" r="2" fill="white"/>
+    <circle cx="65" cy="35" r="2" fill="white"/>
+    <line x1="35" y1="35" x2="35" y2="25" stroke="white" stroke-width="1.5"/>
+    <line x1="65" y1="35" x2="65" y2="25" stroke="white" stroke-width="1.5"/>
+    
+    <!-- Texto "J" -->
+    <text x="50" y="65" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">J</text>
+  </g>
+</svg>
