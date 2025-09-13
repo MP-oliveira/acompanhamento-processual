@@ -107,6 +107,12 @@
   border: 2px solid white;
 }
 
+/* Modo escuro - Ícone Arquivados quase transparente */
+[data-theme="dark"] .processos-stat-archived {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid #ffffff !important;
+}
+
 .processos-stat-suspended {
   background-color: var(--warning-500);
 }

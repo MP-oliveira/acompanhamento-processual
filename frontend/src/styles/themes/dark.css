@@ -233,33 +233,55 @@
 
 /* Dashboard - Botão + Novo Processo */
 [data-theme="dark"] .dashboard .btn-primary {
-  color: var(--text-inverse) !important;
+  color: #ffffff !important;
 }
 
 /* Topbar - Hover do botão perfil */
 [data-theme="dark"] .topbar-user-trigger:hover .topbar-user-name {
-  color: var(--text-secondary) !important;
+  color: #9ca3af !important;
 }
 
 /* Topbar - Dropdown do usuário - Hover dos links */
 [data-theme="dark"] .topbar-user-dropdown-item:hover {
-  color: var(--text-secondary) !important;
+  color: #9ca3af !important;
 }
 
 /* Processos - Botão + Novo Processo */
 [data-theme="dark"] .processos .btn-primary {
-  color: var(--text-inverse) !important;
+  color: #ffffff !important;
 }
 
 /* Processos - Ícone Arquivados mais transparente */
-[data-theme="dark"] .stat-card-icon-success {
-  background-color: rgba(34, 197, 94, 0.3) !important;
+[data-theme="dark"] .processos-stat-archived {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid #ffffff !important;
 }
 
 /* Processos - Ícone de editar com fundo transparente e sem borda */
 [data-theme="dark"] .process-card-actions .btn-icon {
   background-color: transparent !important;
   border: none !important;
+}
+
+[data-theme="dark"] .process-card-action-btn {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit:hover {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit:focus {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
 }
 
 /* Processos - Status 'Ativo' sem fundo e sem borda */
@@ -281,7 +303,7 @@
 
 /* Relatórios - Botão Gerar Primeiro Relatório */
 [data-theme="dark"] .relatorios .btn-primary {
-  color: var(--text-inverse) !important;
+  color: #ffffff !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -296,7 +318,7 @@
 
 /* Usuários - Botão + Novo Usuário */
 [data-theme="dark"] .usuarios .btn-primary {
-  color: var(--text-inverse) !important;
+  color: #ffffff !important;
 }
 
 /* Usuários - Card inferior com novo padrão */
