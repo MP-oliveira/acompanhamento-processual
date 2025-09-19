@@ -36,7 +36,7 @@ app.use(helmet({
 
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -73,11 +73,8 @@ export const initializeApp = async () => {
     await sequelize.authenticate();
     logger.info('Conexão com o banco de dados estabelecida com sucesso');
 
-    // Sincroniza os modelos com o banco (em desenvolvimento)
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      logger.info('Modelos sincronizados com o banco de dados');
-    }
+    // Sincronização automática desabilitada - usando tabelas existentes
+    logger.info('Sincronização automática desabilitada - usando tabelas existentes');
 
     // Inicia o agendador de alertas
     alertScheduler.start();
