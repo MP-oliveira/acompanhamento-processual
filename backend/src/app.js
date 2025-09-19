@@ -107,18 +107,8 @@ export const initializeApp = async () => {
     await sequelize.authenticate();
     logger.info('Conexão com o banco de dados estabelecida com sucesso');
 
-<<<<<<< HEAD
     // Sincronização automática desabilitada - usando tabelas existentes
     logger.info('Sincronização automática desabilitada - usando tabelas existentes');
-=======
-    // Sincroniza os modelos com o banco (em desenvolvimento)
-    if (process.env.NODE_ENV === 'development' && process.env.SYNC_DATABASE !== 'false') {
-      await sequelize.sync({ alter: true });
-      logger.info('Modelos sincronizados com o banco de dados');
-    } else {
-      logger.info('Sincronização automática desabilitada - usando tabelas existentes');
-    }
->>>>>>> f1ed658ca2211dd68673a49f97d0b754a7ca3a87
 
     // Inicia o agendador de alertas
     alertScheduler.start();

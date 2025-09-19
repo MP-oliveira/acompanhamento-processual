@@ -6,6 +6,7 @@ import alertRoutes from './alertRoutes.js';
 import consultaRoutes from './consultaRoutes.js';
 import relatorioRoutes from './relatorioRoutes.js';
 import externalRoutes from './externalRoutes.js';
+import emailRoutes from './emailRoutes.js';
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use('/processos', processoRoutes);
 router.use('/alerts', alertRoutes);
 router.use('/consultas', consultaRoutes);
 router.use('/relatorios', relatorioRoutes);
+router.use('/email', emailRoutes);
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);
