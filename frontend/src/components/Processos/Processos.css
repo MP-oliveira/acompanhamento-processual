@@ -103,7 +103,14 @@
 }
 
 .processos-stat-archived {
-  background-color: var(--neutral-500);
+  background-color: var(--neutral-200);
+  border: 2px solid white;
+}
+
+/* Modo escuro - Ícone Arquivados quase transparente */
+[data-theme="dark"] .processos-stat-archived {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid #ffffff !important;
 }
 
 .processos-stat-suspended {
@@ -470,5 +477,327 @@
   .processos-stat-card:hover,
   .processos-stat-card:hover .processos-stat-icon {
     transform: none;
+  }
+}
+
+/* ===== VISUALIZAÇÃO DO PROCESSO ===== */
+.processo-view-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.processo-view-container {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 95%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+}
+
+.processo-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+.processo-view-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  color: #000000 !important;
+  border-radius: var(--radius-md);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  z-index: 10;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--neutral-100);
+  color: #000000 !important;
+}
+
+.modal-close-btn svg {
+  color: #000000 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.processo-view-content {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+  background-color: var(--bg-secondary);
+}
+
+/* Estilos específicos para o ProcessoCard dentro da visualização */
+.processo-view-content .processo-card {
+  margin: 0;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.processo-view-content .processo-card-header {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.processo-view-content .processo-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--spacing-sm);
+}
+
+.processo-view-content .processo-card-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.processo-view-content .processo-card-number svg {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.processo-view-content .processo-card-status {
+  font-size: 0.875rem;
+  padding: 0;
+  border-radius: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  background-color: transparent;
+  border: none;
+}
+
+/* Status específicos com apenas cor do texto */
+.processo-view-content .processo-card-active .processo-card-status {
+  color: var(--success-500);
+}
+
+.processo-view-content .processo-card-archived .processo-card-status {
+  color: var(--neutral-500);
+}
+
+.processo-view-content .processo-card-suspended .processo-card-status {
+  color: var(--warning-500);
+}
+
+.processo-view-content .processo-card-title {
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.processo-view-content .processo-card-subject {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-md);
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  display: block;
+}
+
+.processo-view-content .processo-card-info {
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--border-light);
+}
+
+.processo-view-content .processo-card-info-item {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  padding: 2px 0;
+}
+
+.processo-view-content .processo-card-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.processo-view-content .processo-card-info-item svg {
+  color: var(--text-muted);
+  margin-right: var(--spacing-xs);
+}
+
+.processo-view-content .processo-card-deadline {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.processo-view-content .processo-card-deadline-header {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.processo-view-content .processo-card-deadline-date {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.processo-view-content .processo-card-deadline-days {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: transparent;
+  border: none;
+}
+
+.processo-view-content .processo-card-deadline-days.overdue {
+  background-color: transparent;
+  color: var(--error-500);
+  border: none;
+}
+
+.processo-view-content .processo-card-deadline-days.urgent {
+  background-color: transparent;
+  color: var(--warning-500);
+  border: none;
+}
+
+.processo-view-content .processo-card-deadline-days.normal {
+  background-color: transparent;
+  color: var(--success-500);
+  border: none;
+}
+
+.processo-view-content .processo-card-observations {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.processo-view-content .processo-card-observations-text {
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  display: block;
+}
+
+.processo-view-content .processo-card-footer {
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-light);
+  margin-top: var(--spacing-sm);
+}
+
+.processo-view-content .processo-card-user {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.processo-view-content .processo-card-created {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+}
+
+/* ===== RESPONSIVIDADE DA VISUALIZAÇÃO ===== */
+@media (max-width: 768px) {
+  .processo-view-overlay {
+    padding: var(--spacing-sm);
+  }
+  
+  .processo-view-container {
+    width: 100%;
+    max-height: 95vh;
+  }
+  
+  .processo-view-header {
+    padding: var(--spacing-md);
+  }
+  
+  .processo-view-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .processo-view-content {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .processo-view-overlay {
+    padding: var(--spacing-xs);
+  }
+  
+  .processo-view-header {
+    padding: var(--spacing-sm);
+  }
+  
+  .processo-view-header h2 {
+    font-size: 1.125rem;
+  }
+  
+  .processo-view-content {
+    padding: var(--spacing-sm);
   }
 }

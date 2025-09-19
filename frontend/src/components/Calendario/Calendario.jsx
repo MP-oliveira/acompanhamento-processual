@@ -10,8 +10,10 @@ import {
   CheckCircle,
   XCircle,
   Filter,
-  Search
+  Search,
+  RefreshCw
 } from 'lucide-react';
+import { processoService } from '../../services/api';
 import './Calendario.css';
 
 const Calendario = () => {
@@ -32,87 +34,131 @@ const Calendario = () => {
     status: 'agendado'
   });
 
-  // Dados mockados para demonstração
-  const mockEvents = [
-    {
-      id: 1,
-      title: 'Audiência de Conciliação',
-      type: 'audiencia',
-      date: '2024-03-15',
-      time: '09:00',
-      duration: 120,
-      description: 'Audiência de conciliação do processo 0001234-12.2024.8.05.0001',
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      },
-      status: 'agendado'
-    },
-    {
-      id: 2,
-      title: 'Prazo para Recurso',
-      type: 'prazo',
-      date: '2024-03-10',
-      time: '23:59',
-      duration: 0,
-      description: 'Prazo para interposição de recurso',
-      processo: {
-        id: 2,
-        numero: '0001235-12.2024.8.05.0001',
-        classe: 'Execução de Título Extrajudicial'
-      },
-      status: 'pendente'
-    },
-    {
-      id: 3,
-      title: 'Audiência de Instrução',
-      type: 'audiencia',
-      date: '2024-03-20',
-      time: '14:00',
-      duration: 180,
-      description: 'Audiência de instrução e julgamento',
-      processo: {
-        id: 3,
-        numero: '0001236-12.2024.8.05.0001',
-        classe: 'Mandado de Segurança'
-      },
-      status: 'agendado'
-    },
-    {
-      id: 4,
-      title: 'Prazo para Embargos',
-      type: 'prazo',
-      date: '2024-03-12',
-      time: '23:59',
-      duration: 0,
-      description: 'Prazo para embargos de declaração',
-      processo: {
-        id: 1,
-        numero: '0001234-12.2024.8.05.0001',
-        classe: 'Ação de Indenização por Dano Moral'
-      },
-      status: 'vencido'
-    }
-  ];
+  // Função utilitária para converter data UTC para data local
+  const convertUTCToLocal = (utcDateString) => {
+    const date = new Date(utcDateString);
+    // Criar uma nova data usando os componentes locais
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
 
-  useEffect(() => {
-    // Simula carregamento de dados
-    const loadEvents = async () => {
+  // Função para buscar processos do backend
+  const fetchProcessos = async () => {
+    try {
       setLoading(true);
-      try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setEvents(mockEvents);
-      } catch (error) {
-        console.error('Erro ao carregar eventos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const response = await processoService.getAll();
+      const processos = response.processos || [];
+      
+      
+      // Converter processos em eventos do calendário
+      const eventos = [];
+      
+      processos.forEach(processo => {
+        // Evento de distribuição
+        if (processo.dataDistribuicao) {
+          const dataDistribuicao = convertUTCToLocal(processo.dataDistribuicao);
+          eventos.push({
+            id: `distribuicao-${processo.id}`,
+            title: `Distribuição - ${processo.classe}`,
+            type: 'distribuicao',
+            date: dataDistribuicao.toISOString().split('T')[0],
+            time: '00:00',
+            duration: 0,
+            description: `Data de distribuição do processo ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'concluido'
+          });
+        }
+        
+        // Evento de audiência
+        if (processo.proximaAudiencia) {
+          const dataAudiencia = convertUTCToLocal(processo.proximaAudiencia);
+          const dataOriginal = new Date(processo.proximaAudiencia);
+          eventos.push({
+            id: `audiencia-${processo.id}`,
+            title: `Audiência - ${processo.classe}`,
+            type: 'audiencia',
+            date: dataAudiencia.toISOString().split('T')[0],
+            time: dataOriginal.toTimeString().slice(0, 5),
+            duration: 120,
+            description: `Audiência do processo ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'agendado'
+          });
+        }
+        
+        // Evento de prazo de recurso
+        if (processo.prazoRecurso) {
+          const dataRecurso = convertUTCToLocal(processo.prazoRecurso);
+          eventos.push({
+            id: `recurso-${processo.id}`,
+            title: `Prazo Recurso - ${processo.classe}`,
+            type: 'prazo',
+            date: dataRecurso.toISOString().split('T')[0],
+            time: '23:59',
+            duration: 0,
+            description: `Prazo para interposição de recurso - ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'pendente'
+          });
+        }
+        
+        // Evento de prazo de embargos
+        if (processo.prazoEmbargos) {
+          const dataEmbargos = convertUTCToLocal(processo.prazoEmbargos);
+          eventos.push({
+            id: `embargos-${processo.id}`,
+            title: `Prazo Embargos - ${processo.classe}`,
+            type: 'prazo',
+            date: dataEmbargos.toISOString().split('T')[0],
+            time: '23:59',
+            duration: 0,
+            description: `Prazo para embargos de declaração - ${processo.numero}`,
+            processo: {
+              id: processo.id,
+              numero: processo.numero,
+              classe: processo.classe
+            },
+            status: 'pendente'
+          });
+        }
+      });
+      
+      setEvents(eventos);
+    } catch (error) {
+      console.error('Erro ao buscar processos:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadEvents();
+  // Buscar processos do backend na montagem do componente
+  useEffect(() => {
+    fetchProcessos();
   }, []);
+
+  // Atualizar automaticamente a cada 30 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchProcessos();
+    }, 30000); // 30 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
+
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -167,7 +213,8 @@ const Calendario = () => {
 
   const getEventsForDate = (date) => {
     const dateString = date.toISOString().split('T')[0];
-    return events.filter(event => event.date === dateString);
+    const dayEvents = events.filter(event => event.date === dateString);
+    return dayEvents;
   };
 
   const getEventTypeColor = (type) => {
@@ -178,6 +225,8 @@ const Calendario = () => {
         return 'var(--warning-500)';
       case 'sentenca':
         return 'var(--success-500)';
+      case 'distribuicao':
+        return 'var(--info-500)';
       default:
         return 'var(--neutral-500)';
     }
@@ -210,6 +259,12 @@ const Calendario = () => {
     const today = new Date();
     setCurrentDate(today);
     setSelectedDate(today);
+  };
+
+  const navigateToSeptember2025 = () => {
+    const september2025 = new Date(2025, 8, 1); // Mês 8 = setembro (0-indexed)
+    setCurrentDate(september2025);
+    setSelectedDate(september2025);
   };
 
   const handleDateClick = (date) => {
@@ -293,6 +348,7 @@ const Calendario = () => {
 
   const days = getDaysInMonth(currentDate);
   const selectedDateEvents = getEventsForDate(selectedDate);
+  
 
   if (loading) {
     return (
@@ -316,6 +372,14 @@ const Calendario = () => {
           </h1>
         </div>
         <div className="page-header-actions">
+          <button 
+            className="btn btn-secondary"
+            onClick={fetchProcessos}
+            disabled={loading}
+          >
+            <RefreshCw size={20} className={loading ? 'spinning' : ''} />
+            Atualizar
+          </button>
           <button 
             className="btn btn-primary"
             onClick={handleNewEvent}
@@ -356,6 +420,12 @@ const Calendario = () => {
             >
               Hoje
             </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={navigateToSeptember2025}
+            >
+              Set 2025
+            </button>
             
             <div className="calendario-view-toggle">
               <button 
@@ -383,56 +453,135 @@ const Calendario = () => {
         <div className="calendario-content">
           {/* Calendário */}
           <div className="calendario-main">
-            <div className="calendario-grid">
-              {/* Cabeçalho dos dias da semana */}
-              <div className="calendario-weekdays">
-                {getWeekDays().map(day => (
-                  <div key={day} className="calendario-weekday">
-                    {day}
-                  </div>
-                ))}
-              </div>
+            {viewMode === 'month' && (
+              <div className="calendario-grid">
+                {/* Cabeçalho dos dias da semana */}
+                <div className="calendario-weekdays">
+                  {getWeekDays().map(day => (
+                    <div key={day} className="calendario-weekday">
+                      {day}
+                    </div>
+                  ))}
+                </div>
 
-              {/* Dias do calendário */}
-              <div className="calendario-days">
-                {days.map((day, index) => {
-                  const dayEvents = getEventsForDate(day.date);
-                  return (
-                    <div
-                      key={index}
-                      className={`calendario-day ${
-                        !day.isCurrentMonth ? 'calendario-day-other-month' : ''
-                      } ${day.isToday ? 'calendario-day-today' : ''} ${
-                        day.isSelected ? 'calendario-day-selected' : ''
-                      }`}
-                      onClick={() => handleDateClick(day.date)}
-                    >
-                      <div className="calendario-day-number">
-                        {day.date.getDate()}
+                {/* Dias do calendário */}
+                <div className="calendario-days">
+                  {days.map((day, index) => {
+                    const dayEvents = getEventsForDate(day.date);
+                    return (
+                      <div
+                        key={index}
+                        className={`calendario-day ${
+                          !day.isCurrentMonth ? 'calendario-day-other-month' : ''
+                        } ${day.isToday ? 'calendario-day-today' : ''} ${
+                          day.isSelected ? 'calendario-day-selected' : ''
+                        }`}
+                        onClick={() => handleDateClick(day.date)}
+                      >
+                        <div className="calendario-day-number">
+                          {day.date.getDate()}
+                        </div>
+                        
+                        {dayEvents.length > 0 && (
+                          <div className="calendario-day-events">
+                            {dayEvents.slice(0, 3).map(event => (
+                              <div
+                                key={event.id}
+                                className="calendario-day-event"
+                                style={{ backgroundColor: getEventTypeColor(event.type) }}
+                                title={event.title}
+                              />
+                            ))}
+                            {dayEvents.length > 3 && (
+                              <div className="calendario-day-event-more">
+                                +{dayEvents.length - 3}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      
-                      {dayEvents.length > 0 && (
-                        <div className="calendario-day-events">
-                          {dayEvents.slice(0, 3).map(event => (
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {viewMode === 'week' && (
+              <div className="calendario-week-view">
+                <div className="calendario-week-header">
+                  {getWeekDays().map(day => (
+                    <div key={day} className="calendario-week-day-header">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="calendario-week-days">
+                  {getWeekDays().map((dayName, index) => {
+                    const dayDate = new Date(currentDate);
+                    const startOfWeek = new Date(dayDate);
+                    startOfWeek.setDate(dayDate.getDate() - dayDate.getDay());
+                    const dayDate2 = new Date(startOfWeek);
+                    dayDate2.setDate(startOfWeek.getDate() + index);
+                    
+                    const dayEvents = getEventsForDate(dayDate2);
+                    return (
+                      <div key={index} className="calendario-week-day">
+                        <div className="calendario-week-day-number">
+                          {dayDate2.getDate()}
+                        </div>
+                        <div className="calendario-week-day-events">
+                          {dayEvents.map(event => (
                             <div
                               key={event.id}
-                              className="calendario-day-event"
-                              style={{ backgroundColor: getEventTypeColor(event.type) }}
+                              className="calendario-week-event"
+                              style={{ color: getEventTypeColor(event.type) }}
                               title={event.title}
-                            />
-                          ))}
-                          {dayEvents.length > 3 && (
-                            <div className="calendario-day-event-more">
-                              +{dayEvents.length - 3}
+                            >
+                              {event.title}
                             </div>
-                          )}
+                          ))}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+
+            {viewMode === 'day' && (
+              <div className="calendario-day-view">
+                <div className="calendario-day-header">
+                  <h3>{selectedDate.toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</h3>
+                </div>
+                <div className="calendario-day-events-list">
+                  {getEventsForDate(selectedDate).map(event => (
+                    <div key={event.id} className="calendario-day-event-item">
+                      <div 
+                        className="calendario-day-event-color"
+                        style={{ backgroundColor: getEventTypeColor(event.type) }}
+                      ></div>
+                      <div className="calendario-day-event-content">
+                        <h4>{event.title}</h4>
+                        <p>{event.description}</p>
+                        <span className="calendario-day-event-time">
+                          {event.startTime} - {event.endTime}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {getEventsForDate(selectedDate).length === 0 && (
+                    <div className="calendario-day-no-events">
+                      Nenhum evento para este dia
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Painel Lateral - Eventos do Dia Selecionado */}

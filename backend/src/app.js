@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
@@ -36,11 +38,43 @@ app.use(helmet({
 
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'http://localhost:5176',
+    process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Rate limiting para proteção contra ataques
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP por janela
+  message: {
+    error: 'Muitas tentativas. Tente novamente em 15 minutos.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Slow down para requests suspeitos
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  delayAfter: 50, // começar a atrasar após 50 requests
+  delayMs: (used, req) => {
+    const delayAfter = req.slowDown.limit;
+    return (used - delayAfter) * 500;
+  },
+});
+
+// Aplicar rate limiting geral
+app.use(generalLimiter);
+app.use(speedLimiter);
 
 // Middlewares de parsing
 app.use(express.json({ limit: '10mb' }));
@@ -73,8 +107,18 @@ export const initializeApp = async () => {
     await sequelize.authenticate();
     logger.info('Conexão com o banco de dados estabelecida com sucesso');
 
+<<<<<<< HEAD
     // Sincronização automática desabilitada - usando tabelas existentes
     logger.info('Sincronização automática desabilitada - usando tabelas existentes');
+=======
+    // Sincroniza os modelos com o banco (em desenvolvimento)
+    if (process.env.NODE_ENV === 'development' && process.env.SYNC_DATABASE !== 'false') {
+      await sequelize.sync({ alter: true });
+      logger.info('Modelos sincronizados com o banco de dados');
+    } else {
+      logger.info('Sincronização automática desabilitada - usando tabelas existentes');
+    }
+>>>>>>> f1ed658ca2211dd68673a49f97d0b754a7ca3a87
 
     // Inicia o agendador de alertas
     alertScheduler.start();

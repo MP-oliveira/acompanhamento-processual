@@ -71,7 +71,8 @@ class AlertScheduler {
           [Op.or]: [
             { proximaAudiencia: { [Op.between]: [hoje, amanha] } },
             { prazoRecurso: { [Op.between]: [hoje, amanha] } },
-            { prazoEmbargos: { [Op.between]: [hoje, amanha] } }
+            { prazoEmbargos: { [Op.between]: [hoje, amanha] } },
+            { dataDistribuicao: { [Op.between]: [hoje, amanha] } }
           ]
         },
         include: [{ model: User, as: 'user' }]
@@ -145,6 +146,22 @@ class AlertScheduler {
         });
       }
 
+      // Alerta para data de distribuição (1 dia antes)
+      if (processo.dataDistribuicao && 
+          processo.dataDistribuicao >= hoje && 
+          processo.dataDistribuicao <= amanha) {
+        await this.criarAlerta({
+          tipo: 'distribuicao',
+          titulo: 'Data de Distribuição',
+          mensagem: `Data de distribuição do processo ${processo.numero} é ${formatDate(processo.dataDistribuicao)}`,
+          dataVencimento: processo.dataDistribuicao,
+          dataNotificacao: hoje,
+          prioridade: 'media',
+          userId: processo.userId,
+          processoId: processo.id
+        });
+      }
+
     } catch (error) {
       logger.error(`Erro ao criar alertas para processo ${processo.id}:`, error);
     }
@@ -195,6 +212,40 @@ class AlertScheduler {
       logger.info(`Prazos calculados para processo ${processo.numero}: Recurso ${formatDate(prazoRecurso)}, Embargos ${formatDate(prazoEmbargos)}`);
     } catch (error) {
       logger.error(`Erro ao agendar alertas para sentença do processo ${processo.id}:`, error);
+    }
+  }
+
+  /**
+   * Agenda alertas quando uma data de distribuição é registrada
+   * @param {Processo} processo - Processo com data de distribuição
+   */
+  async agendarAlertasDistribuicao(processo) {
+    if (!processo.dataDistribuicao) return;
+
+    try {
+      const hoje = new Date();
+      const dataDistribuicao = new Date(processo.dataDistribuicao);
+      
+      // Se a data de distribuição é hoje ou amanhã, cria alerta imediatamente
+      const amanha = new Date(hoje);
+      amanha.setDate(amanha.getDate() + 1);
+      
+      if (dataDistribuicao >= hoje && dataDistribuicao <= amanha) {
+        await this.criarAlerta({
+          tipo: 'distribuicao',
+          titulo: 'Data de Distribuição',
+          mensagem: `Data de distribuição do processo ${processo.numero} é ${formatDate(processo.dataDistribuicao)}`,
+          dataVencimento: processo.dataDistribuicao,
+          dataNotificacao: hoje,
+          prioridade: 'media',
+          userId: processo.userId,
+          processoId: processo.id
+        });
+      }
+
+      logger.info(`Alertas de distribuição agendados para processo ${processo.numero}`);
+    } catch (error) {
+      logger.error(`Erro ao agendar alertas para distribuição do processo ${processo.id}:`, error);
     }
   }
 

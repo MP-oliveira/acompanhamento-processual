@@ -1,0 +1,360 @@
+/* Tema Dark - Variáveis CSS */
+[data-theme="dark"] {
+  /* Cores primárias - Mantendo cores do modo claro */
+  --primary-color: #4A90E2;
+  --primary-hover: #357ABD;
+  --primary-light: #6BA3E8;
+  --primary-dark: #2E5B8A;
+
+  /* Cores secundárias - Mantendo cores do modo claro */
+  --secondary-color: #7B68EE;
+  --secondary-hover: #6A5ACD;
+  --secondary-light: #9370DB;
+  --secondary-dark: #483D8B;
+
+  /* Cores de fundo - Tons mais suaves */
+  --bg-primary: #2A2A2A;
+  --bg-secondary: #3A3A3A;
+  --bg-tertiary: #4A4A4A;
+  --bg-card: #3A3A3A;
+  --bg-hover: #4A4A4A;
+  --bg-input: #4A4A4A;
+  --bg-sidebar: #2A2A2A;
+  --bg-topbar: #2A2A2A;
+
+  /* Cores de texto */
+  --text-primary: #E8E8E8;
+  --text-secondary: #C0C0C0;
+  --text-muted: #A0A0A0;
+  --text-inverse: #2A2A2A;
+  --text-link: #4A90E2;
+  --text-link-hover: #357ABD;
+
+  /* Cores de borda */
+  --border-light: #404040;
+  --border-medium: #555555;
+  --border-dark: #666666;
+  --border-focus: #4A90E2;
+
+  /* Cores de status - Cores diretas do modo claro */
+  --success-color: #28A745;
+  --success-bg: #D4EDDA;
+  --success-light: #C3E6CB;
+  
+  --warning-color: #FFC107;
+  --warning-bg: #FFF3CD;
+  --warning-light: #FFEAA7;
+  
+  --error-color: #DC3545;
+  --error-bg: #F8D7DA;
+  --error-light: #F5C6CB;
+  
+  --info-color: #17A2B8;
+  --info-bg: #D1ECF1;
+  --info-light: #BEE5EB;
+
+  /* Cores de prioridade - Mantendo cores do modo claro */
+  --priority-urgent: #DC3545;
+  --priority-high: #FFC107;
+  --priority-medium: #FF9800;
+  --priority-low: #28A745;
+
+  /* Variáveis que faltavam - Cores do modo claro */
+  --primary-50: #f0f4ff;
+  --primary-100: #e0e7ff;
+  --primary-500: #6366f1;
+  --primary-600: #4f46e5;
+  --primary-700: #4338ca;
+  --success-100: #dcfce7;
+  --success-500: #22c55e;
+  --success-700: #15803d;
+  --warning-100: #fef3c7;
+  --warning-500: #f59e0b;
+  --warning-700: #b45309;
+  --error-100: #fee2e2;
+  --error-500: #ef4444;
+  --error-700: #b91c1c;
+  --info-100: #dbeafe;
+  --info-500: #3b82f6;
+  --info-700: #1d4ed8;
+  --neutral-50: #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  --gradient-secondary: linear-gradient(135deg, #7B68EE 0%, #6A5ACD 100%);
+  --gradient-card: linear-gradient(135deg, #2A2A2A 0%, #3A3A3A 100%);
+
+  /* Transparências */
+  --overlay-light: rgba(0, 0, 0, 0.1);
+  --overlay-medium: rgba(0, 0, 0, 0.3);
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-modal: rgba(0, 0, 0, 0.8);
+
+  /* Cores específicas para componentes */
+  --sidebar-bg: #2A2A2A;
+  --sidebar-hover: #3A3A3A;
+  --sidebar-active: #4A90E2;
+  --sidebar-text: #C0C0C0;
+  --sidebar-text-active: #E8E8E8;
+
+  --topbar-bg: #3A3A3A;
+  --topbar-border: #4A4A4A;
+  --topbar-text: #E8E8E8;
+  --topbar-hover: #4A4A4A;
+
+  --card-bg: #3A3A3A;
+  --card-border: #4A4A4A;
+  --card-hover: #4A4A4A;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --input-bg: #4A4A4A;
+  --input-border: #5A5A5A;
+  --input-focus: #4A90E2;
+  --input-text: #E8E8E8;
+  --input-placeholder: #A0A0A0;
+
+  --button-primary-bg: #4A90E2;
+  --button-primary-hover: #357ABD;
+  --button-primary-text: #FFFFFF;
+  
+  --button-secondary-bg: #4A4A4A;
+  --button-secondary-hover: #5A5A5A;
+  --button-secondary-text: #E8E8E8;
+  --button-secondary-border: #5A5A5A;
+
+  --dropdown-bg: #3A3A3A;
+  --dropdown-border: #4A4A4A;
+  --dropdown-hover: #4A4A4A;
+  --dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  --modal-bg: #3A3A3A;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-border: #4A4A4A;
+  --modal-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+  --table-bg: #3A3A3A;
+  --table-header-bg: #4A4A4A;
+  --table-row-hover: #4A4A4A;
+  --table-border: #4A4A4A;
+
+  --notification-bg: #3A3A3A;
+  --notification-border: #4A4A4A;
+  --notification-hover: #4A4A4A;
+  --notification-unread: #4A90E2;
+
+  --badge-bg: #4A90E2;
+  --badge-text: #FFFFFF;
+  --badge-success: #4CAF50;
+  --badge-warning: #FF9800;
+  --badge-error: #F44336;
+  --badge-info: #2196F3;
+
+  /* Cores de Status de Processo - Cores diretas do modo claro */
+  --processo-active-bg: #D4EDDA;
+  --processo-active-text: #28A745;
+  --processo-archived-bg: #F3F4F6;
+  --processo-archived-text: #6B7280;
+  --processo-suspended-bg: #FFF3CD;
+  --processo-suspended-text: #FFC107;
+
+  /* Cores de Prioridade - Cores diretas do modo claro */
+  --priority-urgent-bg: #DC3545;
+  --priority-urgent-text: #FFFFFF;
+  --priority-high-bg: #FFC107;
+  --priority-high-text: #000000;
+  --priority-medium-bg: #FF9800;
+  --priority-medium-text: #FFFFFF;
+  --priority-low-bg: #28A745;
+  --priority-low-text: #FFFFFF;
+
+  /* Cores dos Ícones dos Cards do Dashboard - Cores diretas do modo claro */
+  --stat-icon-primary: #6366F1;
+  --stat-icon-warning: #FFC107;
+  --stat-icon-info: #3B82F6;
+  --stat-icon-success: #28A745;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA BOTÕES NO TEMA ESCURO ===== */
+[data-theme="dark"] .btn-secondary {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-medium) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+[data-theme="dark"] .btn-secondary:focus {
+  box-shadow: 0 0 0 3px var(--primary-100) !important;
+}
+
+[data-theme="dark"] .btn-secondary:disabled {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-muted) !important;
+  border-color: var(--border-light) !important;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA LOGIN NO TEMA ESCURO ===== */
+[data-theme="dark"] .login-form-container {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-medium) !important;
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: var(--primary-600) !important;
+  color: var(--text-inverse) !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-700) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ===== CORREÇÕES ESPECÍFICAS PARA DARK MODE ===== */
+
+/* Dashboard - Botão + Novo Processo */
+[data-theme="dark"] .dashboard .btn-primary {
+  color: #ffffff !important;
+}
+
+/* Topbar - Hover do botão perfil */
+[data-theme="dark"] .topbar-user-trigger:hover .topbar-user-name {
+  color: #9ca3af !important;
+}
+
+/* Topbar - Dropdown do usuário - Hover dos links */
+[data-theme="dark"] .topbar-user-dropdown-item:hover {
+  color: #9ca3af !important;
+}
+
+/* Processos - Botão + Novo Processo */
+[data-theme="dark"] .processos .btn-primary {
+  color: #ffffff !important;
+}
+
+/* Processos - Ícone Arquivados mais transparente */
+[data-theme="dark"] .processos-stat-archived {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid #ffffff !important;
+}
+
+/* Processos - Ícone de editar com fundo transparente e sem borda */
+[data-theme="dark"] .process-card-actions .btn-icon {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .process-card-action-btn {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit:hover {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .processo-card-action-edit:focus {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Processos - Status 'Ativo' sem fundo e sem borda */
+[data-theme="dark"] .process-status-active {
+  background-color: transparent !important;
+  color: var(--success-500) !important;
+  border: none !important;
+}
+
+/* Calendário - Dia selecionado com fonte mais escura */
+[data-theme="dark"] .calendar-day.selected {
+  color: var(--text-primary) !important;
+  background-color: var(--primary-500) !important;
+}
+
+[data-theme="dark"] .calendar-day.selected .calendar-day-number {
+  color: var(--text-inverse) !important;
+}
+
+/* Relatórios - Botão Gerar Primeiro Relatório */
+[data-theme="dark"] .relatorios .btn-primary {
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--spacing-sm) !important;
+}
+
+/* Usuários - Cards superiores seguindo padrão do Dashboard */
+[data-theme="dark"] .usuarios .stat-card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+/* Usuários - Botão + Novo Usuário */
+[data-theme="dark"] .usuarios .btn-primary {
+  color: #ffffff !important;
+}
+
+/* Usuários - Card inferior com novo padrão */
+[data-theme="dark"] .usuarios .user-card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+[data-theme="dark"] .usuarios .user-card-actions .btn-icon {
+  background-color: transparent !important;
+  border: 1px solid var(--border-medium) !important;
+}
+
+[data-theme="dark"] .usuarios .user-status-active {
+  background-color: transparent !important;
+  color: var(--success-500) !important;
+  border: 1px solid var(--success-500) !important;
+}
+
+/* Configurações - Melhorar legibilidade dos ícones */
+[data-theme="dark"] .configuracoes .status-icon {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .status-text {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-icon {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-title {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .configuracoes .config-item-description {
+  color: var(--text-secondary) !important;
+}

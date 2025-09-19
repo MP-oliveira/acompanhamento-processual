@@ -10,7 +10,7 @@ Alert.init({
     autoIncrement: true
   },
   tipo: {
-    type: DataTypes.ENUM('audiencia', 'prazo_recurso', 'prazo_embargos', 'despacho'),
+    type: DataTypes.ENUM('audiencia', 'prazo_recurso', 'prazo_embargos', 'despacho', 'distribuicao'),
     allowNull: false
   },
   titulo: {

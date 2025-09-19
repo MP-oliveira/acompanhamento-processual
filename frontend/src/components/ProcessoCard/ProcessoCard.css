@@ -21,16 +21,16 @@
 
 /* ===== CORES POR STATUS ===== */
 .processo-card-active {
-  border-left: 4px solid var(--success-500);
+  border-left: 4px solid var(--processo-active-bg, var(--success-500));
 }
 
 .processo-card-archived {
-  border-left: 4px solid var(--neutral-400);
+  border-left: 4px solid var(--processo-archived-bg, var(--neutral-400));
   opacity: 0.8;
 }
 
 .processo-card-suspended {
-  border-left: 4px solid var(--warning-500);
+  border-left: 4px solid var(--processo-suspended-bg, var(--warning-500));
 }
 
 /* ===== HEADER ===== */
@@ -46,7 +46,7 @@
   height: 40px;
   border-radius: var(--radius-md);
   background-color: var(--primary-100);
-  color: var(--primary-600);
+  color: var(--primary-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,18 +76,18 @@
 }
 
 .processo-card-active .processo-card-status {
-  background-color: var(--success-100);
-  color: var(--success-700);
+  background-color: var(--processo-active-bg, var(--success-100));
+  color: var(--processo-active-text, var(--success-700));
 }
 
 .processo-card-archived .processo-card-status {
-  background-color: var(--neutral-100);
-  color: var(--neutral-700);
+  background-color: var(--processo-archived-bg, var(--neutral-100));
+  color: var(--processo-archived-text, var(--neutral-700));
 }
 
 .processo-card-suspended .processo-card-status {
-  background-color: var(--warning-100);
-  color: var(--warning-700);
+  background-color: var(--processo-suspended-bg, var(--warning-100));
+  color: var(--processo-suspended-text, var(--warning-700));
 }
 
 /* ===== AÇÕES ===== */
@@ -135,6 +135,12 @@
 .processo-card-action-delete:hover {
   background-color: var(--error-50);
   color: var(--error-700);
+}
+
+/* ===== CLASSE PARA BOTÕES DE ÍCONE ===== */
+.btn-icon {
+  background-color: transparent;
+  border: 1px solid var(--border-medium);
 }
 
 /* ===== CONTEÚDO ===== */

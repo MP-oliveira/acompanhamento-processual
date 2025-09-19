@@ -15,6 +15,7 @@ import {
   UserX,
   XCircle
 } from 'lucide-react';
+import { userService } from '../../services/api.js';
 import './Usuarios.css';
 
 const Usuarios = () => {
@@ -36,84 +37,30 @@ const Usuarios = () => {
     confirmarSenha: ''
   });
 
-  // Dados mockados para demonstração
-  const mockUsuarios = [
-    {
-      id: 1,
-      nome: 'Dr. João Silva',
-      email: 'joao.silva@advocacia.com',
-      telefone: '(71) 99999-1111',
-      role: 'admin',
-      status: 'ativo',
-      ultimoAcesso: '2024-01-20T14:30:00Z',
-      processosAtivos: 12,
-      createdAt: '2024-01-01T10:00:00Z'
-    },
-    {
-      id: 2,
-      nome: 'Dra. Maria Santos',
-      email: 'maria.santos@advocacia.com',
-      telefone: '(71) 99999-2222',
-      role: 'advogado',
-      status: 'ativo',
-      ultimoAcesso: '2024-01-19T16:45:00Z',
-      processosAtivos: 8,
-      createdAt: '2024-01-05T09:30:00Z'
-    },
-    {
-      id: 3,
-      nome: 'Dr. Pedro Costa',
-      email: 'pedro.costa@advocacia.com',
-      telefone: '(71) 99999-3333',
-      role: 'advogado',
-      status: 'inativo',
-      ultimoAcesso: '2024-01-15T11:20:00Z',
-      processosAtivos: 5,
-      createdAt: '2024-01-10T14:15:00Z'
-    },
-    {
-      id: 4,
-      nome: 'Ana Oliveira',
-      email: 'ana.oliveira@advocacia.com',
-      telefone: '(71) 99999-4444',
-      role: 'assistente',
-      status: 'ativo',
-      ultimoAcesso: '2024-01-20T13:10:00Z',
-      processosAtivos: 0,
-      createdAt: '2024-01-12T08:45:00Z'
-    }
-  ];
-
   useEffect(() => {
     const loadUsuarios = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setUsuarios(mockUsuarios);
+        const response = await userService.getAll({
+          page: 1,
+          limit: 100,
+          search: searchTerm,
+          role: roleFilter === 'todos' ? '' : roleFilter,
+          status: statusFilter === 'todos' ? '' : statusFilter
+        });
+        setUsuarios(response.users || []);
       } catch (error) {
         console.error('Erro ao carregar usuários:', error);
+        setUsuarios([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadUsuarios();
-  }, []);
+  }, [searchTerm, roleFilter, statusFilter]);
 
-  const filteredUsuarios = usuarios.filter(usuario => {
-    const matchesSearch = 
-      usuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      usuario.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      usuario.telefone.includes(searchTerm);
-
-    const matchesRole = roleFilter === 'todos' || usuario.role === roleFilter;
-    const matchesStatus = statusFilter === 'todos' || usuario.status === statusFilter;
-
-    return matchesSearch && matchesRole && matchesStatus;
-  });
-
-  const sortedUsuarios = [...filteredUsuarios].sort((a, b) => {
+  const sortedUsuarios = [...usuarios].sort((a, b) => {
     let aValue = a[sortBy];
     let bValue = b[sortBy];
 
@@ -136,6 +83,14 @@ const Usuarios = () => {
       case 'assistente': return 'Assistente';
       default: return 'Usuário';
     }
+  };
+
+  const getInitials = (nome) => {
+    const names = nome.split(' ');
+    if (names.length >= 2) {
+      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+    }
+    return nome.substring(0, 2).toUpperCase();
   };
 
   const getRoleColor = (role) => {
@@ -525,7 +480,7 @@ const Usuarios = () => {
               <div key={usuario.id} className="usuario-card">
                 <div className="usuario-card-header">
                   <div className="usuario-card-avatar">
-                    <User size={24} />
+                    {getInitials(usuario.nome)}
                   </div>
                   <div className="usuario-card-info">
                     <h4 className="usuario-card-name">{usuario.nome}</h4>

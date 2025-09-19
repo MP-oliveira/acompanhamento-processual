@@ -54,7 +54,7 @@ export const authService = {
   },
 
   async getProfile() {
-    const response = await api.get('/auth/profile');
+    const response = await api.get('/auth/me');
     return response.data;
   }
 };
@@ -94,8 +94,112 @@ export const alertService = {
     return response.data;
   },
 
+  async getById(id) {
+    const response = await api.get(`/alerts/${id}`);
+    return response.data;
+  },
+
   async markAsRead(id) {
     const response = await api.patch(`/alerts/${id}/read`);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/alerts/${id}`);
+    return response.data;
+  }
+};
+
+// Serviços de consultas
+export const consultaService = {
+  async getAll(params = {}) {
+    const response = await api.get('/consultas', { params });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await api.get(`/consultas/${id}`);
+    return response.data;
+  },
+
+  async create(data) {
+    const response = await api.post('/consultas', data);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/consultas/${id}`);
+    return response.data;
+  },
+
+  async getStats() {
+    const response = await api.get('/consultas/stats');
+    return response.data;
+  }
+};
+
+// Serviços de relatórios
+export const relatorioService = {
+  async getAll(params = {}) {
+    const response = await api.get('/relatorios', { params });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await api.get(`/relatorios/${id}`);
+    return response.data;
+  },
+
+  async create(data) {
+    const response = await api.post('/relatorios', data);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/relatorios/${id}`);
+    return response.data;
+  },
+
+  async getStats() {
+    const response = await api.get('/relatorios/stats');
+    return response.data;
+  }
+};
+
+// Serviços de usuários
+export const userService = {
+  async getAll(params = {}) {
+    const response = await api.get('/users', { params });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  },
+
+  async create(userData) {
+    const response = await api.post('/users', userData);
+    return response.data;
+  },
+
+  async update(id, userData) {
+    const response = await api.put(`/users/${id}`, userData);
+    return response.data;
+  },
+
+  async updatePassword(id, passwordData) {
+    const response = await api.patch(`/users/${id}/password`, passwordData);
+    return response.data;
+  },
+
+  async deactivate(id) {
+    const response = await api.patch(`/users/${id}/deactivate`);
+    return response.data;
+  },
+
+  async activate(id) {
+    const response = await api.patch(`/users/${id}/activate`);
     return response.data;
   }
 };

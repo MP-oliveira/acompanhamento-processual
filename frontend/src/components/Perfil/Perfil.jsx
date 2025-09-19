@@ -12,6 +12,8 @@ import {
   Save,
   X
 } from 'lucide-react';
+import { authService } from '../../services/api.js';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Perfil.css';
 
 const Perfil = () => {
@@ -21,16 +23,16 @@ const Perfil = () => {
   const [saving, setSaving] = useState(false);
 
   const [user, setUser] = useState({
-    nome: 'Dr. João Silva',
-    email: 'joao.silva@advocacia.com',
-    telefone: '(71) 99999-1111',
-    endereco: 'Rua das Flores, 123 - Centro, Salvador/BA',
-    cpf: '123.456.789-00',
-    oab: '12345/BA',
-    especialidade: 'Direito Civil',
-    dataNascimento: '1985-03-15',
-    dataAdmissao: '2020-01-15',
-    role: 'advogado'
+    nome: '',
+    email: '',
+    telefone: '',
+    endereco: '',
+    cpf: '',
+    oab: '',
+    especialidade: '',
+    dataNascimento: '',
+    dataAdmissao: '',
+    role: 'user'
   });
 
   const [formData, setFormData] = useState({ ...user });
@@ -39,18 +41,20 @@ const Perfil = () => {
     const loadUser = async () => {
       setLoading(true);
       try {
-        // Simula delay da API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Dados já carregados no estado inicial
+        const response = await authService.getProfile();
+        setUser(response.user);
+        setFormData(response.user);
       } catch (error) {
         console.error('Erro ao carregar perfil:', error);
+        // Se não conseguir carregar, redireciona para login
+        navigate('/login');
       } finally {
         setLoading(false);
       }
     };
 
     loadUser();
-  }, []);
+  }, [navigate]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -62,9 +66,8 @@ const Perfil = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      // Aqui você pode implementar a atualização do perfil via API
+      // Por enquanto, apenas atualiza localmente
       setUser(formData);
       setIsEditing(false);
       alert('Perfil atualizado com sucesso!');
@@ -315,6 +318,19 @@ const Perfil = () => {
                 <div className="perfil-form-group">
                   <label>Data de Admissão</label>
                   <span className="perfil-value">{formatDate(user.dataAdmissao)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Seção de Configurações */}
+            <div className="perfil-section">
+              <div className="perfil-section-header">
+                <h3>Configurações</h3>
+              </div>
+              <div className="perfil-section-content">
+                <div className="perfil-form-group">
+                  <label>Tema da Interface</label>
+                  <ThemeToggle />
                 </div>
               </div>
             </div>

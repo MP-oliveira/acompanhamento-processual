@@ -3,6 +3,31 @@
   width: 100%;
 }
 
+/* ===== LOADING ===== */
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-secondary);
+}
+
+.dashboard-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-light);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ===== HEADER DA PÁGINA ===== */
 .page-header {
   display: flex;
@@ -60,19 +85,19 @@
 }
 
 .stat-card-icon-primary {
-  background-color: var(--primary-500);
+  background-color: var(--stat-icon-primary, var(--primary-500));
 }
 
 .stat-card-icon-warning {
-  background-color: var(--warning-500);
+  background-color: var(--stat-icon-warning, var(--warning-500));
 }
 
 .stat-card-icon-info {
-  background-color: var(--info-500);
+  background-color: var(--stat-icon-info, var(--info-500));
 }
 
 .stat-card-icon-success {
-  background-color: var(--success-500);
+  background-color: var(--stat-icon-success, var(--success-500));
 }
 
 .stat-card-change {
@@ -118,6 +143,24 @@
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
+}
+
+/* ===== LINK DOS CARDS ===== */
+.stat-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all var(--transition-fast);
+}
+
+.stat-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.stat-card-link:hover .stat-card {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 /* ===== CONTEÚDO PRINCIPAL ===== */
@@ -186,7 +229,22 @@
   border-radius: var(--radius-lg);
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-light);
+  border-left: 4px solid var(--border-light);
   transition: all var(--transition-fast);
+}
+
+/* Bordas coloridas por status */
+.process-item-active {
+  border-left: 4px solid var(--processo-active-bg, var(--success-500));
+}
+
+.process-item-archived {
+  border-left: 4px solid var(--processo-archived-bg, var(--neutral-400));
+  opacity: 0.8;
+}
+
+.process-item-suspended {
+  border-left: 4px solid var(--processo-suspended-bg, var(--warning-500));
 }
 
 .process-item:hover {
@@ -338,13 +396,13 @@
 }
 
 .deadline-item-days-urgent {
-  background-color: var(--error-50);
-  color: var(--error-700);
+  background-color: var(--priority-urgent-bg, var(--error-50));
+  color: var(--priority-urgent-text, var(--error-700));
 }
 
 .deadline-item-days-normal {
-  background-color: var(--neutral-100);
-  color: var(--neutral-700);
+  background-color: var(--processo-archived-bg, var(--neutral-100));
+  color: var(--processo-archived-text, var(--neutral-700));
 }
 
 /* ===== RESPONSIVIDADE ===== */

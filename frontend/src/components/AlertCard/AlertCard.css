@@ -22,38 +22,54 @@
 
 /* ===== CORES POR TIPO E PRIORIDADE ===== */
 .alert-card-urgent {
-  border-left: 4px solid var(--error-500);
-  background-color: var(--error-50);
+  border-left: 4px solid var(--priority-urgent-bg, var(--error-500));
 }
 
 .alert-card-high {
-  border-left: 4px solid var(--warning-500);
-  background-color: var(--warning-50);
+  border-left: 4px solid var(--priority-high-bg, var(--warning-500));
 }
 
 .alert-card-medium {
-  border-left: 4px solid var(--info-500);
-  background-color: var(--info-50);
+  border-left: 4px solid var(--priority-medium-bg, var(--info-500));
 }
 
 .alert-card-low {
-  border-left: 4px solid var(--success-500);
-  background-color: var(--success-50);
+  border-left: 4px solid var(--priority-low-bg, var(--success-500));
 }
 
 .alert-card-info {
   border-left: 4px solid var(--info-500);
-  background-color: var(--info-50);
 }
 
 .alert-card-warning {
   border-left: 4px solid var(--warning-500);
-  background-color: var(--warning-50);
 }
 
 .alert-card-primary {
   border-left: 4px solid var(--primary-500);
-  background-color: var(--primary-50);
+}
+
+/* Card vencido - ícone com borda branca e fundo neutral-200 */
+.alert-card-overdue .alert-card-icon {
+  background-color: var(--neutral-200) !important;
+  border: 2px solid white;
+}
+
+/* Fallback para ícones de cards vencidos (sem classe específica) */
+.alert-card .alert-card-icon[style*="background-color: var(--error-500)"] {
+  background-color: var(--neutral-200) !important;
+  border: 2px solid white;
+}
+
+/* Check de lido - cor verde forte */
+.alert-card-check-read {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  flex-shrink: 0;
 }
 
 /* ===== HEADER ===== */
@@ -76,19 +92,19 @@
 }
 
 .alert-card-urgent .alert-card-icon {
-  background-color: var(--error-500);
+  background-color: var(--priority-urgent-bg, var(--error-500));
 }
 
 .alert-card-high .alert-card-icon {
-  background-color: var(--warning-500);
+  background-color: var(--priority-high-bg, var(--warning-500));
 }
 
 .alert-card-medium .alert-card-icon {
-  background-color: var(--info-500);
+  background-color: var(--priority-medium-bg, var(--info-500));
 }
 
 .alert-card-low .alert-card-icon {
-  background-color: var(--success-500);
+  background-color: var(--priority-low-bg, var(--success-500));
 }
 
 .alert-card-info .alert-card-icon {
@@ -300,8 +316,8 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: 0.75rem;
-  color: var(--success-600);
-  background-color: var(--success-50);
+  color: var(--success-700);
+  background-color: var(--success-100);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
   border: 1px solid var(--success-200);

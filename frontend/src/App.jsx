@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { authService } from './services/api';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -11,7 +12,6 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Processos from './components/Processos/Processos';
 import NovoProcesso from './components/NovoProcesso/NovoProcesso';
 import EditarProcesso from './components/EditarProcesso/EditarProcesso';
-import VisualizarProcesso from './components/VisualizarProcesso/VisualizarProcesso';
 import Alertas from './components/Alertas/Alertas';
 import Calendario from './components/Calendario/Calendario';
 import Consultas from './components/Consultas/Consultas';
@@ -19,6 +19,7 @@ import Relatorios from './components/Relatorios/Relatorios';
 import Usuarios from './components/Usuarios/Usuarios';
 import Configuracoes from './components/Configuracoes/Configuracoes';
 import Perfil from './components/Perfil/Perfil';
+import PWAInstaller from './components/PWAInstaller/PWAInstaller';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -115,9 +116,10 @@ function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="app">
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <div className="app">
           {!isAuthenticated ? (
             // Páginas de Autenticação
             <div className="login-page">
@@ -149,7 +151,6 @@ function App() {
                     <Route path="/processos" element={<Processos />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
-                    <Route path="/processos/:id" element={<VisualizarProcesso />} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<Consultas />} />
@@ -175,9 +176,13 @@ function App() {
               },
             }}
           />
-        </div>
-      </Router>
-    </QueryClientProvider>
+          
+          {/* PWA Installer */}
+          <PWAInstaller />
+          </div>
+        </Router>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
