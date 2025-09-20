@@ -1,7 +1,7 @@
 // frontend/src/components/NotificationPreferences/NotificationPreferences.jsx
 import React, { useState, useEffect } from 'react';
 import { Bell, Mail, Smartphone, Clock, Settings, Save, RotateCcw } from 'lucide-react';
-import { api } from '../../services/api';
+import api from '../../services/api';
 import './NotificationPreferences.css';
 
 const NotificationPreferences = () => {
@@ -73,7 +73,21 @@ const NotificationPreferences = () => {
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       console.error('Erro ao enviar email de teste:', err);
-      setError('Erro ao enviar email de teste.');
+      setError('Erro ao enviar email de teste. Verifique se o SMTP está configurado.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const testNotificationSystem = async (tipo) => {
+    try {
+      setSaving(true);
+      const response = await api.post('/email-notifications/test-system', { tipo });
+      setMessage(`Sistema de notificação testado: ${response.data.tipo} - ${response.data.mensagem}`);
+      setTimeout(() => setMessage(''), 5000);
+    } catch (err) {
+      console.error('Erro ao testar sistema:', err);
+      setError('Erro ao testar sistema de notificação.');
     } finally {
       setSaving(false);
     }
@@ -202,6 +216,32 @@ const NotificationPreferences = () => {
                   <Mail size={16} />
                   Enviar Email de Teste
                 </button>
+              </div>
+
+              <div className="preference-option">
+                <div className="test-buttons">
+                  <button
+                    onClick={() => testNotificationSystem('alerta')}
+                    disabled={saving}
+                    className="btn btn-info btn-small"
+                  >
+                    🚨 Testar Alerta
+                  </button>
+                  <button
+                    onClick={() => testNotificationSystem('processo')}
+                    disabled={saving}
+                    className="btn btn-info btn-small"
+                  >
+                    📄 Testar Processo
+                  </button>
+                  <button
+                    onClick={() => testNotificationSystem('relatorio')}
+                    disabled={saving}
+                    className="btn btn-info btn-small"
+                  >
+                    📊 Testar Relatório
+                  </button>
+                </div>
               </div>
             </div>
           )}

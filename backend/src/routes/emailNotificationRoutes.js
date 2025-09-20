@@ -8,6 +8,10 @@ import {
   sendReportCompletedEmail,
   sendCustomEmail,
 } from '../controllers/emailNotificationController.js';
+import {
+  testNotificationSystem,
+  getNotificationTypes,
+} from '../controllers/testNotificationController.js';
 import { validateMaliciousContent } from '../middlewares/inputValidation.js';
 
 const router = Router();
@@ -34,5 +38,9 @@ router.post('/report/:relatorioId', sendReportCompletedEmail);
 
 // Enviar email personalizado
 router.post('/custom', sendCustomEmail);
+
+// Rotas de teste (funcionam sem SMTP configurado)
+router.post('/test-system', testNotificationSystem);
+router.get('/test-types', getNotificationTypes);
 
 export default router;
