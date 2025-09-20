@@ -10,13 +10,16 @@ import {
   BarChart3,
   Search
 } from 'lucide-react';
-import { processoService, relatorioService } from '../../services/api';
+import { processoService } from '../../services/api';
+import { useRelatoriosStats } from '../../hooks/useRelatorios';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const [processosMes, setProcessosMes] = useState(0);
-  const [totalRelatorios, setTotalRelatorios] = useState(0);
+  
+  // Hook do React Query para buscar estatísticas de relatórios
+  const { data: relatoriosStats, isLoading: loadingRelatorios } = useRelatoriosStats();
   
   // Buscar número de processos cadastrados no mês atual
   useEffect(() => {
@@ -45,20 +48,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     fetchProcessosMes();
   }, []);
 
-  // Buscar número total de relatórios
-  useEffect(() => {
-    const fetchTotalRelatorios = async () => {
-      try {
-        const response = await relatorioService.getStats();
-        setTotalRelatorios(response.total || 0);
-      } catch (error) {
-        console.error('Erro ao buscar total de relatórios:', error);
-        setTotalRelatorios(0);
-      }
-    };
-
-    fetchTotalRelatorios();
-  }, []);
+  // Total de relatórios vem do React Query hook
+  const totalRelatorios = relatoriosStats?.total || 0;
   
   const menuItems = [
     {
