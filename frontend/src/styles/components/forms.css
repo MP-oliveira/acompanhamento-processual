@@ -235,10 +235,34 @@
   min-height: 40px;
   font-family: inherit;
   line-height: 1;
+  vertical-align: middle;
 }
 
 .btn svg {
   flex-shrink: 0;
+  vertical-align: middle;
+  margin-bottom: 0;
+}
+
+.btn span,
+.btn > *:not(svg) {
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/* Correção específica para texto direto no botão */
+.btn:not(:has(span)) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:not(:has(span))::before,
+.btn:not(:has(span))::after {
+  content: '';
+  display: none;
 }
 
 .btn:disabled {

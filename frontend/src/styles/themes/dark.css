@@ -29,6 +29,7 @@
   --text-inverse: #2A2A2A;
   --text-link: #4A90E2;
   --text-link-hover: #357ABD;
+  --text-white-transparent: rgba(255, 255, 255, 0.8); /* Branco com 80% de opacidade */
 
   /* Cores de borda */
   --border-light: #404040;
@@ -60,8 +61,8 @@
   --priority-low: #28A745;
 
   /* Variáveis que faltavam - Cores do modo claro */
-  --primary-50: #f0f4ff;
-  --primary-100: #e0e7ff;
+  --primary-50: rgba(99, 102, 241, 0.1); /* Azul transparente para dark mode */
+  --primary-100: rgba(99, 102, 241, 0.15); /* Azul mais transparente para dark mode */
   --primary-500: #6366f1;
   --primary-600: #4f46e5;
   --primary-700: #4338ca;
@@ -77,7 +78,7 @@
   --info-100: #dbeafe;
   --info-500: #3b82f6;
   --info-700: #1d4ed8;
-  --neutral-50: #f9fafb;
+  --neutral-50: rgba(255, 255, 255, 0.05); /* Branco transparente suave para hover em dark mode */
   --neutral-100: #f3f4f6;
   --neutral-200: #e5e7eb;
   --neutral-300: #d1d5db;
@@ -233,7 +234,7 @@
 
 /* Dashboard - Botão + Novo Processo */
 [data-theme="dark"] .dashboard .btn-primary {
-  color: #ffffff !important;
+  color: var(--text-white-transparent) !important;
 }
 
 /* Topbar - Hover do botão perfil */
@@ -248,13 +249,13 @@
 
 /* Processos - Botão + Novo Processo */
 [data-theme="dark"] .processos .btn-primary {
-  color: #ffffff !important;
+  color: var(--text-white-transparent) !important;
 }
 
 /* Processos - Ícone Arquivados mais transparente */
 [data-theme="dark"] .processos-stat-archived {
   background-color: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid #ffffff !important;
+  border: 1px solid var(--text-white-transparent) !important;
 }
 
 /* Processos - Ícone de editar com fundo transparente e sem borda */
@@ -303,7 +304,7 @@
 
 /* Relatórios - Botão Gerar Primeiro Relatório */
 [data-theme="dark"] .relatorios .btn-primary {
-  color: #ffffff !important;
+  color: var(--text-white-transparent) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -318,7 +319,7 @@
 
 /* Usuários - Botão + Novo Usuário */
 [data-theme="dark"] .usuarios .btn-primary {
-  color: #ffffff !important;
+  color: var(--text-white-transparent) !important;
 }
 
 /* Usuários - Card inferior com novo padrão */

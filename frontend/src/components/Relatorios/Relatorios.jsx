@@ -347,10 +347,10 @@ const Relatorios = () => {
             </p>
             {selectedType === 'todos' && selectedPeriod === 'todos' && (
               <button 
-                className="btn btn-primary"
+                className="btn btn-primary btn-first-report"
                 onClick={handleGerarRelatorio}
               >
-                <BarChart3 size={20} />
+                <BarChart3 size={18} />
                 Gerar Primeiro Relatório
               </button>
             )}
