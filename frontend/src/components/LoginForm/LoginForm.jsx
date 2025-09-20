@@ -11,6 +11,7 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Carrega dados salvos do localStorage ao montar o componente
   useEffect(() => {
@@ -73,13 +74,27 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Salva dados se "Lembrar de mim" estiver marcado
-      saveLoginData(formData.email, formData.password, rememberMe);
-      onSubmit(formData);
+      setIsSubmitting(true);
+      try {
+        // Salva dados se "Lembrar de mim" estiver marcado
+        saveLoginData(formData.email, formData.password, rememberMe);
+        
+        // Chama a função de login e aguarda a resposta
+        const result = await onSubmit(formData);
+        
+        if (!result.success) {
+          // Se houver erro, mostra a mensagem
+          setErrors({ general: result.error });
+        }
+      } catch (error) {
+        setErrors({ general: 'Erro inesperado ao fazer login' });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -114,10 +129,10 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
       </div>
 
       <form className="login-form" onSubmit={handleSubmit}>
-        {error && (
+        {(error || errors.general) && (
           <div className="login-form-error">
             <AlertCircle size={16} />
-            <span>{error}</span>
+            <span>{error || errors.general}</span>
           </div>
         )}
 
@@ -135,7 +150,7 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
               onChange={handleChange}
               className={`form-input ${errors.email ? 'error' : ''}`}
               placeholder="seu@email.com"
-              disabled={loading}
+              disabled={loading || isSubmitting}
             />
           </div>
           {errors.email && (
@@ -160,13 +175,13 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
               onChange={handleChange}
               className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="Sua senha"
-              disabled={loading}
+              disabled={loading || isSubmitting}
             />
             <button
               type="button"
               className="form-input-toggle"
               onClick={togglePasswordVisibility}
-              disabled={loading}
+              disabled={loading || isSubmitting}
               aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -189,7 +204,7 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
               name="remember"
               checked={rememberMe}
               onChange={handleRememberMeChange}
-              disabled={loading}
+              disabled={loading || isSubmitting}
             />
             <span>Lembrar de mim</span>
           </label>
@@ -202,10 +217,10 @@ const LoginForm = ({ onSubmit, loading = false, error = null }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className={`btn btn-primary btn-lg ${loading ? 'btn-loading' : ''}`}
-            disabled={loading}
+            className={`btn btn-primary btn-lg ${(loading || isSubmitting) ? 'btn-loading' : ''}`}
+            disabled={loading || isSubmitting}
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {(loading || isSubmitting) ? 'Entrando...' : 'Entrar'}
           </button>
         </div>
 
