@@ -801,3 +801,35 @@
     padding: var(--spacing-sm);
   }
 }
+
+/* ===== ERROR STATE ===== */
+.processos-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  text-align: center;
+}
+
+.processos-error-content {
+  max-width: 400px;
+}
+
+.processos-error-icon {
+  color: var(--error-500);
+  margin-bottom: var(--spacing-lg);
+}
+
+.processos-error-content h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.processos-error-content p {
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}

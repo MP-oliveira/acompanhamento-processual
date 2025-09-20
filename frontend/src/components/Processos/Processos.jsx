@@ -13,40 +13,28 @@ import {
   Clock,
   X
 } from 'lucide-react';
-import { processoService } from '../../services/api';
+import { useProcessos, useProcesso, useDeleteProcesso } from '../../hooks/useProcessos';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
 import './Processos.css';
 
 const Processos = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [processos, setProcessos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  
+  // Hooks do React Query
+  const { data: processosData, isLoading, error } = useProcessos();
+  const deleteProcessoMutation = useDeleteProcesso();
+  
+  // Estados locais para filtros e UI
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [sortBy, setSortBy] = useState('dataDistribuicao');
   const [sortOrder, setSortOrder] = useState('desc');
   const [viewMode, setViewMode] = useState('grid'); // grid ou list
   const [processoSelecionado, setProcessoSelecionado] = useState(null);
-
-  useEffect(() => {
-    // Carrega processos da API real
-    const loadProcessos = async () => {
-      setLoading(true);
-      try {
-        const response = await processoService.getAll();
-        setProcessos(response.processos || []);
-      } catch (error) {
-        console.error('Erro ao carregar processos:', error);
-        // Em caso de erro, mantém array vazio
-        setProcessos([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProcessos();
-  }, []);
+  
+  // Extrair dados dos processos
+  const processos = processosData || [];
 
   // Mostra mensagem de sucesso se veio de outra página
   useEffect(() => {
@@ -109,34 +97,25 @@ const Processos = () => {
     
     if (window.confirm(`Tem certeza que deseja excluir ${processoNome}?\n\nEsta ação não pode ser desfeita.`)) {
       try {
-        setLoading(true);
-        
-        // Chama a API para deletar o processo
-        await processoService.delete(id);
-        
-        // Remove o processo da lista local
-        setProcessos(prev => prev.filter(p => p.id !== id));
+        await deleteProcessoMutation.mutateAsync(id);
         console.log('Processo excluído:', id);
-        
-        // Mostra mensagem de sucesso
-        alert('Processo excluído com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir processo:', error);
         const errorMessage = error.response?.data?.message || 'Erro ao excluir processo. Tente novamente.';
         alert(errorMessage);
-      } finally {
-        setLoading(false);
       }
     }
   };
 
-  const handleView = async (id) => {
-    try {
-      const response = await processoService.getById(id);
-      // A API retorna {processo: {...}}, então precisamos extrair o processo
-      setProcessoSelecionado(response.processo || response);
-    } catch (error) {
-      console.error('Erro ao carregar processo:', error);
+  const handleView = (id) => {
+    // Busca o processo na lista atual (mais rápido)
+    const processo = processos.find(p => p.id === id);
+    if (processo) {
+      setProcessoSelecionado(processo);
+    } else {
+      // Se não encontrar, busca na API
+      // Aqui poderia usar o hook useProcesso, mas é mais simples buscar na lista atual
+      console.warn('Processo não encontrado na lista atual');
     }
   };
 
@@ -155,7 +134,28 @@ const Processos = () => {
 
   const stats = getStats();
 
-  if (loading) {
+  // Tratamento de erro
+  if (error) {
+    return (
+      <div className="processos">
+        <div className="processos-error">
+          <div className="processos-error-content">
+            <X size={48} className="processos-error-icon" />
+            <h3>Erro ao carregar processos</h3>
+            <p>Não foi possível carregar a lista de processos. Tente novamente.</p>
+            <button 
+              className="btn btn-primary"
+              onClick={() => window.location.reload()}
+            >
+              Recarregar Página
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="processos">
         <div className="processos-loading">
