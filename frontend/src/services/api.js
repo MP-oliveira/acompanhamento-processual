@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Configuração base da API
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://backend-gfn5anwdx-mauricio-silva-oliveiras-projects.vercel.app/api'
+  : 'http://localhost:3001/api';
 
 // Instância do axios com configurações padrão
 const api = axios.create({
