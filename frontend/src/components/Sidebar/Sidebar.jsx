@@ -10,12 +10,13 @@ import {
   BarChart3,
   Search
 } from 'lucide-react';
-import { processoService } from '../../services/api';
+import { processoService, relatorioService } from '../../services/api';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const [processosMes, setProcessosMes] = useState(0);
+  const [totalRelatorios, setTotalRelatorios] = useState(0);
   
   // Buscar número de processos cadastrados no mês atual
   useEffect(() => {
@@ -43,6 +44,21 @@ const Sidebar = ({ isOpen, onClose }) => {
 
     fetchProcessosMes();
   }, []);
+
+  // Buscar número total de relatórios
+  useEffect(() => {
+    const fetchTotalRelatorios = async () => {
+      try {
+        const response = await relatorioService.getStats();
+        setTotalRelatorios(response.total || 0);
+      } catch (error) {
+        console.error('Erro ao buscar total de relatórios:', error);
+        setTotalRelatorios(0);
+      }
+    };
+
+    fetchTotalRelatorios();
+  }, []);
   
   const menuItems = [
     {
@@ -58,7 +74,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       section: 'Gestão',
       items: [
         { icon: Search, label: 'Consultas', href: '/consultas' },
-        { icon: BarChart3, label: `Relatórios (${processosMes})`, href: '/relatorios' },
+        { icon: BarChart3, label: `Relatórios (${totalRelatorios})`, href: '/relatorios' },
       ]
     },
     {
