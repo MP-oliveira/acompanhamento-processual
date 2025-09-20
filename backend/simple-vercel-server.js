@@ -7,7 +7,15 @@ const app = express();
 
 // Middlewares básicos
 app.use(cors({
-  origin: ['https://jurisacompanha.vercel.app', 'https://frontend-glx5w9c74-mauricio-silva-oliveiras-projects.vercel.app'],
+  origin: [
+    'https://jurisacompanha.vercel.app', 
+    'https://frontend-glx5w9c74-mauricio-silva-oliveiras-projects.vercel.app',
+    'https://acompanhamento-processual-kbqpox4iz.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
