@@ -19,11 +19,16 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
+      console.log('🔔 Buscando alertas...');
       const response = await alertService.getAll();
       const alerts = response.alertas || [];
+      console.log('📊 Total de alertas recebidos:', alerts.length);
+      console.log('📊 Alertas:', alerts.map(a => ({ id: a.id, lido: a.lido, titulo: a.titulo })));
       
       // Converter alertas em notificações (apenas não lidas)
       const unreadAlerts = alerts.filter(alert => !alert.lido);
+      console.log('📊 Alertas não lidos:', unreadAlerts.length);
+      
       const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
         id: alert.id,
         type: 'alerta',
@@ -144,19 +149,34 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   };
 
   const handleNotificationClick = async (notification) => {
-    setShowNotifications(false);
+    console.log('🔔 Clicando na notificação:', notification);
     
     // Marcar como lida se não estiver lida
     if (notification.unread && notification.alertId) {
       try {
+        console.log('🔔 Marcando alerta como lido:', notification.alertId);
         await alertService.markAsRead(notification.alertId);
+        console.log('✅ Alerta marcado como lido com sucesso');
         
-        // Recarregar notificações para atualizar a lista (remover a notificação lida)
-        await fetchNotifications();
+        // Atualizar imediatamente a lista local (otimização)
+        setNotifications(prev => prev.filter(n => n.id !== notification.id));
+        console.log('🔄 Lista local atualizada');
+        
+        // Recarregar notificações para sincronizar com o backend
+        setTimeout(async () => {
+          console.log('🔄 Sincronizando com backend...');
+          await fetchNotifications();
+          console.log('✅ Sincronização completa');
+        }, 100);
+        
       } catch (error) {
-        console.error('Erro ao marcar notificação como lida:', error);
+        console.error('❌ Erro ao marcar notificação como lida:', error);
+        // Em caso de erro, recarregar tudo
+        await fetchNotifications();
       }
     }
+    
+    setShowNotifications(false);
     
     if (notification.type === 'processo') {
       navigate(`/processos/${notification.processId}`);
@@ -260,7 +280,10 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
                 <div className="topbar-notification-header-actions">
                   <button 
                     className="topbar-notification-refresh"
-                    onClick={fetchNotifications}
+                    onClick={() => {
+                      console.log('🔄 Refresh manual solicitado');
+                      fetchNotifications();
+                    }}
                     disabled={loading}
                     title="Atualizar notificações"
                   >
