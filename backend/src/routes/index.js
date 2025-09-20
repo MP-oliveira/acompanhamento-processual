@@ -10,6 +10,7 @@ import emailRoutes from './emailRoutes.js';
 import webhookRoutes from './webhookRoutes.js';
 import testRoutes from './testRoutes.js';
 import auditRoutes from './auditRoutes.js';
+import pushNotificationRoutes from './pushNotificationRoutes.js';
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.use('/relatorios', relatorioRoutes);
 router.use('/email', emailRoutes);
 router.use('/test', testRoutes);
 router.use('/audit', auditRoutes);
+router.use('/push', pushNotificationRoutes);
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);
