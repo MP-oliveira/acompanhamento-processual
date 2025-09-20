@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpeza de Cache - JurisAcompanha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #c82333;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Limpeza de Cache</h1>
+        <div class="info">
+            <strong>⚠️ IMPORTANTE:</strong> Este script irá limpar completamente o cache do Service Worker e forçar uma atualização da aplicação.
+        </div>
+        
+        <button onclick="clearServiceWorker()">🗑️ Limpar Service Worker</button>
+        <button onclick="clearAllCache()">💥 Limpar Todo Cache</button>
+        <button onclick="reloadApp()">🔄 Recarregar Aplicação</button>
+        
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        function showResults(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += `<div>${message}</div>`;
+        }
+
+        async function clearServiceWorker() {
+            showStatus('🗑️ Limpando Service Worker...', 'info');
+            
+            try {
+                if ('serviceWorker' in navigator) {
+                    // Desregistrar todos os service workers
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    showResults(`📋 Encontrados ${registrations.length} service workers`);
+                    
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        showResults(`✅ Service Worker desregistrado: ${registration.scope}`);
+                    }
+                    
+                    showStatus('✅ Service Workers removidos com sucesso!', 'success');
+                } else {
+                    showStatus('ℹ️ Service Worker não suportado neste navegador', 'info');
+                }
+            } catch (error) {
+                showStatus(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearAllCache() {
+            showStatus('💥 Limpando todos os caches...', 'info');
+            
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    showResults(`📋 Encontrados ${cacheNames.length} caches`);
+                    
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        showResults(`✅ Cache removido: ${cacheName}`);
+                    }
+                    
+                    showStatus('✅ Todos os caches foram limpos!', 'success');
+                } else {
+                    showStatus('ℹ️ Cache API não suportada neste navegador', 'info');
+                }
+            } catch (error) {
+                showStatus(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        function reloadApp() {
+            showStatus('🔄 Recarregando aplicação...', 'info');
+            
+            // Limpar localStorage e sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            showResults('✅ Storage limpo');
+            
+            // Forçar reload sem cache
+            setTimeout(() => {
+                window.location.href = '/?t=' + Date.now();
+            }, 1000);
+        }
+
+        // Auto-executar limpeza ao carregar
+        window.addEventListener('load', () => {
+            showResults('🚀 Página de limpeza carregada');
+            showResults('💡 Clique nos botões acima para limpar o cache');
+        });
+    </script>
+</body>
+</html>
