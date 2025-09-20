@@ -405,6 +405,34 @@
   max-width: 400px;
 }
 
+.relatorios-empty .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.relatorios-empty .btn svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* Botão específico do primeiro relatório */
+.btn-first-report {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--spacing-sm) !important;
+}
+
+.btn-first-report svg {
+  flex-shrink: 0 !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: white !important;
+}
+
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
   .relatorios-grid {
