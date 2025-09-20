@@ -1,6 +1,11 @@
 import express from 'express';
 import { auth } from '../middlewares/auth.js';
 import {
+  validateRouteParams,
+  validateQueryParams,
+  validateMaliciousContent
+} from '../middlewares/inputValidation.js';
+import {
   listarAlertas,
   buscarAlerta,
   marcarComoLido,
@@ -11,15 +16,18 @@ import {
 
 const router = express.Router();
 
+// Middleware de validação de conteúdo malicioso para todas as rotas
+router.use(validateMaliciousContent);
+
 // Todas as rotas de alertas requerem autenticação
 router.use(auth);
 
 // CRUD de alertas
-router.get('/', listarAlertas);
+router.get('/', validateQueryParams(['page', 'limit', 'status', 'priority']), listarAlertas);
 router.get('/stats', estatisticasAlertas);
-router.get('/:id', buscarAlerta);
-router.patch('/:id/read', marcarComoLido);
+router.get('/:id', validateRouteParams({ id: { type: 'number', required: true } }), buscarAlerta);
+router.patch('/:id/read', validateRouteParams({ id: { type: 'number', required: true } }), marcarComoLido);
 router.patch('/mark-multiple', marcarMultiplosComoLidos);
-router.delete('/:id', removerAlerta);
+router.delete('/:id', validateRouteParams({ id: { type: 'number', required: true } }), removerAlerta);
 
 export default router;

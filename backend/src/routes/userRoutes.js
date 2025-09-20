@@ -1,5 +1,12 @@
 import { Router } from 'express';
 import { auth, adminOnly } from '../middlewares/auth.js';
+import {
+  validateCreateUser,
+  validateUpdateUser,
+  validateRouteParams,
+  validateQueryParams,
+  validateMaliciousContent
+} from '../middlewares/inputValidation.js';
 import { 
   getAllUsers,
   getUserById,
@@ -12,18 +19,21 @@ import {
 
 const router = Router();
 
+// Middleware de validação de conteúdo malicioso para todas as rotas
+router.use(validateMaliciousContent);
+
 // Todas as rotas requerem autenticação
 router.use(auth);
 
 // Rotas que requerem permissão de admin
-router.get('/', adminOnly, getAllUsers);
-router.post('/', adminOnly, createUser);
-router.patch('/:id/deactivate', adminOnly, deactivateUser);
-router.patch('/:id/activate', adminOnly, activateUser);
+router.get('/', validateQueryParams(['page', 'limit', 'role', 'status']), adminOnly, getAllUsers);
+router.post('/', validateCreateUser, adminOnly, createUser);
+router.patch('/:id/deactivate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, deactivateUser);
+router.patch('/:id/activate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, activateUser);
 
 // Rotas que qualquer usuário autenticado pode acessar
-router.get('/:id', getUserById);
-router.put('/:id', updateUser);
-router.patch('/:id/password', updatePassword);
+router.get('/:id', validateRouteParams({ id: { type: 'number', required: true } }), getUserById);
+router.put('/:id', validateRouteParams({ id: { type: 'number', required: true } }), validateUpdateUser, updateUser);
+router.patch('/:id/password', validateRouteParams({ id: { type: 'number', required: true } }), updatePassword);
 
 export default router;
