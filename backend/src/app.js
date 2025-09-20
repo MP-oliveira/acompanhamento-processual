@@ -18,25 +18,32 @@ import { errorHandler, notFound } from './middlewares/error.js';
 import { sequelize } from './models/index.js';
 import alertScheduler from './services/alertScheduler.js';
 import logger from './config/logger.js';
+import { 
+  securityHeaders, 
+  corsSecurityHeaders, 
+  apiSecurityHeaders,
+  authSecurityHeaders 
+} from './middlewares/securityHeaders.js';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
 
 const app = express();
 
-// Middlewares de segurança
+// Middlewares de segurança customizados
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
+  // Configuração básica do helmet
+  contentSecurityPolicy: false, // Desabilitamos para usar nossa configuração customizada
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false
 }));
 
-// CORS
+// Headers de segurança customizados
+app.use(securityHeaders);
+
+// CORS com headers de segurança
+app.use(corsSecurityHeaders);
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -47,8 +54,9 @@ app.use(cors({
     process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app'
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
 }));
 
 // Rate limiting geral para proteção contra ataques
@@ -92,6 +100,12 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// Headers específicos para APIs
+app.use('/api', apiSecurityHeaders);
+
+// Headers específicos para autenticação
+app.use('/api/auth', authSecurityHeaders);
 
 // Documentação da API
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
