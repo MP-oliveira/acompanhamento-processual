@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configuração base da API
 // Sempre usar backend do Vercel em produção
-const API_BASE_URL = 'https://backend-gfn5anwdx-mauricio-silva-oliveiras-projects.vercel.app/api';
+const API_BASE_URL = 'https://backend-ng73c2fqq-mauricio-silva-oliveiras-projects.vercel.app/api';
 
 console.log('🔗 API URL:', API_BASE_URL, '| Hostname:', window.location.hostname);
 
