@@ -459,6 +459,15 @@
 
 .page-header {
   margin-bottom: var(--spacing-2xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.page-header-content {
+  flex: 1;
 }
 
 .page-title {
@@ -470,6 +479,13 @@
   color: var(--text-secondary);
   font-size: 1.125rem;
   font-weight: 400;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .page-content {
