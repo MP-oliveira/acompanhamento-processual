@@ -23,7 +23,7 @@ router.use(validateMaliciousContent);
 router.use(auth);
 
 // CRUD de alertas
-router.get('/', validateQueryParams(['page', 'limit', 'status', 'priority']), listarAlertas);
+router.get('/', validateQueryParams(['page', 'limit', 'status', 'priority', 'search']), listarAlertas);
 router.get('/stats', estatisticasAlertas);
 router.get('/:id', validateRouteParams({ id: { type: 'number', required: true } }), buscarAlerta);
 router.patch('/:id/read', validateRouteParams({ id: { type: 'number', required: true } }), marcarComoLido);

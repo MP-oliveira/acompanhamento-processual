@@ -26,7 +26,7 @@ router.use(validateMaliciousContent);
 router.use(auth);
 
 // Rotas que requerem permissão de admin
-router.get('/', validateQueryParams(['page', 'limit', 'role', 'status']), adminOnly, getAllUsers);
+router.get('/', validateQueryParams(['page', 'limit', 'role', 'status', 'search']), adminOnly, getAllUsers);
 router.post('/', validateCreateUser, adminOnly, createUser);
 router.patch('/:id/deactivate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, deactivateUser);
 router.patch('/:id/activate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, activateUser);

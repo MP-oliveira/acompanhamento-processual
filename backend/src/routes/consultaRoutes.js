@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { auth } from '../middlewares/auth.js';
+import { validateQueryParams } from '../middlewares/inputValidation.js';
 import {
   listarConsultas,
   buscarConsulta,
@@ -14,7 +15,7 @@ const router = Router();
 router.use(auth);
 
 // CRUD de consultas
-router.get('/', listarConsultas);
+router.get('/', validateQueryParams(['page', 'limit', 'search', 'tipo', 'status', 'data']), listarConsultas);
 router.get('/stats', estatisticasConsultas);
 router.get('/:id', buscarConsulta);
 router.post('/', criarConsulta);

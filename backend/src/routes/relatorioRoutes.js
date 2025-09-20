@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { auth } from '../middlewares/auth.js';
+import { validateQueryParams } from '../middlewares/inputValidation.js';
 import {
   listarRelatorios,
   buscarRelatorio,
@@ -14,7 +15,7 @@ const router = Router();
 router.use(auth);
 
 // CRUD de relatórios
-router.get('/', listarRelatorios);
+router.get('/', validateQueryParams(['page', 'limit', 'search', 'tipo', 'status']), listarRelatorios);
 router.get('/stats', estatisticasRelatorios);
 router.get('/:id', buscarRelatorio);
 router.post('/', gerarRelatorio);
