@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import PushNotificationSettings from '../PushNotificationSettings/PushNotificationSettings';
+import NotificationPreferences from '../NotificationPreferences/NotificationPreferences';
 import './Configuracoes.css';
 
 const Configuracoes = () => {
@@ -458,6 +459,9 @@ const Configuracoes = () => {
               
               {/* Push Notifications */}
               <PushNotificationSettings />
+              
+              {/* Notification Preferences */}
+              <NotificationPreferences />
             </div>
           </div>
         )}

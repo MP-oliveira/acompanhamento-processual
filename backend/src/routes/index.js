@@ -11,6 +11,8 @@ import webhookRoutes from './webhookRoutes.js';
 import testRoutes from './testRoutes.js';
 import auditRoutes from './auditRoutes.js';
 import pushNotificationRoutes from './pushNotificationRoutes.js';
+import emailNotificationRoutes from './emailNotificationRoutes.js';
+import notificationPreferencesRoutes from './notificationPreferencesRoutes.js';
 
 const router = Router();
 
@@ -30,6 +32,8 @@ router.use('/email', emailRoutes);
 router.use('/test', testRoutes);
 router.use('/audit', auditRoutes);
 router.use('/push', pushNotificationRoutes);
+router.use('/email-notifications', emailNotificationRoutes);
+router.use('/notification-preferences', notificationPreferencesRoutes);
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);
