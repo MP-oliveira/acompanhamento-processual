@@ -27,10 +27,10 @@ export const passwordResetLimiter = rateLimit({
 
 // Rate limiting para registro de usuários
 export const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
-  max: 3, // máximo 3 registros por hora por IP
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10, // máximo 10 registros por 15 minutos por IP (temporário para testes)
   message: {
-    error: 'Muitas tentativas de registro. Tente novamente em 1 hora.',
+    error: 'Muitas tentativas de registro. Tente novamente em 15 minutos.',
     code: 'TOO_MANY_REGISTER_ATTEMPTS'
   },
   standardHeaders: true,

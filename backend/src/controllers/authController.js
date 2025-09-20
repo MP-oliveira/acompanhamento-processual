@@ -3,6 +3,7 @@ import Joi from 'joi';
 import { Op } from 'sequelize';
 import { User } from '../models/index.js';
 import logger from '../config/logger.js';
+import { validatePassword, calculatePasswordStrength } from '../utils/passwordValidator.js';
 
 // Esquemas de validação
 const loginSchema = Joi.object({
@@ -26,8 +27,7 @@ const registerSchema = Joi.object({
     'string.email': 'Email deve ser válido',
     'any.required': 'Email é obrigatório'
   }),
-  password: Joi.string().min(6).required().messages({
-    'string.min': 'Senha deve ter pelo menos 6 caracteres',
+  password: Joi.string().required().messages({
     'any.required': 'Senha é obrigatória'
   }),
   role: Joi.string().valid('admin', 'user').default('user')
@@ -50,6 +50,18 @@ export const register = async (req, res) => {
       });
     }
 
+    // Valida a senha com política de segurança
+    const passwordValidation = validatePassword(value.password, value.email);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Senha não atende aos critérios de segurança',
+        details: passwordValidation.errors.map(error => ({
+          field: 'password',
+          message: error
+        }))
+      });
+    }
+
     // Verifica se o email já existe
     const userExists = await User.findOne({ where: { email: value.email } });
     if (userExists) {
@@ -57,6 +69,9 @@ export const register = async (req, res) => {
         error: 'Email já cadastrado'
       });
     }
+
+    // Calcula a força da senha para log
+    const passwordStrength = calculatePasswordStrength(value.password, value.email);
 
     // Cria o usuário
     const user = await User.create({
@@ -69,11 +84,12 @@ export const register = async (req, res) => {
     // Remove a senha do retorno
     const { password, ...userWithoutPassword } = user.toJSON();
 
-    logger.info(`Usuário registrado com sucesso: ${user.email}`);
+    logger.info(`Usuário registrado com sucesso: ${user.email} (Força da senha: ${passwordStrength}%)`);
 
     res.status(201).json({
       message: 'Usuário registrado com sucesso',
-      user: userWithoutPassword
+      user: userWithoutPassword,
+      passwordStrength: passwordStrength
     });
   } catch (error) {
     logger.error('Erro ao registrar usuário:', error);
