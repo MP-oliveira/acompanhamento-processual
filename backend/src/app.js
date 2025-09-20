@@ -51,7 +51,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Rate limiting para proteção contra ataques
+// Rate limiting geral para proteção contra ataques
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 100, // máximo 100 requests por IP por janela
@@ -61,6 +61,9 @@ const generalLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Importar limitadores específicos
+import { loginLimiter, passwordResetLimiter, registerLimiter } from './middlewares/rateLimiting.js';
 
 // Slow down para requests suspeitos
 const speedLimiter = slowDown({
