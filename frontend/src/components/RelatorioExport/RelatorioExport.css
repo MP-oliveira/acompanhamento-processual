@@ -1,0 +1,114 @@
+/* Relatorio Export Component */
+.relatorio-export {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.relatorio-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  min-width: 60px;
+  justify-content: center;
+}
+
+.relatorio-export-btn:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+}
+
+.relatorio-export-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.relatorio-export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.relatorio-export-pdf {
+  border-color: var(--error-300);
+  color: var(--error-600);
+}
+
+.relatorio-export-pdf:hover:not(:disabled) {
+  background: var(--error-50);
+  border-color: var(--error-400);
+}
+
+.relatorio-export-word {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+}
+
+.relatorio-export-word:hover:not(:disabled) {
+  background: var(--primary-50);
+  border-color: var(--primary-400);
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .relatorio-export-btn {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+  color: var(--text-primary-dark);
+}
+
+[data-theme="dark"] .relatorio-export-btn:hover:not(:disabled) {
+  background: var(--bg-tertiary-dark);
+  border-color: var(--border-medium-dark);
+}
+
+[data-theme="dark"] .relatorio-export-pdf {
+  border-color: var(--error-400);
+  color: var(--error-400);
+}
+
+[data-theme="dark"] .relatorio-export-pdf:hover:not(:disabled) {
+  background: var(--error-900);
+  border-color: var(--error-500);
+}
+
+[data-theme="dark"] .relatorio-export-word {
+  border-color: var(--primary-400);
+  color: var(--primary-400);
+}
+
+[data-theme="dark"] .relatorio-export-word:hover:not(:disabled) {
+  background: var(--primary-900);
+  border-color: var(--primary-500);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .relatorio-export {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .relatorio-export-btn {
+    width: 100%;
+    min-width: unset;
+  }
+}

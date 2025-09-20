@@ -1,43 +1,72 @@
-// Service Worker para JurisAcompanha PWA
-const CACHE_NAME = 'juris-acompanha-v1.0.0';
-const urlsToCache = [
+// Service Worker para JurisAcompanha PWA - Otimizado
+const CACHE_VERSION = 'v2.0.0';
+const STATIC_CACHE = `juris-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `juris-dynamic-${CACHE_VERSION}`;
+const API_CACHE = `juris-api-${CACHE_VERSION}`;
+
+// Recursos estáticos para cache
+const staticAssets = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-192x192.svg',
+  '/icons/icon-512x512.svg',
+  '/icons/icon-maskable.svg'
 ];
+
+// Estratégias de cache
+const CACHE_STRATEGIES = {
+  // Cache primeiro, depois rede (para assets estáticos)
+  CACHE_FIRST: 'cache-first',
+  // Rede primeiro, depois cache (para APIs)
+  NETWORK_FIRST: 'network-first',
+  // Stale while revalidate (para conteúdo dinâmico)
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+};
 
 // Instalar Service Worker
 self.addEventListener('install', (event) => {
   console.log('🔧 Service Worker instalando...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('📦 Cache aberto');
-        return cache.addAll(urlsToCache);
+    Promise.all([
+      caches.open(STATIC_CACHE).then(cache => {
+        console.log('📦 Cache estático aberto');
+        return cache.addAll(staticAssets);
+      }),
+      caches.open(DYNAMIC_CACHE).then(cache => {
+        console.log('📦 Cache dinâmico aberto');
+        return Promise.resolve();
+      }),
+      caches.open(API_CACHE).then(cache => {
+        console.log('📦 Cache de API aberto');
+        return Promise.resolve();
       })
-      .catch((error) => {
-        console.error('❌ Erro ao cachear recursos:', error);
-      })
+    ]).catch((error) => {
+      console.error('❌ Erro ao cachear recursos:', error);
+    })
   );
+  // Força ativação imediata
+  self.skipWaiting();
 });
 
 // Ativar Service Worker
 self.addEventListener('activate', (event) => {
   console.log('✅ Service Worker ativado');
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      // Limpar caches antigos
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (!cacheName.includes(CACHE_VERSION)) {
+              console.log('🗑️ Removendo cache antigo:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // Tomar controle de todas as abas
+      self.clients.claim()
+    ])
   );
 });
 
@@ -55,65 +84,104 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Estratégia: Cache First para recursos estáticos, Network First para API
-  if (event.request.url.includes('/api/')) {
-    // Para APIs: Network First
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Se a resposta é válida, clone e armazene no cache
-          if (response.status === 200 && response.type === 'basic') {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              try {
-                cache.put(event.request, responseClone);
-              } catch (error) {
-                console.warn('Não foi possível cachear a resposta:', error);
-              }
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          // Se a rede falha, tenta buscar no cache
-          return caches.match(event.request);
-        })
-    );
+  const url = new URL(event.request.url);
+  
+  // Determinar estratégia de cache baseada no tipo de recurso
+  if (url.pathname.startsWith('/api/')) {
+    // APIs: Network First
+    event.respondWith(networkFirstStrategy(event.request, API_CACHE));
+  } else if (url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
+    // Assets estáticos: Cache First
+    event.respondWith(cacheFirstStrategy(event.request, STATIC_CACHE));
+  } else if (url.pathname.startsWith('/assets/')) {
+    // Assets do Vite: Cache First
+    event.respondWith(cacheFirstStrategy(event.request, STATIC_CACHE));
   } else {
-    // Para recursos estáticos: Cache First
-    event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          // Se encontrou no cache, retorna
-          if (response) {
-            return response;
-          }
-          
-          // Se não encontrou, busca na rede e armazena no cache
-          return fetch(event.request).then((response) => {
-            // Verifica se é uma resposta válida
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clona a resposta
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                try {
-                  cache.put(event.request, responseToCache);
-                } catch (error) {
-                  console.warn('Não foi possível cachear o recurso:', error);
-                }
-              });
-
-            return response;
-          });
-        })
-    );
+    // Páginas HTML: Stale While Revalidate
+    event.respondWith(staleWhileRevalidateStrategy(event.request, DYNAMIC_CACHE));
   }
 });
+
+// Estratégia: Cache First (para assets estáticos)
+async function cacheFirstStrategy(request, cacheName) {
+  try {
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) {
+      console.log('📦 Cache First - Servindo do cache:', request.url);
+      return cachedResponse;
+    }
+
+    console.log('🌐 Cache First - Buscando na rede:', request.url);
+    const networkResponse = await fetch(request);
+    
+    if (networkResponse.ok) {
+      const cache = await caches.open(cacheName);
+      try {
+        await cache.put(request, networkResponse.clone());
+      } catch (error) {
+        console.error('❌ Erro ao salvar no cache:', error);
+      }
+    }
+    
+    return networkResponse;
+  } catch (error) {
+    console.error('❌ Erro na estratégia Cache First:', error);
+    throw error;
+  }
+}
+
+// Estratégia: Network First (para APIs)
+async function networkFirstStrategy(request, cacheName) {
+  try {
+    console.log('🌐 Network First - Tentando rede primeiro:', request.url);
+    const networkResponse = await fetch(request);
+    
+    if (networkResponse.ok) {
+      const cache = await caches.open(cacheName);
+      try {
+        await cache.put(request, networkResponse.clone());
+      } catch (error) {
+        console.error('❌ Erro ao salvar no cache:', error);
+      }
+    }
+    
+    return networkResponse;
+  } catch (error) {
+    console.log('📦 Network First - Fallback para cache:', request.url);
+    const cachedResponse = await caches.match(request);
+    
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+    
+    // Se não há cache e rede falhou, retorna erro
+    throw error;
+  }
+}
+
+// Estratégia: Stale While Revalidate (para páginas)
+async function staleWhileRevalidateStrategy(request, cacheName) {
+  const cachedResponse = await caches.match(request);
+  
+  // Busca na rede em background
+  const networkResponsePromise = fetch(request).then(response => {
+    if (response.ok) {
+      const cache = caches.open(cacheName);
+      try {
+        cache.then(c => c.put(request, response.clone()));
+      } catch (error) {
+        console.error('❌ Erro ao salvar no cache:', error);
+      }
+    }
+    return response;
+  }).catch(error => {
+    console.error('❌ Erro na busca em background:', error);
+    return null;
+  });
+  
+  // Retorna cache imediatamente se disponível, senão aguarda rede
+  return cachedResponse || networkResponsePromise;
+}
 
 // Notificações Push (para futuras implementações)
 self.addEventListener('push', (event) => {

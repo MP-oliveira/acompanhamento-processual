@@ -17,6 +17,7 @@ import {
   Plus
 } from 'lucide-react';
 import { relatorioService } from '../../services/api';
+import RelatorioExport from '../RelatorioExport/RelatorioExport';
 import './Relatorios.css';
 
 const Relatorios = () => {
@@ -86,9 +87,14 @@ const Relatorios = () => {
     }
   };
 
-  const handleDownload = (relatorioId) => {
-    console.log('Download relatório:', relatorioId);
-    // Implementar download quando necessário
+  const handleExportSuccess = (relatorioId, type) => {
+    console.log(`Relatório ${relatorioId} exportado como ${type}`);
+    // Aqui você pode adicionar notificação de sucesso
+  };
+
+  const handleExportError = (error) => {
+    console.error('Erro na exportação:', error);
+    // Aqui você pode adicionar notificação de erro
   };
 
   const handleVisualizar = (relatorioId) => {
@@ -430,14 +436,12 @@ const Relatorios = () => {
                     <Eye size={16} />
                     Visualizar
                   </button>
-                  <button 
-                    className="btn btn-sm btn-primary"
-                    onClick={() => handleDownload(relatorio.id)}
-                    disabled={relatorio.status !== 'concluido'}
-                  >
-                    <Download size={16} />
-                    Download
-                  </button>
+                  <RelatorioExport 
+                    relatorio={relatorio}
+                    onSuccess={(type) => handleExportSuccess(relatorio.id, type)}
+                    onError={handleExportError}
+                    className={relatorio.status !== 'concluido' ? 'disabled' : ''}
+                  />
                 </div>
               </div>
             ))}

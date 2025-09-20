@@ -16,8 +16,7 @@ import {
   RefreshCw,
   X
 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import { saveAs } from 'file-saver';
+// Lazy loading de bibliotecas pesadas - só carregam quando necessário
 import { consultaService } from '../../services/api';
 import './Consultas.css';
 
@@ -33,6 +32,8 @@ const Consultas = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedConsulta, setSelectedConsulta] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [exportingPDF, setExportingPDF] = useState(false);
+  const [exportingWord, setExportingWord] = useState(false);
 
   // Buscar consultas do backend
   useEffect(() => {
@@ -139,11 +140,13 @@ const Consultas = () => {
     setSelectedConsulta(null);
   };
 
-  // Função para exportar em PDF
-  const handleExportPDF = () => {
+  // Função para exportar em PDF (lazy loading)
+  const handleExportPDF = async () => {
     if (!selectedConsulta) return;
 
     try {
+      // Lazy loading do jsPDF
+      const { default: jsPDF } = await import('jspdf');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const margin = 20;
@@ -224,11 +227,13 @@ const Consultas = () => {
     }
   };
 
-  // Função para exportar em Word (HTML compatível)
-  const handleExportWord = () => {
+  // Função para exportar em Word (lazy loading)
+  const handleExportWord = async () => {
     if (!selectedConsulta) return;
 
     try {
+      // Lazy loading do file-saver
+      const { saveAs } = await import('file-saver');
       let htmlContent = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" 
               xmlns:w="urn:schemas-microsoft-com:office:word" 
