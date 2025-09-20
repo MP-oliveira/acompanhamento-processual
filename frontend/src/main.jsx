@@ -2,7 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 
-// Service Worker para Push Notifications
+// Service Worker para Push Notifications (temporariamente desabilitado)
+/*
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Registrar o Service Worker para Push Notifications
@@ -17,6 +18,7 @@ if ('serviceWorker' in navigator) {
 } else {
   console.log('ℹ️ Service Worker não suportado');
 }
+*/
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
