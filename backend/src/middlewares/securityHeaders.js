@@ -160,8 +160,10 @@ export const authSecurityHeaders = (req, res, next) => {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   
-  // Previne cache de dados sensíveis
-  res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
+  // Previne cache de dados sensíveis (apenas em logout)
+  if (req.path.includes('/logout') || req.method === 'POST') {
+    res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
+  }
   
   next();
 };

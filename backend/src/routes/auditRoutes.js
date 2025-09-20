@@ -1,7 +1,7 @@
 import express from 'express';
 import { body, query, param } from 'express-validator';
 import AuditController from '../controllers/auditController.js';
-import { authenticate } from '../middleware/auth.js';
+import { auth as authenticate } from '../middlewares/auth.js';
 import { auditMiddleware } from '../middlewares/auditMiddleware.js';
 
 const router = express.Router();
