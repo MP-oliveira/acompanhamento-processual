@@ -2,25 +2,20 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/server.js",
+      "src": "vercel-server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["node_modules/pg/**"]
+        "maxDuration": 30
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/server.js"
+      "dest": "vercel-server.js"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "src/server.js": {
-      "maxDuration": 30
-    }
   }
 }
