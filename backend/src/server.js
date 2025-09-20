@@ -1,5 +1,6 @@
 import app, { initializeApp } from './app.js';
 import logger from './config/logger.js';
+import { setupSocket } from './config/socket.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -9,7 +10,7 @@ const startServer = async () => {
     await initializeApp();
 
     // Inicia o servidor HTTP
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       logger.info(`🚀 Servidor rodando na porta ${PORT}`);
       logger.info(`📚 Documentação disponível em http://localhost:${PORT}/docs`);
       logger.info(`🔗 API disponível em http://localhost:${PORT}/api`);
@@ -19,6 +20,13 @@ const startServer = async () => {
         logger.info('📊 Logs detalhados habilitados');
       }
     });
+
+    // Configurar Socket.io
+    const io = setupSocket(server);
+    logger.info('🔌 Socket.io configurado com sucesso');
+    
+    // Tornar io disponível globalmente
+    global.io = io;
 
   } catch (error) {
     logger.error('❌ Erro ao iniciar o servidor:', error);

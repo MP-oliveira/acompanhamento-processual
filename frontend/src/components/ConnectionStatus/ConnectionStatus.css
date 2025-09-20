@@ -1,0 +1,54 @@
+/* Connection Status */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.connection-status.connected {
+  background: var(--success-100);
+  color: var(--success-700);
+  border: 1px solid var(--success-200);
+}
+
+.connection-status.disconnected {
+  background: var(--warning-100);
+  color: var(--warning-700);
+  border: 1px solid var(--warning-200);
+}
+
+.connection-status.error {
+  background: var(--error-100);
+  color: var(--error-700);
+  border: 1px solid var(--error-200);
+}
+
+.connection-status svg {
+  flex-shrink: 0;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .connection-status.connected {
+    background: var(--success-900);
+    color: var(--success-300);
+    border-color: var(--success-700);
+  }
+
+  .connection-status.disconnected {
+    background: var(--warning-900);
+    color: var(--warning-300);
+    border-color: var(--warning-700);
+  }
+
+  .connection-status.error {
+    background: var(--error-900);
+    color: var(--error-300);
+    border-color: var(--error-700);
+  }
+}

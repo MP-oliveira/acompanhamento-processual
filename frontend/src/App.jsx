@@ -15,6 +15,7 @@ import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import performanceMetrics from './utils/performanceMetrics';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -132,6 +133,9 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Configurar atualizações em tempo real quando autenticado
+  useRealtimeUpdates();
 
   // Verifica se há token válido ao carregar a aplicação
   useEffect(() => {
