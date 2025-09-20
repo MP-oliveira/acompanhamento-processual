@@ -22,15 +22,11 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      console.log('🔔 Buscando alertas...');
       const response = await alertService.getAll();
       const alerts = response.alertas || [];
-      console.log('📊 Total de alertas recebidos:', alerts.length);
-      console.log('📊 Alertas:', alerts.map(a => ({ id: a.id, lido: a.lido, titulo: a.titulo })));
       
       // Converter alertas em notificações (apenas não lidas)
       const unreadAlerts = alerts.filter(alert => !alert.lido);
-      console.log('📊 Alertas não lidos:', unreadAlerts.length);
       
       const notificationsData = unreadAlerts.slice(0, 5).map(alert => ({
         id: alert.id,
@@ -43,7 +39,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
         icon: AlertTriangle
       }));
       setNotifications(notificationsData);
-      console.log('🔔 Notificações atualizadas:', notificationsData.length);
     } catch (error) {
       console.error('🔔 Erro ao buscar notificações:', error);
       setNotifications([]);
@@ -165,24 +160,18 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   };
 
   const handleNotificationClick = async (notification) => {
-    console.log('🔔 Clicando na notificação:', notification);
     
     // Marcar como lida se não estiver lida
     if (notification.unread && notification.alertId) {
       try {
-        console.log('🔔 Marcando alerta como lido:', notification.alertId);
         await alertService.markAsRead(notification.alertId);
-        console.log('✅ Alerta marcado como lido com sucesso');
         
         // Atualizar imediatamente a lista local (otimização)
         setNotifications(prev => prev.filter(n => n.id !== notification.id));
-        console.log('🔄 Lista local atualizada');
         
         // Recarregar notificações para sincronizar com o backend
         setTimeout(async () => {
-          console.log('🔄 Sincronizando com backend...');
           await fetchNotifications();
-          console.log('✅ Sincronização completa');
         }, 100);
         
       } catch (error) {
@@ -218,7 +207,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   };
 
   const unreadCount = notifications.length; // Todas as notificações são não lidas por definição
-  console.log('🔔 Contador de notificações:', unreadCount);
 
   return (
     <header className="topbar">
@@ -310,7 +298,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
                   <button 
                     className="topbar-notification-refresh"
                     onClick={() => {
-                      console.log('🔄 Refresh manual solicitado');
                       fetchNotifications();
                     }}
                     disabled={loading}

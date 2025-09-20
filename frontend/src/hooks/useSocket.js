@@ -29,13 +29,11 @@ export const useSocket = () => {
 
     // Eventos de conexão
     socket.on('connect', () => {
-      console.log('🔌 Conectado ao WebSocket');
       setIsConnected(true);
       setConnectionError(null);
     });
 
     socket.on('disconnect', (reason) => {
-      console.log('🔌 Desconectado do WebSocket:', reason);
       setIsConnected(false);
     });
 
@@ -47,7 +45,6 @@ export const useSocket = () => {
 
     // Evento de pong para manter conexão ativa
     socket.on('pong', () => {
-      console.log('🏓 Pong recebido');
     });
 
     // Cleanup ao desmontar

@@ -17,7 +17,6 @@ const NovoProcesso = () => {
     try {
       // Chama a API para criar o processo
       const response = await processoService.create(formData);
-      console.log('Processo criado com sucesso:', response);
       
       // Redireciona para a lista de processos
       navigate('/processos', { 

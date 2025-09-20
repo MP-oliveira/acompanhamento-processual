@@ -71,7 +71,6 @@ const Configuracoes = () => {
       try {
         // TODO: Implementar carregamento de configurações via API
         // Por enquanto, mantém os dados mockados
-        console.log('Carregando configurações...');
       } catch (error) {
         console.error('Erro ao carregar configurações:', error);
       } finally {
@@ -139,7 +138,6 @@ const Configuracoes = () => {
     
     try {
       // TODO: Implementar salvamento de configurações via API
-      console.log('Salvando configurações:', configuracoes);
       
       // Simula delay da API
       await new Promise(resolve => setTimeout(resolve, 1000));

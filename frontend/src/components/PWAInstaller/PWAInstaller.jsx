@@ -32,7 +32,6 @@ const PWAInstaller = () => {
       setIsInstalled(true);
       setShowInstallBanner(false);
       setDeferredPrompt(null);
-      console.log('✅ PWA instalado com sucesso!');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -55,10 +54,8 @@ const PWAInstaller = () => {
       const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
-        console.log('✅ Usuário aceitou a instalação');
         setShowInstallBanner(false);
       } else {
-        console.log('❌ Usuário rejeitou a instalação');
       }
       
       setDeferredPrompt(null);

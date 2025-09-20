@@ -88,7 +88,6 @@ const Relatorios = () => {
   };
 
   const handleExportSuccess = (relatorioId, type) => {
-    console.log(`Relatório ${relatorioId} exportado como ${type}`);
     // Aqui você pode adicionar notificação de sucesso
   };
 
@@ -98,7 +97,6 @@ const Relatorios = () => {
   };
 
   const handleVisualizar = (relatorioId) => {
-    console.log('Visualizar relatório:', relatorioId);
     // Implementar visualização quando necessário
   };
 

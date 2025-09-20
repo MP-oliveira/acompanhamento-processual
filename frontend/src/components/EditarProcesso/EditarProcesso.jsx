@@ -41,7 +41,6 @@ const EditarProcesso = () => {
     try {
       // Chama a API para atualizar o processo
       const response = await processoService.update(id, formData);
-      console.log('Processo atualizado com sucesso:', response);
       
       // Redireciona para a lista de processos
       navigate('/processos', { 

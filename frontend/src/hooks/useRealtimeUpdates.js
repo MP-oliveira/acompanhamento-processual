@@ -14,7 +14,6 @@ export const useRealtimeUpdates = () => {
       return;
     }
 
-    console.log('🔄 Configurando atualizações em tempo real...');
 
     // Inscrever-se em atualizações do dashboard
     emit('subscribe_dashboard_updates');
@@ -24,7 +23,6 @@ export const useRealtimeUpdates = () => {
 
     // Eventos de atualização de dados
     const handleProcessUpdate = (data) => {
-      console.log('📄 Processo atualizado:', data);
       
       // Invalidar queries relacionadas a processos
       queryClient.invalidateQueries({ queryKey: ['processos'] });
@@ -37,7 +35,6 @@ export const useRealtimeUpdates = () => {
     };
 
     const handleAlertUpdate = (data) => {
-      console.log('🚨 Alerta atualizado:', data);
       
       // Invalidar queries relacionadas a alertas
       queryClient.invalidateQueries({ queryKey: ['alertas'] });
@@ -45,7 +42,6 @@ export const useRealtimeUpdates = () => {
     };
 
     const handleUserUpdate = (data) => {
-      console.log('👤 Usuário atualizado:', data);
       
       // Invalidar queries relacionadas a usuários
       queryClient.invalidateQueries({ queryKey: ['usuarios'] });
@@ -53,7 +49,6 @@ export const useRealtimeUpdates = () => {
     };
 
     const handleRelatorioUpdate = (data) => {
-      console.log('📊 Relatório atualizado:', data);
       
       // Invalidar queries relacionadas a relatórios
       queryClient.invalidateQueries({ queryKey: ['relatorios'] });
@@ -61,7 +56,6 @@ export const useRealtimeUpdates = () => {
     };
 
     const handleConsultaUpdate = (data) => {
-      console.log('🔍 Consulta atualizada:', data);
       
       // Invalidar queries relacionadas a consultas
       queryClient.invalidateQueries({ queryKey: ['consultas'] });
@@ -69,7 +63,6 @@ export const useRealtimeUpdates = () => {
     };
 
     const handleSystemNotification = (data) => {
-      console.log('🔔 Notificação do sistema:', data);
       
       // Invalidar queries relacionadas ao dashboard
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
@@ -101,7 +94,6 @@ export const useRealtimeUpdates = () => {
   const subscribeToProcess = (processId) => {
     if (isConnected) {
       emit('subscribe_process_updates', { processId });
-      console.log('📄 Inscrito em atualizações do processo:', processId);
     }
   };
 
@@ -109,7 +101,6 @@ export const useRealtimeUpdates = () => {
   const unsubscribeFromProcess = (processId) => {
     if (isConnected && socket) {
       socket.leave(`process_${processId}`);
-      console.log('📄 Cancelada inscrição em atualizações do processo:', processId);
     }
   };
 

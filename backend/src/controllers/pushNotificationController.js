@@ -67,7 +67,6 @@ class PushNotificationController {
         });
       }
 
-      console.log(`✅ Push subscription registrada para usuário ${userId}`);
 
       res.json({
         success: true,
@@ -117,7 +116,6 @@ class PushNotificationController {
       subscription.isActive = false;
       await subscription.save();
 
-      console.log(`✅ Push subscription desregistrada para usuário ${userId}`);
 
       res.json({
         success: true,
@@ -218,7 +216,6 @@ class PushNotificationController {
         })
       );
 
-      console.log(`📱 Notificação de teste enviada: ${successful} sucessos, ${failed} falhas`);
 
       res.json({
         success: true,

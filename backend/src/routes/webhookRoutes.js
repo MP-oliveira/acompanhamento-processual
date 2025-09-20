@@ -9,9 +9,6 @@ const router = express.Router();
 
 // Middleware para logs de webhook
 router.use((req, res, next) => {
-  console.log(`[WEBHOOK] ${req.method} ${req.path} - ${new Date().toISOString()}`);
-  console.log(`[WEBHOOK] Headers:`, req.headers);
-  console.log(`[WEBHOOK] Body:`, req.body);
   next();
 });
 

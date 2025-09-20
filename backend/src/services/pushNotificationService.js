@@ -20,7 +20,6 @@ class PushNotificationService {
   async sendNotification(subscription, payload) {
     try {
       const result = await webpush.sendNotification(subscription, JSON.stringify(payload));
-      console.log('✅ Notificação push enviada:', result.statusCode);
       return { success: true, statusCode: result.statusCode };
     } catch (error) {
       console.error('❌ Erro ao enviar notificação push:', error);
@@ -45,7 +44,6 @@ class PushNotificationService {
     const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
     const failed = results.filter(r => r.status === 'rejected' || !r.value?.success).length;
 
-    console.log(`📊 Bulk notification: ${successful} enviadas, ${failed} falharam`);
 
     return {
       total: subscriptions.length,

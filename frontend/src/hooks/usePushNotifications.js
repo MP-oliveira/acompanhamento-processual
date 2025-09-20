@@ -38,10 +38,8 @@ export const usePushNotifications = () => {
       setPermission(permission);
       
       if (permission === 'granted') {
-        console.log('✅ Permissão para notificações concedida');
         return true;
       } else {
-        console.log('❌ Permissão para notificações negada');
         setError('Permissão para notificações foi negada');
         return false;
       }
@@ -67,7 +65,6 @@ export const usePushNotifications = () => {
     try {
       // Registrar service worker
       const registration = await navigator.serviceWorker.register('/push-sw.js');
-      console.log('✅ Push Service Worker registrado:', registration.scope);
 
       // Aguardar o service worker estar ativo
       await navigator.serviceWorker.ready;
@@ -81,7 +78,6 @@ export const usePushNotifications = () => {
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
       });
 
-      console.log('✅ Push subscription criada:', pushSubscription);
 
       // Enviar subscription para o servidor
       const subscriptionData = {
@@ -93,8 +89,6 @@ export const usePushNotifications = () => {
       };
 
       // await api.post('/push/subscribe', subscriptionData);
-      console.log('Subscription data:', subscriptionData);
-      console.log('✅ Subscription registrada no servidor');
 
       setSubscription(subscriptionData);
       return true;
@@ -116,7 +110,6 @@ export const usePushNotifications = () => {
       // Desregistrar do servidor
       if (subscription) {
         // await api.post('/push/unsubscribe', { endpoint: subscription.endpoint });
-        console.log('Unsubscribing from:', subscription.endpoint);
       }
 
       // Desregistrar do navegador
@@ -129,7 +122,6 @@ export const usePushNotifications = () => {
       }
 
       setSubscription(null);
-      console.log('✅ Push subscription removida');
       return true;
     } catch (error) {
       console.error('❌ Erro ao desregistrar push subscription:', error);
@@ -147,7 +139,6 @@ export const usePushNotifications = () => {
 
     try {
       // await api.post('/push/test', { message });
-      console.log('✅ Notificação de teste simulada:', message);
       return true;
     } catch (error) {
       console.error('❌ Erro ao enviar notificação de teste:', error);

@@ -19,7 +19,6 @@ export const loginLimiter = rateLimit({
         req.ip.includes('localhost') ||
         req.ip.includes('192.168') ||
         req.hostname === 'localhost') {
-      console.log('🔓 Rate limiting desabilitado para desenvolvimento/localhost');
       return true;
     }
     return false;

@@ -50,7 +50,6 @@ const Processos = () => {
   useEffect(() => {
     if (location.state?.message) {
       // Aqui você pode mostrar um toast ou notificação
-      console.log(location.state.message, location.state.type);
     }
   }, [location.state]);
 
@@ -108,7 +107,6 @@ const Processos = () => {
     if (window.confirm(`Tem certeza que deseja excluir ${processoNome}?\n\nEsta ação não pode ser desfeita.`)) {
       try {
         await deleteProcessoMutation.mutateAsync(id);
-        console.log('Processo excluído:', id);
       } catch (error) {
         console.error('Erro ao excluir processo:', error);
         const errorMessage = error.response?.data?.message || 'Erro ao excluir processo. Tente novamente.';

@@ -109,7 +109,6 @@ const Consultas = () => {
   });
 
   const handleNovaConsulta = () => {
-    console.log('Nova consulta');
     // Aqui você pode abrir um modal ou navegar para uma página de nova consulta
   };
 

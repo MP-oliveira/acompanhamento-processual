@@ -117,7 +117,6 @@ const Alertas = () => {
       setAlertas(prev => prev.map(alerta => 
         alerta.id === id ? { ...alerta, lido: true } : alerta
       ));
-      console.log('Alerta marcado como lido:', id);
     } catch (error) {
       console.error('Erro ao marcar alerta como lido:', error);
       const errorMessage = error.response?.data?.message || 'Erro ao marcar alerta como lido. Tente novamente.';
@@ -133,7 +132,6 @@ const Alertas = () => {
         
         // Remove o alerta da lista local
         setAlertas(prev => prev.filter(alerta => alerta.id !== id));
-        console.log('Alerta excluído:', id);
         
         // Mostra mensagem de sucesso
         alert('Alerta excluído com sucesso!');

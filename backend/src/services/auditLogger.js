@@ -46,7 +46,6 @@ class AuditLogger {
 
       // Log no console para desenvolvimento
       if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 AUDIT: ${action} on ${resource} by user ${userId} - ${status}`);
       }
 
       return auditLog;

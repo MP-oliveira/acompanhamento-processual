@@ -224,7 +224,6 @@ class PerformanceMetrics {
   // Log de métricas
   logMetric(type, data) {
     if (process.env.NODE_ENV === 'development') {
-      console.log(`📊 Performance Metric [${type}]:`, data);
     }
     
     // Em produção, enviar para serviço de analytics

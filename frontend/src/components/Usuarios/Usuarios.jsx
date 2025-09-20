@@ -131,7 +131,6 @@ const Usuarios = () => {
   };
 
   const handleEdit = (id) => {
-    console.log('Editar usuário:', id);
     // Implementar edição
   };
 
@@ -145,7 +144,6 @@ const Usuarios = () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         setUsuarios(prev => prev.filter(u => u.id !== id));
-        console.log('Usuário excluído:', id);
         alert('Usuário excluído com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir usuário:', error);
@@ -169,7 +167,6 @@ const Usuarios = () => {
       
       const usuario = usuarios.find(u => u.id === id);
       const novoStatus = usuario?.status === 'ativo' ? 'inativo' : 'ativo';
-      console.log(`Status do usuário ${id} alterado para: ${novoStatus}`);
     } catch (error) {
       console.error('Erro ao alterar status:', error);
       alert('Erro ao alterar status. Tente novamente.');
