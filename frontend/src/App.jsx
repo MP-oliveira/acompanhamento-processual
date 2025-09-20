@@ -20,6 +20,7 @@ import Usuarios from './components/Usuarios/Usuarios';
 import Configuracoes from './components/Configuracoes/Configuracoes';
 import Perfil from './components/Perfil/Perfil';
 import PWAInstaller from './components/PWAInstaller/PWAInstaller';
+import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -108,8 +109,7 @@ function App() {
     return (
       <div className="app">
         <div className="loading-screen">
-          <div className="loading-spinner"></div>
-          <p>Carregando...</p>
+          <LoadingSpinner size="large" text="Carregando aplicação..." />
         </div>
       </div>
     );
