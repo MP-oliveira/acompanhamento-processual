@@ -150,6 +150,78 @@ app.get('/api/users', authenticateToken, (req, res) => {
   }
 });
 
+// Mock de processos para o dashboard
+app.get('/api/processos', authenticateToken, (req, res) => {
+  const mockProcessos = [
+    {
+      id: 1,
+      numero: '1001234-56.2025.1.01.0001',
+      classe: 'Ação de Cobrança',
+      status: 'ativo',
+      proximaAudiencia: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+      prazoRecurso: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+      prazoEmbargos: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 2,
+      numero: '1001235-56.2025.1.01.0001',
+      classe: 'Execução Fiscal',
+      status: 'ativo',
+      proximaAudiencia: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+      prazoRecurso: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
+      prazoEmbargos: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+    }
+  ];
+  
+  res.json({ processos: mockProcessos });
+});
+
+// Mock de alertas para o dashboard
+app.get('/api/alerts', authenticateToken, (req, res) => {
+  const mockAlertas = [
+    {
+      id: 1,
+      titulo: 'Prazo próximo - Audiência',
+      descricao: 'Audiência agendada para próxima semana',
+      tipo: 'prazo',
+      lido: false,
+      prioridade: 'alta',
+      dataPrazo: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 2,
+      titulo: 'Processo atualizado',
+      descricao: 'Novo despacho no processo',
+      tipo: 'atualizacao',
+      lido: true,
+      prioridade: 'media',
+      dataPrazo: null,
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+    }
+  ];
+  
+  res.json({ alertas: mockAlertas });
+});
+
+// Mock de relatórios stats
+app.get('/api/relatorios/stats', authenticateToken, (req, res) => {
+  res.json({
+    total: 5,
+    concluidos: 3,
+    pendentes: 2,
+    estaSemana: 1
+  });
+});
+
+// Mock de perfil do usuário
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+  const { password, ...userWithoutPassword } = req.user;
+  res.json({ user: userWithoutPassword });
+});
+
 // Rota catch-all para SPA
 app.get('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint não encontrado' });

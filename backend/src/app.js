@@ -52,6 +52,8 @@ app.use(cors({
     'http://localhost:5174',
     'http://localhost:5175',
     'http://localhost:5176',
+    'https://jurisacompanha.vercel.app',
+    'https://acompanhamento-processual-kt8g20752.vercel.app',
     process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app'
   ],
   credentials: true,
