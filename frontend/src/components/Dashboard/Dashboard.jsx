@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FileText, 
@@ -10,36 +10,21 @@ import {
   XCircle,
   Plus
 } from 'lucide-react';
-import { processoService, alertService } from '../../services/api';
+import { useProcessos } from '../../hooks/useProcessos';
+import { useAlertas } from '../../hooks/useAlertas';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [processos, setProcessos] = useState([]);
-  const [alertas, setAlertas] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadDashboardData = async () => {
-      setLoading(true);
-      try {
-        const [processosResponse, alertasResponse] = await Promise.all([
-          processoService.getAll(),
-          alertService.getAll()
-        ]);
-        
-        setProcessos(processosResponse.processos || []);
-        setAlertas(alertasResponse.alertas || []);
-      } catch (error) {
-        console.error('Erro ao carregar dados do dashboard:', error);
-        setProcessos([]);
-        setAlertas([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDashboardData();
-  }, []);
+  // Hooks do React Query para buscar dados
+  const { data: processosData, isLoading: loadingProcessos, error: errorProcessos } = useProcessos();
+  const { data: alertasData, isLoading: loadingAlertas, error: errorAlertas } = useAlertas();
+  
+  // Extrair dados das respostas
+  const processos = processosData?.processos || [];
+  const alertas = alertasData?.alertas || [];
+  
+  // Loading geral (qualquer um dos dois ainda carregando)
+  const loading = loadingProcessos || loadingAlertas;
 
   // Calcular estatísticas baseadas nos dados reais
   const getStats = () => {
@@ -241,6 +226,27 @@ const Dashboard = () => {
       default: return 'var(--neutral-500)';
     }
   };
+
+  // Tratamento de erros
+  if (errorProcessos || errorAlertas) {
+    return (
+      <div className="dashboard">
+        <div className="dashboard-error">
+          <div className="dashboard-error-content">
+            <XCircle size={48} className="dashboard-error-icon" />
+            <h3>Erro ao carregar dados</h3>
+            <p>Não foi possível carregar as informações do dashboard. Tente novamente.</p>
+            <button 
+              className="btn btn-primary"
+              onClick={() => window.location.reload()}
+            >
+              Recarregar Página
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
