@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { authService } from './services/api';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -56,6 +57,9 @@ const AppContent = ({
 }) => {
   // Ativar atalhos de teclado dentro do Router
   useKeyboardShortcuts();
+  
+  // Configurar atualizações em tempo real quando autenticado
+  useRealtimeUpdates();
 
   return (
     <div className="app">
@@ -134,9 +138,6 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Configurar atualizações em tempo real quando autenticado
-  useRealtimeUpdates();
-
   // Verifica se há token válido ao carregar a aplicação
   useEffect(() => {
     const checkAuth = async () => {
@@ -213,19 +214,21 @@ function App() {
 
   return (
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AppContent
-            isAuthenticated={isAuthenticated}
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            user={user}
-            handleLogin={handleLogin}
-            handleLogout={handleLogout}
-            loading={loading}
-          />
-        </Router>
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <AppContent
+              isAuthenticated={isAuthenticated}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              user={user}
+              handleLogin={handleLogin}
+              handleLogout={handleLogout}
+              loading={loading}
+            />
+          </Router>
+        </QueryClientProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
