@@ -1,0 +1,218 @@
+/* ===== ALERT GROUP ===== */
+.alert-group {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.alert-group:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+.alert-group-urgent {
+  border-left: 4px solid var(--error-500);
+}
+
+.alert-group-high {
+  border-left: 4px solid var(--warning-500);
+}
+
+.alert-group-medium {
+  border-left: 4px solid var(--info-500);
+}
+
+.alert-group-low {
+  border-left: 4px solid var(--success-500);
+}
+
+/* ===== HEADER ===== */
+.alert-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.alert-group-header:hover {
+  background-color: var(--neutral-50);
+}
+
+.alert-group-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.alert-group-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-group-process {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.alert-group-process-number {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.alert-group-process-number:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+.alert-group-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.alert-group-count {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.alert-group-unread {
+  color: var(--warning-600);
+  font-weight: 600;
+}
+
+.alert-group-priority {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alert-priority-urgent {
+  background-color: var(--error-100);
+  color: var(--error-700);
+}
+
+.alert-priority-high {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.alert-priority-medium {
+  background-color: var(--info-100);
+  color: var(--info-700);
+}
+
+.alert-priority-low {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.alert-group-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.alert-group-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.alert-group-action-btn:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+}
+
+/* ===== CONTENT ===== */
+.alert-group-content {
+  border-top: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+.alert-group-alerts {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.alert-group-show-more {
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  text-align: center;
+}
+
+.alert-group-show-more-btn {
+  background: none;
+  border: none;
+  color: var(--primary-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.alert-group-show-more-btn:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+}
+
+/* ===== COMPACT MODE ===== */
+.alert-group.compact .alert-group-header {
+  padding: var(--spacing-md);
+}
+
+.alert-group.compact .alert-group-process-number {
+  font-size: 0.8rem;
+}
+
+.alert-group.compact .alert-group-count {
+  font-size: 0.8rem;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .alert-group-header {
+    padding: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .alert-group-meta {
+    width: 100%;
+    margin-top: var(--spacing-xs);
+  }
+
+  .alert-group-process {
+    margin-bottom: var(--spacing-xs);
+  }
+}

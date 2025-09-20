@@ -105,6 +105,57 @@
   font-weight: 500;
 }
 
+/* ===== CONTROLES DE VISUALIZAÇÃO ===== */
+.alertas-view-controls {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.alertas-view-toggle {
+  display: flex;
+  background-color: var(--neutral-100);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  gap: var(--spacing-xs);
+}
+
+.alertas-view-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.alertas-view-btn:hover {
+  background-color: var(--neutral-200);
+  color: var(--text-primary);
+}
+
+.alertas-view-btn.active {
+  background-color: var(--primary-500);
+  color: white;
+}
+
+.alertas-view-btn.active:hover {
+  background-color: var(--primary-600);
+}
+
+/* ===== GRUPOS ===== */
+.alertas-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
 /* ===== FILTROS ===== */
 .alertas-filters {
   background-color: var(--bg-secondary);

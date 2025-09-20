@@ -16,8 +16,8 @@
 }
 
 .alert-card-read {
-  opacity: 0.7;
-  background-color: var(--bg-tertiary);
+  opacity: 0.8;
+  background-color: var(--bg-secondary);
 }
 
 /* ===== CORES POR TIPO E PRIORIDADE ===== */

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   AlertTriangle, 
   Bell, 
@@ -15,9 +16,11 @@ import {
 } from 'lucide-react';
 import { alertService } from '../../services/api';
 import AlertCard from '../AlertCard/AlertCard';
+import AlertGroup from '../AlertGroup/AlertGroup';
 import './Alertas.css';
 
 const Alertas = () => {
+  const navigate = useNavigate();
   const [alertas, setAlertas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,6 +29,7 @@ const Alertas = () => {
   const [statusFilter, setStatusFilter] = useState('todos');
   const [sortBy, setSortBy] = useState('dataVencimento');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [groupByProcess, setGroupByProcess] = useState(true);
 
 
   useEffect(() => {
@@ -79,6 +83,31 @@ const Alertas = () => {
     }
   });
 
+  // Agrupa alertas por processo
+  const groupedAlertas = sortedAlertas.reduce((groups, alerta) => {
+    const processoNumero = alerta.processo.numero;
+    if (!groups[processoNumero]) {
+      groups[processoNumero] = {
+        processo: alerta.processo,
+        alertas: [],
+        total: 0,
+        naoLidos: 0,
+        prioridadeMaxima: 'baixa'
+      };
+    }
+    groups[processoNumero].alertas.push(alerta);
+    groups[processoNumero].total++;
+    if (!alerta.lido) groups[processoNumero].naoLidos++;
+    
+    // Determina prioridade máxima do grupo
+    const prioridades = { 'urgente': 4, 'alta': 3, 'media': 2, 'baixa': 1 };
+    if (prioridades[alerta.prioridade] > prioridades[groups[processoNumero].prioridadeMaxima]) {
+      groups[processoNumero].prioridadeMaxima = alerta.prioridade;
+    }
+    
+    return groups;
+  }, {});
+
   const handleMarkAsRead = async (id) => {
     try {
       // Chama a API para marcar como lido
@@ -117,8 +146,12 @@ const Alertas = () => {
   };
 
   const handleViewProcess = (processoId) => {
-    console.log('Visualizar processo:', processoId);
-    // Aqui você pode navegar para a página do processo
+    // Navega para a página de processos e passa o ID para visualizar
+    navigate('/processos', { 
+      state: { 
+        viewProcessId: processoId 
+      } 
+    });
   };
 
   const getStats = () => {
@@ -300,6 +333,28 @@ const Alertas = () => {
         </div>
       </div>
 
+      {/* Controles de Visualização */}
+      <div className="alertas-view-controls">
+        <div className="alertas-view-toggle">
+          <button
+            className={`alertas-view-btn ${groupByProcess ? 'active' : ''}`}
+            onClick={() => setGroupByProcess(true)}
+            title="Agrupar por processo"
+          >
+            <FileText size={16} />
+            Agrupados
+          </button>
+          <button
+            className={`alertas-view-btn ${!groupByProcess ? 'active' : ''}`}
+            onClick={() => setGroupByProcess(false)}
+            title="Visualização individual"
+          >
+            <Bell size={16} />
+            Individuais
+          </button>
+        </div>
+      </div>
+
       {/* Lista de Alertas */}
       <div className="alertas-content">
         {sortedAlertas.length === 0 ? (
@@ -312,6 +367,28 @@ const Alertas = () => {
                 : 'Você não possui alertas no momento.'
               }
             </p>
+          </div>
+        ) : groupByProcess ? (
+          <div className="alertas-groups">
+            {Object.entries(groupedAlertas)
+              .sort(([, a], [, b]) => {
+                const prioridades = { 'urgente': 4, 'alta': 3, 'media': 2, 'baixa': 1 };
+                return prioridades[b.prioridadeMaxima] - prioridades[a.prioridadeMaxima];
+              })
+              .map(([processoNumero, grupo]) => (
+                <AlertGroup
+                  key={processoNumero}
+                  processoNumero={processoNumero}
+                  processo={grupo.processo}
+                  alertas={grupo.alertas}
+                  total={grupo.total}
+                  naoLidos={grupo.naoLidos}
+                  prioridadeMaxima={grupo.prioridadeMaxima}
+                  onMarkAsRead={handleMarkAsRead}
+                  onDelete={handleDelete}
+                  onViewProcess={handleViewProcess}
+                />
+              ))}
           </div>
         ) : (
           <div className="alertas-grid">

@@ -48,6 +48,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Ignorar requisições de extensões do Chrome
+  if (event.request.url.startsWith('chrome-extension://') || 
+      event.request.url.startsWith('moz-extension://') ||
+      event.request.url.startsWith('safari-extension://')) {
+    return;
+  }
+
   // Estratégia: Cache First para recursos estáticos, Network First para API
   if (event.request.url.includes('/api/')) {
     // Para APIs: Network First
@@ -55,10 +62,14 @@ self.addEventListener('fetch', (event) => {
       fetch(event.request)
         .then((response) => {
           // Se a resposta é válida, clone e armazene no cache
-          if (response.status === 200) {
+          if (response.status === 200 && response.type === 'basic') {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
+              try {
+                cache.put(event.request, responseClone);
+              } catch (error) {
+                console.warn('Não foi possível cachear a resposta:', error);
+              }
             });
           }
           return response;
@@ -90,7 +101,11 @@ self.addEventListener('fetch', (event) => {
 
             caches.open(CACHE_NAME)
               .then((cache) => {
-                cache.put(event.request, responseToCache);
+                try {
+                  cache.put(event.request, responseToCache);
+                } catch (error) {
+                  console.warn('Não foi possível cachear o recurso:', error);
+                }
               });
 
             return response;
@@ -106,8 +121,8 @@ self.addEventListener('push', (event) => {
   
   const options = {
     body: event.data ? event.data.text() : 'Nova notificação do JurisAcompanha',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -117,12 +132,12 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'Abrir App',
-        icon: '/icons/icon-96x96.png'
+        icon: '/icons/icon-96x96.svg'
       },
       {
         action: 'close',
         title: 'Fechar',
-        icon: '/icons/icon-96x96.png'
+        icon: '/icons/icon-96x96.svg'
       }
     ]
   };

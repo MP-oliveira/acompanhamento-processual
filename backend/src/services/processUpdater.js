@@ -39,6 +39,7 @@ class ProcessUpdater {
       // Atualiza as informações básicas se disponíveis
       const updateData = {};
       
+      // Atualiza campos básicos se disponíveis
       if (parsedEmail.classe) {
         updateData.classe = parsedEmail.classe;
       }
@@ -50,6 +51,39 @@ class ProcessUpdater {
       if (parsedEmail.dataAutuacao) {
         updateData.dataDistribuicao = parsedEmail.dataAutuacao;
       }
+
+      // Atualiza tribunal e comarca se especificado no email
+      if (parsedEmail.orgao) {
+        updateData.tribunal = parsedEmail.orgao;
+        updateData.comarca = parsedEmail.orgao;
+      }
+
+      // Atualiza status baseado nas movimentações
+      if (parsedEmail.movimentacoes && parsedEmail.movimentacoes.length > 0) {
+        // Verifica se há movimentações que indicam mudança de status
+        const hasSentenca = parsedEmail.movimentacoes.some(m => 
+          m.movimento.toLowerCase().includes('sentença') || 
+          m.movimento.toLowerCase().includes('sentenca')
+        );
+        
+        // Por enquanto mantém sempre como ativo (status permitido no banco)
+        updateData.status = 'ativo';
+        
+        // Verifica se há movimentações que indicam sentença
+        if (hasSentenca) {
+          // Define data da sentença como a data da movimentação mais recente
+          const sentencaMovement = parsedEmail.movimentacoes.find(m => 
+            m.movimento.toLowerCase().includes('sentença') || 
+            m.movimento.toLowerCase().includes('sentenca')
+          );
+          if (sentencaMovement) {
+            updateData.dataSentenca = sentencaMovement.data;
+          }
+        }
+      }
+
+      // Adiciona timestamp de atualização
+      updateData.updatedAt = new Date();
 
       // Atualiza observações com informações do email
       const observacoesAtualizadas = this.updateObservations(
@@ -99,21 +133,50 @@ class ProcessUpdater {
       observations += `\n\n=== ATUALIZAÇÕES VIA EMAIL ===\n`;
     }
 
-    // Adiciona informações do email
-    observations += `\n[${timestamp}] Email recebido do TRF1\n`;
-    observations += `Assunto: ${parsedEmail.emailInfo.subject}\n`;
+    // Adiciona informações do email com formatação melhorada
+    observations += `\n\n═══════════════════════════════════════\n`;
+    observations += `📧 EMAIL RECEBIDO DO TRF1\n`;
+    observations += `⏰ [${timestamp}]\n\n`;
+    observations += `📋 ASSUNTO: ${parsedEmail.emailInfo.subject}\n\n`;
     
     if (parsedEmail.movimentacoes.length > 0) {
-      observations += `Movimentações encontradas: ${parsedEmail.movimentacoes.length}\n`;
+      observations += `📊 MOVIMENTAÇÕES ENCONTRADAS: ${parsedEmail.movimentacoes.length}\n\n`;
       
-      // Adiciona as últimas movimentações
-      const recentMovements = parsedEmail.movimentacoes.slice(-3); // Últimas 3
-      for (const movement of recentMovements) {
+      // Adiciona todas as movimentações com formatação melhorada
+      parsedEmail.movimentacoes.forEach((movement, index) => {
         if (movement.data && movement.movimento) {
           const movementDate = movement.data.toLocaleDateString('pt-BR');
-          observations += `- ${movementDate}: ${movement.movimento}\n`;
+          const movementTime = movement.data.toLocaleTimeString('pt-BR');
+          const documentInfo = movement.documento ? `\n   📄 Documento: ${movement.documento}` : '';
+          
+          observations += `   ${index + 1}. 📅 DATA: ${movementDate} às ${movementTime}\n`;
+          observations += `      📝 MOVIMENTO: ${movement.movimento}${documentInfo}\n\n`;
         }
+      });
+    }
+
+    // Adiciona informações extras do processo se disponíveis
+    if (parsedEmail.dataAutuacao || parsedEmail.tipoDistribuicao || parsedEmail.poloAtivo || parsedEmail.poloPassivo) {
+      observations += `📋 INFORMAÇÕES DO PROCESSO:\n`;
+      
+      if (parsedEmail.dataAutuacao) {
+        const dataAutuacao = parsedEmail.dataAutuacao.toLocaleDateString('pt-BR');
+        observations += `   📅 Data de Autuação: ${dataAutuacao}\n`;
       }
+
+      if (parsedEmail.tipoDistribuicao) {
+        observations += `   ⚖️  Tipo de Distribuição: ${parsedEmail.tipoDistribuicao}\n`;
+      }
+
+      if (parsedEmail.poloAtivo) {
+        observations += `   👤 Polo Ativo: ${parsedEmail.poloAtivo}\n`;
+      }
+
+      if (parsedEmail.poloPassivo) {
+        observations += `   👥 Polo Passivo: ${parsedEmail.poloPassivo}\n`;
+      }
+      
+      observations += `\n═══════════════════════════════════════\n`;
     }
 
     return observations;

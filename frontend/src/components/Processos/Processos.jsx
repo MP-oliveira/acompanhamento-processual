@@ -56,6 +56,20 @@ const Processos = () => {
     }
   }, [location.state]);
 
+  // Abre modal de visualização se veio de um alerta
+  useEffect(() => {
+    if (location.state?.viewProcessId && processos.length > 0) {
+      const processoId = location.state.viewProcessId;
+      const processo = processos.find(p => p.id === processoId);
+      
+      if (processo) {
+        setProcessoSelecionado(processo);
+        // Limpa o estado da navegação para evitar reabrir o modal
+        navigate('/processos', { replace: true });
+      }
+    }
+  }, [location.state, processos, navigate]);
+
   const filteredProcessos = processos.filter(processo => {
     const matchesSearch = 
       processo.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
