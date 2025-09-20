@@ -117,7 +117,10 @@ async function cacheFirstStrategy(request, cacheName) {
     if (networkResponse.ok) {
       const cache = await caches.open(cacheName);
       try {
-        await cache.put(request, networkResponse.clone());
+        // Verificar se a resposta ainda pode ser clonada
+        if (!networkResponse.bodyUsed) {
+          await cache.put(request, networkResponse.clone());
+        }
       } catch (error) {
         console.error('❌ Erro ao salvar no cache:', error);
       }
@@ -139,7 +142,10 @@ async function networkFirstStrategy(request, cacheName) {
     if (networkResponse.ok) {
       const cache = await caches.open(cacheName);
       try {
-        await cache.put(request, networkResponse.clone());
+        // Verificar se a resposta ainda pode ser clonada
+        if (!networkResponse.bodyUsed) {
+          await cache.put(request, networkResponse.clone());
+        }
       } catch (error) {
         console.error('❌ Erro ao salvar no cache:', error);
       }

@@ -1,0 +1,281 @@
+/* Accessible Button Component */
+.accessible-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Variants */
+.accessible-button-primary {
+  background: var(--primary-600);
+  color: white;
+  border-color: var(--primary-600);
+}
+
+.accessible-button-primary:hover:not(:disabled) {
+  background: var(--primary-700);
+  border-color: var(--primary-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.accessible-button-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.accessible-button-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+}
+
+.accessible-button-outline {
+  background: transparent;
+  color: var(--primary-600);
+  border-color: var(--primary-600);
+}
+
+.accessible-button-outline:hover:not(:disabled) {
+  background: var(--primary-50);
+  color: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.accessible-button-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: transparent;
+}
+
+.accessible-button-ghost:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Sizes */
+.accessible-button-sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  min-height: 32px;
+}
+
+.accessible-button-md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-md);
+  min-height: 40px;
+}
+
+.accessible-button-lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  min-height: 48px;
+}
+
+/* States */
+.accessible-button-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.accessible-button-loading {
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.accessible-button-loading .accessible-button-content {
+  opacity: 0.7;
+}
+
+/* Focus ring */
+.accessible-button-focus-ring {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-md);
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.accessible-button:focus .accessible-button-focus-ring {
+  border-color: var(--primary-500);
+}
+
+/* Spinner */
+.accessible-button-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+}
+
+.accessible-button-spinner-svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 1s linear infinite;
+}
+
+.accessible-button-spinner-circle {
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+/* Icon positioning */
+.accessible-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.accessible-button-icon-left {
+  margin-right: var(--spacing-xs);
+}
+
+.accessible-button-icon-right {
+  margin-left: var(--spacing-xs);
+}
+
+/* Content */
+.accessible-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+/* Active state */
+.accessible-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .accessible-button-primary {
+  background: var(--primary-600);
+  color: white;
+  border-color: var(--primary-600);
+}
+
+[data-theme="dark"] .accessible-button-primary:hover:not(:disabled) {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+}
+
+[data-theme="dark"] .accessible-button-secondary {
+  background: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--border-dark);
+}
+
+[data-theme="dark"] .accessible-button-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary-dark);
+  border-color: var(--border-medium-dark);
+}
+
+[data-theme="dark"] .accessible-button-outline {
+  background: transparent;
+  color: var(--primary-400);
+  border-color: var(--primary-400);
+}
+
+[data-theme="dark"] .accessible-button-outline:hover:not(:disabled) {
+  background: var(--primary-900);
+  color: var(--primary-300);
+}
+
+[data-theme="dark"] .accessible-button-ghost {
+  background: transparent;
+  color: var(--text-primary-dark);
+  border-color: transparent;
+}
+
+[data-theme="dark"] .accessible-button-ghost:hover:not(:disabled) {
+  background: var(--bg-tertiary-dark);
+  color: var(--text-primary-dark);
+}
+
+[data-theme="dark"] .accessible-button:focus .accessible-button-focus-ring {
+  border-color: var(--primary-400);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .accessible-button {
+    border-width: 2px;
+  }
+  
+  .accessible-button:focus .accessible-button-focus-ring {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .accessible-button {
+    transition: none;
+  }
+  
+  .accessible-button:hover:not(:disabled) {
+    transform: none;
+  }
+  
+  .accessible-button-spinner-svg {
+    animation: none;
+  }
+  
+  .accessible-button-spinner-circle {
+    animation: none;
+  }
+}
+
+/* Touch targets */
+@media (max-width: 768px) {
+  .accessible-button {
+    min-height: 44px; /* WCAG touch target minimum */
+  }
+  
+  .accessible-button-sm {
+    min-height: 44px;
+  }
+}
