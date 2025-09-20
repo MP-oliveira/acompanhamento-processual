@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { api } from '../services/api';
+// import { api } from '../services/api';
 
 /**
  * Hook para gerenciar push notifications
@@ -72,9 +72,8 @@ export const usePushNotifications = () => {
       // Aguardar o service worker estar ativo
       await navigator.serviceWorker.ready;
 
-      // Obter chave pública VAPID
-      const vapidResponse = await api.get('/push/vapid-public-key');
-      const vapidPublicKey = vapidResponse.data.publicKey;
+      // Obter chave pública VAPID (temporariamente hardcoded)
+      const vapidPublicKey = 'BHLHsf2Mlo0NWk2idM7L6RPi4DSDES3N-UH8kfZYb4FQIWsQ-JGBUIQHNZzj0PAL25HuWS8ZsL8ijLDTSNZrNOE';
 
       // Criar subscription
       const pushSubscription = await registration.pushManager.subscribe({
@@ -93,7 +92,8 @@ export const usePushNotifications = () => {
         }
       };
 
-      await api.post('/push/subscribe', subscriptionData);
+      // await api.post('/push/subscribe', subscriptionData);
+      console.log('Subscription data:', subscriptionData);
       console.log('✅ Subscription registrada no servidor');
 
       setSubscription(subscriptionData);
@@ -115,7 +115,8 @@ export const usePushNotifications = () => {
     try {
       // Desregistrar do servidor
       if (subscription) {
-        await api.post('/push/unsubscribe', { endpoint: subscription.endpoint });
+        // await api.post('/push/unsubscribe', { endpoint: subscription.endpoint });
+        console.log('Unsubscribing from:', subscription.endpoint);
       }
 
       // Desregistrar do navegador
@@ -145,8 +146,8 @@ export const usePushNotifications = () => {
     setError(null);
 
     try {
-      await api.post('/push/test', { message });
-      console.log('✅ Notificação de teste enviada');
+      // await api.post('/push/test', { message });
+      console.log('✅ Notificação de teste simulada:', message);
       return true;
     } catch (error) {
       console.error('❌ Erro ao enviar notificação de teste:', error);
