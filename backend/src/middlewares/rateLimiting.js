@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 // Rate limiting específico para login - CRÍTICO para segurança
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 tentativas de login por IP
+  max: 50, // máximo 50 tentativas de login por IP (aumentado para desenvolvimento)
   message: {
     error: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
     code: 'TOO_MANY_LOGIN_ATTEMPTS'
@@ -11,6 +11,10 @@ export const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // não contar logins bem-sucedidos
+  skip: (req) => {
+    // Pula rate limiting em desenvolvimento local
+    return process.env.NODE_ENV === 'development' && req.ip === '::1';
+  }
 });
 
 // Rate limiting para reset de senha
@@ -28,13 +32,17 @@ export const passwordResetLimiter = rateLimit({
 // Rate limiting para registro de usuários
 export const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 10, // máximo 10 registros por 15 minutos por IP (temporário para testes)
+  max: 100, // máximo 100 registros por 15 minutos por IP (aumentado para desenvolvimento)
   message: {
     error: 'Muitas tentativas de registro. Tente novamente em 15 minutos.',
     code: 'TOO_MANY_REGISTER_ATTEMPTS'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Pula rate limiting em desenvolvimento local
+    return process.env.NODE_ENV === 'development' && req.ip === '::1';
+  }
 });
 
 // Rate limiting para endpoints sensíveis
