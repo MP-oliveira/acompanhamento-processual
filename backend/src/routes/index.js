@@ -9,6 +9,7 @@ import externalRoutes from './externalRoutes.js';
 import emailRoutes from './emailRoutes.js';
 import webhookRoutes from './webhookRoutes.js';
 import testRoutes from './testRoutes.js';
+import auditRoutes from './auditRoutes.js';
 
 const router = Router();
 
@@ -26,6 +27,7 @@ router.use('/consultas', consultaRoutes);
 router.use('/relatorios', relatorioRoutes);
 router.use('/email', emailRoutes);
 router.use('/test', testRoutes);
+router.use('/audit', auditRoutes);
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

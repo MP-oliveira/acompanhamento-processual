@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import { User } from '../models/index.js';
 import logger from '../config/logger.js';
 import { validatePassword, calculatePasswordStrength } from '../utils/passwordValidator.js';
+import AuditLogger from '../services/auditLogger.js';
 
 // Esquemas de validação
 const loginSchema = Joi.object({
@@ -119,6 +120,15 @@ export const login = async (req, res) => {
     // Busca o usuário pelo email
     const user = await User.findOne({ where: { email: value.email } });
     if (!user) {
+      // Log de tentativa de login com email inexistente
+      await AuditLogger.logLogin(
+        null,
+        value.email,
+        req.ip || req.connection.remoteAddress,
+        req.get('User-Agent'),
+        'FAILED'
+      );
+      
       return res.status(401).json({
         error: 'Email ou senha inválidos'
       });
@@ -126,6 +136,15 @@ export const login = async (req, res) => {
 
     // Verifica se o usuário está ativo
     if (!user.ativo) {
+      // Log de tentativa de login com usuário inativo
+      await AuditLogger.logLogin(
+        user.id,
+        value.email,
+        req.ip || req.connection.remoteAddress,
+        req.get('User-Agent'),
+        'FAILED'
+      );
+      
       return res.status(401).json({
         error: 'Usuário inativo'
       });
@@ -134,6 +153,15 @@ export const login = async (req, res) => {
     // Verifica a senha
     const isPasswordValid = await user.comparePassword(value.password);
     if (!isPasswordValid) {
+      // Log de tentativa de login com senha incorreta
+      await AuditLogger.logLogin(
+        user.id,
+        value.email,
+        req.ip || req.connection.remoteAddress,
+        req.get('User-Agent'),
+        'FAILED'
+      );
+      
       return res.status(401).json({
         error: 'Email ou senha inválidos'
       });
@@ -152,6 +180,15 @@ export const login = async (req, res) => {
 
     // Remove a senha do retorno
     const { password, ...userWithoutPassword } = user.toJSON();
+
+    // Log de login bem-sucedido
+    await AuditLogger.logLogin(
+      user.id,
+      user.email,
+      req.ip || req.connection.remoteAddress,
+      req.get('User-Agent'),
+      'SUCCESS'
+    );
 
     logger.info(`Usuário autenticado: ${user.email}`);
 

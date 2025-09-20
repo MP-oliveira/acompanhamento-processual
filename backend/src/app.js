@@ -24,6 +24,7 @@ import {
   apiSecurityHeaders,
   authSecurityHeaders 
 } from './middlewares/securityHeaders.js';
+import { autoAuditMiddleware } from './middlewares/auditMiddleware.js';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -106,6 +107,9 @@ app.use('/api', apiSecurityHeaders);
 
 // Headers específicos para autenticação
 app.use('/api/auth', authSecurityHeaders);
+
+// Middleware de auditoria automática para todas as rotas da API
+app.use('/api', autoAuditMiddleware());
 
 // Documentação da API
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
