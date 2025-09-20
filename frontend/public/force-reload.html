@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Reload - JurisAcompanha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover { background: #0056b3; }
+        .steps {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Force Reload - JurisAcompanha</h1>
+        
+        <div class="steps">
+            <h3>📋 Passos para Resolver o Problema:</h3>
+            <ol>
+                <li><strong>Limpar Cache:</strong> Pressione <code>Ctrl+Shift+R</code> (ou <code>Cmd+Shift+R</code> no Mac)</li>
+                <li><strong>Limpar Storage:</strong> Abra DevTools (F12) → Application → Storage → Clear storage</li>
+                <li><strong>Verificar Console:</strong> Veja se há erros no Console (F12)</li>
+                <li><strong>Testar API:</strong> Verifique se o backend está respondendo</li>
+            </ol>
+        </div>
+
+        <div id="status">
+            <p class="info">🔍 Verificando status dos serviços...</p>
+        </div>
+
+        <button onclick="checkBackend()">🔧 Testar Backend</button>
+        <button onclick="clearCache()">🗑️ Limpar Cache</button>
+        <button onclick="goToApp()">🚀 Ir para Aplicação</button>
+
+        <div id="results" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        async function checkBackend() {
+            const statusEl = document.getElementById('status');
+            const resultsEl = document.getElementById('results');
+            
+            statusEl.innerHTML = '<p class="warning">⏳ Testando backend...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusEl.innerHTML = '<p class="success">✅ Backend funcionando perfeitamente!</p>';
+                    resultsEl.innerHTML = `
+                        <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                            <strong>Status:</strong> ${data.status}<br>
+                            <strong>Timestamp:</strong> ${data.timestamp}<br>
+                            <strong>Uptime:</strong> ${Math.round(data.uptime)}s
+                        </div>
+                    `;
+                } else {
+                    statusEl.innerHTML = '<p class="warning">⚠️ Backend com problemas</p>';
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<p style="color: #dc3545;">❌ Backend não está respondendo</p>';
+                resultsEl.innerHTML = `
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                        <strong>Erro:</strong> ${error.message}<br>
+                        <strong>Solução:</strong> Verifique se o backend está rodando na porta 3001
+                    </div>
+                `;
+            }
+        }
+
+        function clearCache() {
+            // Limpar localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Tentar limpar service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            document.getElementById('status').innerHTML = '<p class="success">✅ Cache limpo com sucesso!</p>';
+            
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 1000);
+        }
+
+        function goToApp() {
+            window.location.href = '/';
+        }
+
+        // Verificar automaticamente ao carregar
+        window.addEventListener('load', () => {
+            setTimeout(checkBackend, 1000);
+        });
+    </script>
+</body>
+</html>

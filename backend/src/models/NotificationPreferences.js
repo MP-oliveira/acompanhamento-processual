@@ -3,9 +3,6 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 import User from './User.js';
 
-/**
- * Modelo para preferências de notificação dos usuários
- */
 const NotificationPreferences = sequelize.define('NotificationPreferences', {
   id: {
     type: DataTypes.INTEGER,
@@ -15,7 +12,7 @@ const NotificationPreferences = sequelize.define('NotificationPreferences', {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true,
+    unique: true, // Um usuário tem apenas um conjunto de preferências
     references: {
       model: User,
       key: 'id',
@@ -24,65 +21,28 @@ const NotificationPreferences = sequelize.define('NotificationPreferences', {
     field: 'user_id',
   },
   
-  // Preferências de Email
+  // Preferências de Email - Simplificadas para Advocacia
   emailEnabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     field: 'email_enabled',
   },
-  emailAlerts: {
+  emailCriticalAlerts: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
-    field: 'email_alerts',
-  },
-  emailProcessUpdates: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-    field: 'email_process_updates',
-  },
-  emailReportCompleted: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-    field: 'email_report_completed',
-  },
-  emailWeeklyDigest: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-    field: 'email_weekly_digest',
+    field: 'email_critical_alerts',
   },
   
-  // Preferências de Push Notifications
+  // Preferências de Push Notification - Simplificadas
   pushEnabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     field: 'push_enabled',
   },
-  pushAlerts: {
+  pushCriticalAlerts: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
-    field: 'push_alerts',
-  },
-  pushProcessUpdates: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    field: 'push_process_updates',
-  },
-  pushReportCompleted: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-    field: 'push_report_completed',
-  },
-  
-  // Preferências de SMS (para implementação futura)
-  smsEnabled: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    field: 'sms_enabled',
-  },
-  smsAlerts: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    field: 'sms_alerts',
+    field: 'push_critical_alerts',
   },
   
   // Configurações de frequência
@@ -91,23 +51,17 @@ const NotificationPreferences = sequelize.define('NotificationPreferences', {
     defaultValue: 'immediate',
     field: 'alert_frequency',
   },
-  digestFrequency: {
-    type: DataTypes.ENUM('daily', 'weekly', 'monthly', 'never'),
-    defaultValue: 'weekly',
-    field: 'digest_frequency',
-  },
   
-  // Configurações de horário (para digest)
+  // Horário preferido
   preferredTime: {
     type: DataTypes.TIME,
-    defaultValue: '09:00:00',
+    defaultValue: '09:00:00', // Ex: 9 AM
     field: 'preferred_time',
   },
   timezone: {
     type: DataTypes.STRING(50),
     defaultValue: 'America/Sao_Paulo',
   },
-  
 }, {
   tableName: 'notification_preferences',
   timestamps: true,

@@ -1,6 +1,6 @@
 // frontend/src/components/NotificationPreferences/NotificationPreferences.jsx
 import React, { useState, useEffect } from 'react';
-import { Bell, Mail, Smartphone, Clock, Settings, Save, RotateCcw } from 'lucide-react';
+import { Bell, Mail, Clock, Settings, Save, RotateCcw, AlertTriangle, Info } from 'lucide-react';
 import api from '../../services/api';
 import './NotificationPreferences.css';
 
@@ -43,19 +43,16 @@ const NotificationPreferences = () => {
     }
   };
 
-  const handleReset = async () => {
-    try {
-      setSaving(true);
-      const response = await api.post('/notification-preferences/reset');
-      setPreferences(response.data.preferences);
-      setMessage('Preferências redefinidas para valores padrão!');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      console.error('Erro ao redefinir preferências:', err);
-      setError('Erro ao redefinir preferências.');
-    } finally {
-      setSaving(false);
-    }
+  const handleReset = () => {
+    setPreferences({
+      emailEnabled: true,
+      emailCriticalAlerts: true,
+      pushEnabled: true,
+      pushCriticalAlerts: true,
+      alertFrequency: 'immediate',
+      preferredTime: '09:00:00',
+      timezone: 'America/Sao_Paulo'
+    });
   };
 
   const handleChange = (field, value) => {
@@ -74,20 +71,6 @@ const NotificationPreferences = () => {
     } catch (err) {
       console.error('Erro ao enviar email de teste:', err);
       setError('Erro ao enviar email de teste. Verifique se o SMTP está configurado.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const testNotificationSystem = async (tipo) => {
-    try {
-      setSaving(true);
-      const response = await api.post('/email-notifications/test-system', { tipo });
-      setMessage(`Sistema de notificação testado: ${response.data.tipo} - ${response.data.mensagem}`);
-      setTimeout(() => setMessage(''), 5000);
-    } catch (err) {
-      console.error('Erro ao testar sistema:', err);
-      setError('Erro ao testar sistema de notificação.');
     } finally {
       setSaving(false);
     }
@@ -121,12 +104,25 @@ const NotificationPreferences = () => {
     <div className="notification-preferences">
       <div className="preferences-header">
         <h3 className="configuracoes-subsection-title">
-          <Settings size={20} />
-          Preferências de Notificação
+          <AlertTriangle size={20} />
+          Notificações Críticas
         </h3>
         <p className="preferences-description">
-          Configure como você deseja receber notificações sobre seus processos e alertas.
+          Configure apenas as notificações essenciais para prazos processuais críticos.
         </p>
+      </div>
+
+      <div className="notification-warning">
+        <Info size={16} />
+        <div className="warning-content">
+          <h5>Como Funcionam as Notificações</h5>
+          <ul>
+            <li><strong>Alertas no Cabeçalho:</strong> Todas as notificações aparecem em tempo real no ícone de sino</li>
+            <li><strong>Email:</strong> Apenas para prazos críticos que podem resultar em perda do processo</li>
+            <li><strong>Push:</strong> Notificações do navegador para alertas importantes</li>
+            <li><strong>WebSocket:</strong> Atualizações automáticas em tempo real na aplicação</li>
+          </ul>
+        </div>
       </div>
 
       {error && (
@@ -142,11 +138,11 @@ const NotificationPreferences = () => {
       )}
 
       <div className="preferences-sections">
-        {/* Email Notifications */}
-        <div className="preference-section">
+        {/* Email Notifications - Apenas para Prazos Críticos */}
+        <div className="preference-section critical-section">
           <div className="section-header">
             <Mail size={20} />
-            <h4>Notificações por Email</h4>
+            <h4>Email para Prazos Críticos</h4>
             <label className="toggle-switch">
               <input
                 type="checkbox"
@@ -159,95 +155,39 @@ const NotificationPreferences = () => {
 
           {preferences.emailEnabled && (
             <div className="preference-options">
-              <div className="preference-option">
-                <label>Alertas e Prazos</label>
-                <label className="toggle-switch">
+              <div className="preference-option critical-option">
+                <label>
                   <input
                     type="checkbox"
-                    checked={preferences.emailAlerts}
-                    onChange={(e) => handleChange('emailAlerts', e.target.checked)}
+                    checked={preferences.emailCriticalAlerts}
+                    onChange={(e) => handleChange('emailCriticalAlerts', e.target.checked)}
                   />
-                  <span className="toggle-slider"></span>
+                  <span className="checkmark"></span>
+                  <strong>Prazos Processuais Críticos</strong>
                 </label>
+                <p className="preference-description">
+                  Receba emails apenas para prazos que podem resultar em perda do processo
+                </p>
               </div>
 
-              <div className="preference-option">
-                <label>Atualizações de Processos</label>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={preferences.emailProcessUpdates}
-                    onChange={(e) => handleChange('emailProcessUpdates', e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="preference-option">
-                <label>Relatórios Concluídos</label>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={preferences.emailReportCompleted}
-                    onChange={(e) => handleChange('emailReportCompleted', e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="preference-option">
-                <label>Resumo Semanal</label>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={preferences.emailWeeklyDigest}
-                    onChange={(e) => handleChange('emailWeeklyDigest', e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="preference-option">
+              <div className="test-section">
                 <button
                   onClick={sendTestEmail}
-                  disabled={saving}
-                  className="btn btn-secondary btn-small"
+                  disabled={saving || !preferences.emailEnabled || !preferences.emailCriticalAlerts}
+                  className="btn btn-info btn-small"
                 >
                   <Mail size={16} />
                   Enviar Email de Teste
                 </button>
-              </div>
-
-              <div className="preference-option">
-                <div className="test-buttons">
-                  <button
-                    onClick={() => testNotificationSystem('alerta')}
-                    disabled={saving}
-                    className="btn btn-info btn-small"
-                  >
-                    🚨 Testar Alerta
-                  </button>
-                  <button
-                    onClick={() => testNotificationSystem('processo')}
-                    disabled={saving}
-                    className="btn btn-info btn-small"
-                  >
-                    📄 Testar Processo
-                  </button>
-                  <button
-                    onClick={() => testNotificationSystem('relatorio')}
-                    disabled={saving}
-                    className="btn btn-info btn-small"
-                  >
-                    📊 Testar Relatório
-                  </button>
-                </div>
+                <p className="test-description">
+                  Teste se suas configurações de email estão funcionando
+                </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* Push Notifications */}
+        {/* Push Notifications - Simplificado */}
         <div className="preference-section">
           <div className="section-header">
             <Bell size={20} />
@@ -265,96 +205,31 @@ const NotificationPreferences = () => {
           {preferences.pushEnabled && (
             <div className="preference-options">
               <div className="preference-option">
-                <label>Alertas e Prazos</label>
-                <label className="toggle-switch">
+                <label>
                   <input
                     type="checkbox"
-                    checked={preferences.pushAlerts}
-                    onChange={(e) => handleChange('pushAlerts', e.target.checked)}
+                    checked={preferences.pushCriticalAlerts}
+                    onChange={(e) => handleChange('pushCriticalAlerts', e.target.checked)}
                   />
-                  <span className="toggle-slider"></span>
+                  <span className="checkmark"></span>
+                  Alertas Críticos
                 </label>
-              </div>
-
-              <div className="preference-option">
-                <label>Atualizações de Processos</label>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={preferences.pushProcessUpdates}
-                    onChange={(e) => handleChange('pushProcessUpdates', e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-
-              <div className="preference-option">
-                <label>Relatórios Concluídos</label>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={preferences.pushReportCompleted}
-                    onChange={(e) => handleChange('pushReportCompleted', e.target.checked)}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
+                <p className="preference-description">
+                  Notificações push para prazos processuais importantes
+                </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* SMS Notifications (Future) */}
-        <div className="preference-section">
-          <div className="section-header">
-            <Smartphone size={20} />
-            <h4>Notificações por SMS</h4>
-            <label className="toggle-switch disabled">
-              <input
-                type="checkbox"
-                checked={false}
-                disabled
-              />
-              <span className="toggle-slider"></span>
-            </label>
-          </div>
-          <p className="coming-soon">🚧 Em breve - Funcionalidade em desenvolvimento</p>
-        </div>
-
-        {/* Frequency Settings */}
+        {/* Configurações de Horário */}
         <div className="preference-section">
           <div className="section-header">
             <Clock size={20} />
-            <h4>Configurações de Frequência</h4>
+            <h4>Horário de Envio</h4>
           </div>
 
           <div className="preference-options">
-            <div className="preference-option">
-              <label>Frequência de Alertas</label>
-              <select
-                value={preferences.alertFrequency}
-                onChange={(e) => handleChange('alertFrequency', e.target.value)}
-                className="form-select"
-              >
-                <option value="immediate">Imediato</option>
-                <option value="daily">Diário</option>
-                <option value="weekly">Semanal</option>
-              </select>
-            </div>
-
-            <div className="preference-option">
-              <label>Frequência do Resumo</label>
-              <select
-                value={preferences.digestFrequency}
-                onChange={(e) => handleChange('digestFrequency', e.target.value)}
-                className="form-select"
-              >
-                <option value="daily">Diário</option>
-                <option value="weekly">Semanal</option>
-                <option value="monthly">Mensal</option>
-                <option value="never">Nunca</option>
-              </select>
-            </div>
-
             <div className="preference-option">
               <label>Horário Preferido</label>
               <input
@@ -363,6 +238,9 @@ const NotificationPreferences = () => {
                 onChange={(e) => handleChange('preferredTime', e.target.value)}
                 className="form-input"
               />
+              <p className="preference-description">
+                Horário preferido para envio de emails (apenas para prazos críticos)
+              </p>
             </div>
 
             <div className="preference-option">
@@ -406,7 +284,7 @@ const NotificationPreferences = () => {
           className="btn btn-secondary"
         >
           <RotateCcw size={20} />
-          Redefinir Padrões
+          Restaurar Padrões
         </button>
       </div>
     </div>

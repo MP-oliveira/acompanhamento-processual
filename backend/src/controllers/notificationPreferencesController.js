@@ -55,21 +55,13 @@ export const updateNotificationPreferences = async (req, res) => {
     const userId = req.user.id;
     const updateData = req.body;
 
-    // Validar dados de entrada
+    // Validar dados de entrada - Simplificado para advocacia
     const allowedFields = [
       'emailEnabled',
-      'emailAlerts',
-      'emailProcessUpdates',
-      'emailReportCompleted',
-      'emailWeeklyDigest',
+      'emailCriticalAlerts',
       'pushEnabled',
-      'pushAlerts',
-      'pushProcessUpdates',
-      'pushReportCompleted',
-      'smsEnabled',
-      'smsAlerts',
+      'pushCriticalAlerts',
       'alertFrequency',
-      'digestFrequency',
       'preferredTime',
       'timezone',
     ];
@@ -87,8 +79,9 @@ export const updateNotificationPreferences = async (req, res) => {
       return res.status(400).json({ error: 'Valor inválido para alertFrequency.' });
     }
 
-    if (filteredData.digestFrequency && !['daily', 'weekly', 'monthly', 'never'].includes(filteredData.digestFrequency)) {
-      return res.status(400).json({ error: 'Valor inválido para digestFrequency.' });
+    // Validar formato de tempo
+    if (filteredData.preferredTime && !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(filteredData.preferredTime)) {
+      return res.status(400).json({ error: 'Formato inválido para preferredTime. Use HH:MM.' });
     }
 
     // Buscar ou criar preferências
@@ -177,10 +170,7 @@ export const getNotificationStats = async (req, res) => {
     const emailStats = await NotificationPreferences.findAll({
       attributes: [
         'emailEnabled',
-        'emailAlerts',
-        'emailProcessUpdates',
-        'emailReportCompleted',
-        'emailWeeklyDigest',
+        'emailCriticalAlerts',
       ],
       raw: true,
     });
@@ -188,9 +178,7 @@ export const getNotificationStats = async (req, res) => {
     const pushStats = await NotificationPreferences.findAll({
       attributes: [
         'pushEnabled',
-        'pushAlerts',
-        'pushProcessUpdates',
-        'pushReportCompleted',
+        'pushCriticalAlerts',
       ],
       raw: true,
     });
@@ -201,16 +189,11 @@ export const getNotificationStats = async (req, res) => {
       totalPreferences,
       email: {
         enabled: emailStats.filter(p => p.emailEnabled).length,
-        alerts: emailStats.filter(p => p.emailAlerts).length,
-        processUpdates: emailStats.filter(p => p.emailProcessUpdates).length,
-        reportCompleted: emailStats.filter(p => p.emailReportCompleted).length,
-        weeklyDigest: emailStats.filter(p => p.emailWeeklyDigest).length,
+        criticalAlerts: emailStats.filter(p => p.emailCriticalAlerts).length,
       },
       push: {
         enabled: pushStats.filter(p => p.pushEnabled).length,
-        alerts: pushStats.filter(p => p.pushAlerts).length,
-        processUpdates: pushStats.filter(p => p.pushProcessUpdates).length,
-        reportCompleted: pushStats.filter(p => p.pushReportCompleted).length,
+        criticalAlerts: pushStats.filter(p => p.pushCriticalAlerts).length,
       },
     };
 
