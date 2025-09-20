@@ -8,7 +8,8 @@ import {
   Settings, 
   Users,
   BarChart3,
-  Search
+  Search,
+  Activity
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -146,6 +147,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                     >
                       <Users className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Usuários</span>
+                    </Link>
+                    <Link
+                      to="/performance"
+                      className={`sidebar-nav-item ${isActiveRoute('/performance') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Activity className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Performance</span>
                     </Link>
                     <Link
                       to="/configuracoes"

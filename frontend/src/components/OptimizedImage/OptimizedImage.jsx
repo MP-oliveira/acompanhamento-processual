@@ -1,56 +1,40 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
+import { useImageOptimization, useImageFormatSupport } from '../../hooks/useImageOptimization';
 import './OptimizedImage.css';
 
 const OptimizedImage = ({
   src,
   alt,
   className = '',
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcnJlZ2FuZG8uLi48L3RleHQ+PC9zdmc+',
+  placeholder,
   lazy = true,
+  quality = 0.8,
+  width = null,
+  height = null,
   onLoad,
   onError,
   ...props
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(!lazy);
-  const [hasError, setHasError] = useState(false);
   const imgRef = useRef(null);
-  const observerRef = useRef(null);
-
-  // Intersection Observer para lazy loading
-  useEffect(() => {
-    if (!lazy || !imgRef.current) return;
-
-    observerRef.current = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observerRef.current?.disconnect();
-        }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '50px'
-      }
-    );
-
-    observerRef.current.observe(imgRef.current);
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, [lazy]);
-
-  const handleLoad = (e) => {
-    setIsLoaded(true);
-    setHasError(false);
-    onLoad?.(e);
+  const formatSupport = useImageFormatSupport();
+  
+  // Determinar melhor formato baseado no suporte do navegador
+  const getBestFormat = () => {
+    if (formatSupport.avif) return 'avif';
+    if (formatSupport.webp) return 'webp';
+    return 'jpeg';
   };
 
-  const handleError = (e) => {
-    setHasError(true);
-    onError?.(e);
-  };
+  const { src: optimizedSrc, loading, error } = useImageOptimization(src, {
+    lazy,
+    quality,
+    format: getBestFormat(),
+    width,
+    height,
+    placeholder,
+    onLoad,
+    onError
+  });
 
   return (
     <div 
@@ -59,7 +43,7 @@ const OptimizedImage = ({
       {...props}
     >
       {/* Placeholder/Loading */}
-      {!isLoaded && !hasError && (
+      {loading && !error && (
         <div className="optimized-image-placeholder">
           <img 
             src={placeholder} 
@@ -70,20 +54,20 @@ const OptimizedImage = ({
       )}
 
       {/* Imagem principal */}
-      {isInView && (
+      {optimizedSrc && !error && (
         <img
-          src={src}
+          src={optimizedSrc}
           alt={alt}
-          className={`optimized-image ${isLoaded ? 'loaded' : ''}`}
-          onLoad={handleLoad}
-          onError={handleError}
+          className={`optimized-image ${!loading ? 'loaded' : ''}`}
           loading={lazy ? 'lazy' : 'eager'}
           decoding="async"
+          width={width}
+          height={height}
         />
       )}
 
       {/* Estado de erro */}
-      {hasError && (
+      {error && (
         <div className="optimized-image-error">
           <div className="optimized-image-error-icon">⚠️</div>
           <div className="optimized-image-error-text">Erro ao carregar</div>

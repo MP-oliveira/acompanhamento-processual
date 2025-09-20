@@ -12,6 +12,7 @@ import PWAInstaller from './components/PWAInstaller/PWAInstaller';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import PageLoading from './components/PageLoading/PageLoading';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import performanceMetrics from './utils/performanceMetrics';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -28,6 +29,7 @@ const Relatorios = lazy(() => import('./components/Relatorios/Relatorios'));
 const Usuarios = lazy(() => import('./components/Usuarios/Usuarios'));
 const Configuracoes = lazy(() => import('./components/Configuracoes/Configuracoes'));
 const Perfil = lazy(() => import('./components/Perfil/Perfil'));
+const PerformanceDashboard = lazy(() => import('./components/PerformanceDashboard/PerformanceDashboard'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -161,10 +163,11 @@ function App() {
                         <Route path="/calendario" element={<Calendario />} />
                         <Route path="/consultas" element={<Consultas />} />
                         <Route path="/relatorios" element={<Relatorios />} />
-                        <Route path="/usuarios" element={<Usuarios />} />
-                        <Route path="/configuracoes" element={<Configuracoes />} />
-                        <Route path="/perfil" element={<Perfil />} />
-                        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                                <Route path="/usuarios" element={<Usuarios />} />
+                                <Route path="/configuracoes" element={<Configuracoes />} />
+                                <Route path="/perfil" element={<Perfil />} />
+                                <Route path="/performance" element={<PerformanceDashboard />} />
+                                <Route path="*" element={<Navigate to="/dashboard" replace />} />
                       </Routes>
                     </Suspense>
                   </ErrorBoundary>
