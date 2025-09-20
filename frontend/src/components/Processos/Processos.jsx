@@ -33,8 +33,18 @@ const Processos = () => {
   const [viewMode, setViewMode] = useState('grid'); // grid ou list
   const [processoSelecionado, setProcessoSelecionado] = useState(null);
   
-  // Extrair dados dos processos
-  const processos = processosData || [];
+  // Extrair dados dos processos e garantir que seja um array
+  const processos = Array.isArray(processosData) ? processosData : [];
+  
+  // Verificar se usuário está logado
+  const token = localStorage.getItem('token');
+  
+  // Se não há token, redirecionar para login
+  React.useEffect(() => {
+    if (!token && !isLoading) {
+      window.location.href = '/login';
+    }
+  }, [token, isLoading]);
 
   // Mostra mensagem de sucesso se veio de outra página
   useEffect(() => {
@@ -58,7 +68,7 @@ const Processos = () => {
     }
   }, [location.state, processos, navigate]);
 
-  const filteredProcessos = processos.filter(processo => {
+  const filteredProcessos = processos && Array.isArray(processos) ? processos.filter(processo => {
     const matchesSearch = 
       processo.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
       processo.classe.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,7 +79,7 @@ const Processos = () => {
     const matchesStatus = statusFilter === 'todos' || processo.status === statusFilter;
 
     return matchesSearch && matchesStatus;
-  });
+  }) : [];
 
   const sortedProcessos = [...filteredProcessos].sort((a, b) => {
     let aValue = a[sortBy];
@@ -136,18 +146,35 @@ const Processos = () => {
 
   // Tratamento de erro
   if (error) {
+    console.error('Erro no useProcessos:', error);
+    
+    // Verificar se é erro de autenticação
+    const isAuthError = error?.response?.status === 401 || error?.message?.includes('Token');
+    
     return (
       <div className="processos">
         <div className="processos-error">
           <div className="processos-error-content">
             <X size={48} className="processos-error-icon" />
-            <h3>Erro ao carregar processos</h3>
-            <p>Não foi possível carregar a lista de processos. Tente novamente.</p>
-            <button 
+            <h3>{isAuthError ? 'Erro de Autenticação' : 'Erro ao carregar processos'}</h3>
+            <p>
+              {isAuthError 
+                ? 'Sua sessão expirou. Por favor, faça login novamente.' 
+                : 'Não foi possível carregar a lista de processos. Tente novamente.'}
+            </p>
+            <button
               className="btn btn-primary"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                if (isAuthError) {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/login';
+                } else {
+                  window.location.reload();
+                }
+              }}
             >
-              Recarregar Página
+              {isAuthError ? 'Fazer Login' : 'Recarregar Página'}
             </button>
           </div>
         </div>

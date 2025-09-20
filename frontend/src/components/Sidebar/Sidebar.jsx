@@ -50,32 +50,6 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   // Total de relatórios vem do React Query hook
   const totalRelatorios = relatoriosStats?.total || 0;
-  
-  const menuItems = [
-    {
-      section: 'Principal',
-      items: [
-        { icon: Home, label: 'Dashboard', href: '/dashboard' },
-        { icon: FileText, label: 'Processos', href: '/processos' },
-        { icon: AlertTriangle, label: 'Alertas', href: '/alertas' },
-        { icon: Calendar, label: 'Calendário', href: '/calendario' },
-      ]
-    },
-    {
-      section: 'Gestão',
-      items: [
-        { icon: Search, label: 'Consultas', href: '/consultas' },
-        { icon: BarChart3, label: `Relatórios (${totalRelatorios})`, href: '/relatorios' },
-      ]
-    },
-    {
-      section: 'Sistema',
-      items: [
-        { icon: Users, label: 'Usuários', href: '/usuarios' },
-        { icon: Settings, label: 'Configurações', href: '/configuracoes' },
-      ]
-    }
-  ];
 
   const isActiveRoute = (href) => {
     if (href === '/dashboard') {
@@ -102,30 +76,87 @@ const Sidebar = ({ isOpen, onClose }) => {
           <h3 className="sidebar-title">Menu</h3>
         </div>
 
-        {/* Navegação */}
-        <nav className="sidebar-nav">
-          {menuItems.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="sidebar-nav-section">
-              <h4 className="sidebar-nav-section-title">
-                {section.section}
-              </h4>
-              
-              {section.items.map((item, itemIndex) => (
-                <Link
-                  key={itemIndex}
-                  to={item.href}
-                  className={`sidebar-nav-item ${isActiveRoute(item.href) ? 'active' : ''}`}
-                  onClick={onClose}
-                >
-                  <item.icon className="sidebar-nav-item-icon" size={20} />
-                  <span className="sidebar-nav-item-text">
-                    {item.label}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </nav>
+                {/* Navegação */}
+                <nav className="sidebar-nav">
+                  {/* Seção Principal */}
+                  <div className="sidebar-nav-section">
+                    <h4 className="sidebar-nav-section-title">Principal</h4>
+                    <Link
+                      to="/dashboard"
+                      className={`sidebar-nav-item ${isActiveRoute('/dashboard') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Home className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Dashboard</span>
+                    </Link>
+                    <Link
+                      to="/processos"
+                      className={`sidebar-nav-item ${isActiveRoute('/processos') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <FileText className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Processos</span>
+                    </Link>
+                    <Link
+                      to="/alertas"
+                      className={`sidebar-nav-item ${isActiveRoute('/alertas') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <AlertTriangle className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Alertas</span>
+                    </Link>
+                    <Link
+                      to="/calendario"
+                      className={`sidebar-nav-item ${isActiveRoute('/calendario') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Calendar className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Calendário</span>
+                    </Link>
+                  </div>
+
+                  {/* Seção Gestão */}
+                  <div className="sidebar-nav-section">
+                    <h4 className="sidebar-nav-section-title">Gestão</h4>
+                    <Link
+                      to="/consultas"
+                      className={`sidebar-nav-item ${isActiveRoute('/consultas') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Search className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Consultas</span>
+                    </Link>
+                    <Link
+                      to="/relatorios"
+                      className={`sidebar-nav-item ${isActiveRoute('/relatorios') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <BarChart3 className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Relatórios ({totalRelatorios})</span>
+                    </Link>
+                  </div>
+
+                  {/* Seção Sistema */}
+                  <div className="sidebar-nav-section">
+                    <h4 className="sidebar-nav-section-title">Sistema</h4>
+                    <Link
+                      to="/usuarios"
+                      className={`sidebar-nav-item ${isActiveRoute('/usuarios') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Users className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Usuários</span>
+                    </Link>
+                    <Link
+                      to="/configuracoes"
+                      className={`sidebar-nav-item ${isActiveRoute('/configuracoes') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Settings className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Configurações</span>
+                    </Link>
+                  </div>
+                </nav>
 
         {/* Footer da Sidebar */}
         <div className="sidebar-footer">

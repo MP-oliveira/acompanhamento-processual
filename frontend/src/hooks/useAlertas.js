@@ -2,10 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { alertService } from '../services/api';
 
 // Hook para buscar todos os alertas
-export const useAlertas = (filters = {}) => {
+export const useAlertas = () => {
   return useQuery({
-    queryKey: ['alertas', filters],
-    queryFn: () => alertService.getAll(filters),
+    queryKey: ['alertas'],
+    queryFn: async () => {
+      const response = await alertService.getAll();
+      return response.alertas || []; // Extrai a lista de alertas da resposta
+    },
     staleTime: 2 * 60 * 1000, // 2 minutos (alertas mudam mais frequentemente)
     cacheTime: 5 * 60 * 1000, // 5 minutos
   });

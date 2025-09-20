@@ -2,10 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { processoService } from '../services/api';
 
 // Hook para buscar todos os processos
-export const useProcessos = (filters = {}) => {
+export const useProcessos = () => {
   return useQuery({
-    queryKey: ['processos', filters],
-    queryFn: () => processoService.getAll(filters),
+    queryKey: ['processos'],
+    queryFn: async () => {
+      const response = await processoService.getAll();
+      return response.processos || []; // Extrai a lista de processos da resposta
+    },
     staleTime: 5 * 60 * 1000, // 5 minutos
     cacheTime: 10 * 60 * 1000, // 10 minutos
   });

@@ -20,8 +20,8 @@ const Dashboard = () => {
   const { data: alertasData, isLoading: loadingAlertas, error: errorAlertas } = useAlertas();
   
   // Extrair dados das respostas
-  const processos = processosData?.processos || [];
-  const alertas = alertasData?.alertas || [];
+  const processos = processosData || [];
+  const alertas = alertasData || [];
   
   // Loading geral (qualquer um dos dois ainda carregando)
   const loading = loadingProcessos || loadingAlertas;
