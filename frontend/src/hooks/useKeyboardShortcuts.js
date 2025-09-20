@@ -62,6 +62,11 @@ export const useKeyboardShortcuts = () => {
           event.preventDefault();
           navigate('/processos/novo');
           break;
+        case 'k':
+          event.preventDefault();
+          // Disparar evento customizado para abrir busca global
+          window.dispatchEvent(new CustomEvent('openGlobalSearch'));
+          break;
         default:
           break;
       }
@@ -139,6 +144,7 @@ export const useKeyboardShortcuts = () => {
 const showKeyboardShortcuts = () => {
   const shortcuts = [
     { key: 'Ctrl/Cmd + 1-8', description: 'Navegar entre páginas principais' },
+    { key: 'Ctrl/Cmd + K', description: 'Busca global' },
     { key: 'Ctrl/Cmd + N', description: 'Novo processo' },
     { key: 'Ctrl/Cmd + P', description: 'Performance dashboard' },
     { key: 'Alt + ←/→', description: 'Voltar/Avançar no histórico' },

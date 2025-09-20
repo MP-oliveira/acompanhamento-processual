@@ -165,28 +165,15 @@ async function networkFirstStrategy(request, cacheName) {
   }
 }
 
-// Estratégia: Stale While Revalidate (para páginas)
+// Estratégia: Stale While Revalidate (para páginas) - DESABILITADA TEMPORARIAMENTE
 async function staleWhileRevalidateStrategy(request, cacheName) {
-  const cachedResponse = await caches.match(request);
-  
-  // Busca na rede em background
-  const networkResponsePromise = fetch(request).then(response => {
-    if (response.ok) {
-      const cache = caches.open(cacheName);
-      try {
-        cache.then(c => c.put(request, response.clone()));
-      } catch (error) {
-        console.error('❌ Erro ao salvar no cache:', error);
-      }
-    }
-    return response;
-  }).catch(error => {
+  // Retornar diretamente da rede sem cache para evitar erros
+  try {
+    return await fetch(request);
+  } catch (error) {
     console.error('❌ Erro na busca em background:', error);
     return null;
-  });
-  
-  // Retorna cache imediatamente se disponível, senão aguarda rede
-  return cachedResponse || networkResponsePromise;
+  }
 }
 
 // Notificações Push (para futuras implementações)

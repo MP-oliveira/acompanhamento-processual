@@ -37,7 +37,7 @@ const Breadcrumbs = ({ className = '' }) => {
           const isId = breadcrumb.isId;
 
           return (
-            <li key={breadcrumb.path} className="breadcrumbs-item">
+            <li key={`${breadcrumb.path}-${index}`} className="breadcrumbs-item">
               {!isLast ? (
                 <Link 
                   to={breadcrumb.path}

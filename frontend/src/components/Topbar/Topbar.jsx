@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle, RefreshCw } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircle, RefreshCw, Search } from 'lucide-react';
 import { alertService } from '../../services/api';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notificationTimeout, setNotificationTimeout] = useState(null);
@@ -74,6 +76,19 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
       }
     };
   }, [notificationTimeout, userMenuTimeout]);
+
+  // Listener para atalho de teclado Ctrl+K
+  useEffect(() => {
+    const handleGlobalSearchShortcut = () => {
+      setShowGlobalSearch(true);
+    };
+    
+    window.addEventListener('openGlobalSearch', handleGlobalSearchShortcut);
+    
+    return () => {
+      window.removeEventListener('openGlobalSearch', handleGlobalSearchShortcut);
+    };
+  }, []);
 
   const formatTimeAgo = (dateString) => {
     const now = new Date();
@@ -251,6 +266,16 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
 
         {/* Usuário e Notificações */}
         <div className="topbar-right">
+          {/* Busca Global */}
+          <button 
+            className="topbar-search-btn"
+            onClick={() => setShowGlobalSearch(true)}
+            aria-label="Buscar"
+            title="Busca global (Ctrl+K)"
+          >
+            <Search size={20} />
+          </button>
+          
           {/* Tema Toggle */}
           <div className="topbar-theme-toggle">
             <ThemeToggle />
@@ -403,6 +428,12 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           </div>
         </div>
       </div>
+      
+      {/* Global Search Modal */}
+      <GlobalSearch 
+        isOpen={showGlobalSearch}
+        onClose={() => setShowGlobalSearch(false)}
+      />
     </header>
   );
 };
