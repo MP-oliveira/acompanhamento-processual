@@ -1,0 +1,106 @@
+/* Export Button Component */
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.export-button:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+}
+
+.export-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.export-button-icon {
+  flex-shrink: 0;
+}
+
+.export-button-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Variantes de tipo */
+.export-button-pdf {
+  border-color: var(--error-300);
+  color: var(--error-600);
+}
+
+.export-button-pdf:hover:not(:disabled) {
+  background: var(--error-50);
+  border-color: var(--error-400);
+}
+
+.export-button-word {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+}
+
+.export-button-word:hover:not(:disabled) {
+  background: var(--primary-50);
+  border-color: var(--primary-400);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .export-button {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+  color: var(--text-primary-dark);
+}
+
+[data-theme="dark"] .export-button:hover:not(:disabled) {
+  background: var(--bg-tertiary-dark);
+  border-color: var(--border-medium-dark);
+}
+
+[data-theme="dark"] .export-button-pdf {
+  border-color: var(--error-400);
+  color: var(--error-400);
+}
+
+[data-theme="dark"] .export-button-pdf:hover:not(:disabled) {
+  background: var(--error-900);
+  border-color: var(--error-500);
+}
+
+[data-theme="dark"] .export-button-word {
+  border-color: var(--primary-400);
+  color: var(--primary-400);
+}
+
+[data-theme="dark"] .export-button-word:hover:not(:disabled) {
+  background: var(--primary-900);
+  border-color: var(--primary-500);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .export-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+}
