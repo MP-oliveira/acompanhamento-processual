@@ -1,0 +1,16 @@
+# Variáveis de Ambiente para Vercel - JurisAcompanha
+
+## Adicione estas variáveis no Vercel Dashboard:
+## Settings → Environment Variables → Add New
+
+SUPABASE_URL=https://zejrnsdshiaipptfopqu.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTQ3OTEsImV4cCI6MjA3Mzk3MDc5MX0.luAPlhy3fVSEVcIO7_9WHMbTiwvqlg1Ysjx7njn6gVk
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODM5NDc5MSwiZXhwIjoyMDczOTcwNzkxfQ.bXl9yFF_uAS5nWoNB9E43ybls0JwMzi0jC_i9Z4cD70
+DATABASE_URL=postgresql://postgres:[SENHA_DO_BANCO]@db.zejrnsdshiaipptfopqu.supabase.co:5432/postgres
+JWT_SECRET=JurisAcompanha2025_SuperSecretKey_Production
+NODE_ENV=production
+
+## ⚠️ IMPORTANTE:
+## 1. Substitua [SENHA_DO_BANCO] pela senha real do seu banco Supabase
+## 2. Marque todas como "Production" environment
+## 3. A service_role key é secreta - não compartilhe publicamente
