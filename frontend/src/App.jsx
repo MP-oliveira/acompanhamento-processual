@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -24,6 +24,9 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
+
+// Lazy loading apenas para Consultas (teste)
+const ConsultasLazy = lazy(() => import('./components/Consultas/Consultas'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -153,7 +156,11 @@ function App() {
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
-                    <Route path="/consultas" element={<Consultas />} />
+                    <Route path="/consultas" element={
+                      <Suspense fallback={<LoadingSpinner size="medium" text="Carregando Consultas..." />}>
+                        <ConsultasLazy />
+                      </Suspense>
+                    } />
                     <Route path="/relatorios" element={<Relatorios />} />
                     <Route path="/usuarios" element={<Usuarios />} />
                     <Route path="/configuracoes" element={<Configuracoes />} />
