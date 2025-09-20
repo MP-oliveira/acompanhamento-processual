@@ -1,14 +1,25 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { auth } from '../middlewares/auth.js';
+import {
+  listarAlertas,
+  buscarAlerta,
+  marcarComoLido,
+  marcarMultiplosComoLidos,
+  removerAlerta,
+  estatisticasAlertas
+} from '../controllers/alertController.js';
 
 const router = express.Router();
 
-// Aplicar autenticação em todas as rotas
-router.use(authenticateToken);
+// Todas as rotas de alertas requerem autenticação
+router.use(auth);
 
-// Rotas básicas para alertas
-router.get('/', (req, res) => {
-  res.json({ message: 'Lista de alertas - em desenvolvimento' });
-});
+// CRUD de alertas
+router.get('/', listarAlertas);
+router.get('/stats', estatisticasAlertas);
+router.get('/:id', buscarAlerta);
+router.patch('/:id/read', marcarComoLido);
+router.patch('/mark-multiple', marcarMultiplosComoLidos);
+router.delete('/:id', removerAlerta);
 
 export default router;
