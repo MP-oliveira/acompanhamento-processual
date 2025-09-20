@@ -1,9 +1,15 @@
 import axios from 'axios';
 
 // Configuração base da API
-const API_BASE_URL = window.location.hostname.includes('vercel.app') || process.env.NODE_ENV === 'production'
+const isProduction = window.location.hostname.includes('vercel.app') || 
+                     window.location.hostname.includes('jurisacompanha') ||
+                     process.env.NODE_ENV === 'production';
+
+const API_BASE_URL = isProduction
   ? 'https://backend-gfn5anwdx-mauricio-silva-oliveiras-projects.vercel.app/api'
   : 'http://localhost:3001/api';
+
+console.log('🔗 API URL:', API_BASE_URL, '| Hostname:', window.location.hostname);
 
 // Instância do axios com configurações padrão
 const api = axios.create({
