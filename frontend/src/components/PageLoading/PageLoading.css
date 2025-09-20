@@ -1,0 +1,100 @@
+/* Page Loading Component */
+.page-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: var(--spacing-xl);
+}
+
+.page-loading-skeleton {
+  padding: var(--spacing-xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-loading-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.page-loading-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.page-loading-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.page-loading-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.page-loading-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .page-loading-header {
+  border-bottom-color: var(--border-dark);
+}
+
+[data-theme="dark"] .page-loading-filters {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-loading-skeleton {
+    padding: var(--spacing-md);
+  }
+  
+  .page-loading-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .page-loading-stats {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .page-loading-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-loading-skeleton {
+    padding: var(--spacing-sm);
+  }
+  
+  .page-loading-stats {
+    gap: var(--spacing-sm);
+  }
+  
+  .page-loading-list {
+    gap: var(--spacing-sm);
+  }
+}

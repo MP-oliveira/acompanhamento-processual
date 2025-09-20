@@ -1,0 +1,122 @@
+/* Skeleton Loader Component */
+.skeleton-loader {
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-animate {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-quaternary) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Text skeleton */
+.skeleton-text {
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-sm);
+}
+
+.skeleton-text-container {
+  width: 100%;
+}
+
+/* Card skeleton */
+.skeleton-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.skeleton-card-content {
+  margin-bottom: var(--spacing-lg);
+}
+
+.skeleton-card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Avatar skeleton */
+.skeleton-avatar {
+  background: var(--bg-tertiary);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Button skeleton */
+.skeleton-button {
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-md);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .skeleton-loader {
+  background: var(--bg-tertiary-dark);
+}
+
+[data-theme="dark"] .skeleton-animate {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary-dark) 25%,
+    var(--bg-quaternary-dark) 50%,
+    var(--bg-tertiary-dark) 75%
+  );
+  background-size: 200% 100%;
+}
+
+[data-theme="dark"] .skeleton-text {
+  background: var(--bg-tertiary-dark);
+}
+
+[data-theme="dark"] .skeleton-card {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+}
+
+[data-theme="dark"] .skeleton-avatar {
+  background: var(--bg-tertiary-dark);
+}
+
+[data-theme="dark"] .skeleton-button {
+  background: var(--bg-tertiary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .skeleton-card {
+    padding: var(--spacing-md);
+  }
+  
+  .skeleton-card-header {
+    gap: var(--spacing-sm);
+  }
+  
+  .skeleton-card-footer {
+    justify-content: center;
+  }
+}

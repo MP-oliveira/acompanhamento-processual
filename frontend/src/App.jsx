@@ -8,25 +8,26 @@ import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
 import RegisterForm from './components/RegisterForm/RegisterForm';
-import Dashboard from './components/Dashboard/Dashboard';
-import Processos from './components/Processos/Processos';
-import NovoProcesso from './components/NovoProcesso/NovoProcesso';
-import EditarProcesso from './components/EditarProcesso/EditarProcesso';
-import Alertas from './components/Alertas/Alertas';
-import Calendario from './components/Calendario/Calendario';
-import Consultas from './components/Consultas/Consultas';
-import Relatorios from './components/Relatorios/Relatorios';
-import Usuarios from './components/Usuarios/Usuarios';
-import Configuracoes from './components/Configuracoes/Configuracoes';
-import Perfil from './components/Perfil/Perfil';
 import PWAInstaller from './components/PWAInstaller/PWAInstaller';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
+import PageLoading from './components/PageLoading/PageLoading';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
 
-// Lazy loading apenas para Consultas (teste)
-const ConsultasLazy = lazy(() => import('./components/Consultas/Consultas'));
+// Lazy loading de todas as páginas
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
+const Processos = lazy(() => import('./components/Processos/Processos'));
+const NovoProcesso = lazy(() => import('./components/NovoProcesso/NovoProcesso'));
+const EditarProcesso = lazy(() => import('./components/EditarProcesso/EditarProcesso'));
+const Alertas = lazy(() => import('./components/Alertas/Alertas'));
+const Calendario = lazy(() => import('./components/Calendario/Calendario'));
+const Consultas = lazy(() => import('./components/Consultas/Consultas'));
+const Relatorios = lazy(() => import('./components/Relatorios/Relatorios'));
+const Usuarios = lazy(() => import('./components/Usuarios/Usuarios'));
+const Configuracoes = lazy(() => import('./components/Configuracoes/Configuracoes'));
+const Perfil = lazy(() => import('./components/Perfil/Perfil'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -148,25 +149,25 @@ function App() {
                 />
                 
                 <main className="main-content">
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/processos" element={<Processos />} />
-                    <Route path="/processos/novo" element={<NovoProcesso />} />
-                    <Route path="/processos/editar/:id" element={<EditarProcesso />} />
-                    <Route path="/alertas" element={<Alertas />} />
-                    <Route path="/calendario" element={<Calendario />} />
-                    <Route path="/consultas" element={
-                      <Suspense fallback={<LoadingSpinner size="medium" text="Carregando Consultas..." />}>
-                        <ConsultasLazy />
-                      </Suspense>
-                    } />
-                    <Route path="/relatorios" element={<Relatorios />} />
-                    <Route path="/usuarios" element={<Usuarios />} />
-                    <Route path="/configuracoes" element={<Configuracoes />} />
-                    <Route path="/perfil" element={<Perfil />} />
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  </Routes>
+                  <ErrorBoundary>
+                    <Suspense fallback={<PageLoading type="skeleton" />}>
+                      <Routes>
+                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/processos" element={<Processos />} />
+                        <Route path="/processos/novo" element={<NovoProcesso />} />
+                        <Route path="/processos/editar/:id" element={<EditarProcesso />} />
+                        <Route path="/alertas" element={<Alertas />} />
+                        <Route path="/calendario" element={<Calendario />} />
+                        <Route path="/consultas" element={<Consultas />} />
+                        <Route path="/relatorios" element={<Relatorios />} />
+                        <Route path="/usuarios" element={<Usuarios />} />
+                        <Route path="/configuracoes" element={<Configuracoes />} />
+                        <Route path="/perfil" element={<Perfil />} />
+                        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                      </Routes>
+                    </Suspense>
+                  </ErrorBoundary>
                 </main>
               </div>
             </>
