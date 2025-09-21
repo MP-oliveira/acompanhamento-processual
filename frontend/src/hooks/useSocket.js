@@ -16,42 +16,55 @@ export const useSocket = () => {
       return;
     }
 
-    // Conectar ao WebSocket
-    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3001', {
-      auth: {
-        token: token
-      },
-      transports: ['websocket', 'polling'],
-      autoConnect: true
-    });
+    // WebSocket temporariamente desabilitado para evitar erros
+    // TODO: Reativar quando Socket.io estiver configurado no backend
+    console.log('🔌 WebSocket temporariamente desabilitado');
+    setIsConnected(false);
+    setConnectionError('WebSocket não disponível no backend atual');
 
-    socketRef.current = socket;
+    // // Configurar URL do WebSocket baseada no ambiente
+    // const socketUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    //   ? 'http://localhost:3001'
+    //   : 'https://backend-42rxugdfm-mauricio-silva-oliveiras-projects.vercel.app';
 
-    // Eventos de conexão
-    socket.on('connect', () => {
-      setIsConnected(true);
-      setConnectionError(null);
-    });
+    // console.log('🔌 Conectando WebSocket em:', socketUrl);
 
-    socket.on('disconnect', (reason) => {
-      setIsConnected(false);
-    });
+    // // Conectar ao WebSocket
+    // const socket = io(socketUrl, {
+    //   auth: {
+    //     token: token
+    //   },
+    //   transports: ['websocket', 'polling'],
+    //   autoConnect: true
+    // });
 
-    socket.on('connect_error', (error) => {
-      console.error('❌ Erro de conexão WebSocket:', error);
-      setConnectionError(error.message);
-      setIsConnected(false);
-    });
+    // socketRef.current = socket;
 
-    // Evento de pong para manter conexão ativa
-    socket.on('pong', () => {
-    });
+    // // Eventos de conexão
+    // socket.on('connect', () => {
+    //   setIsConnected(true);
+    //   setConnectionError(null);
+    // });
 
-    // Cleanup ao desmontar
-    return () => {
-      socket.disconnect();
-      socketRef.current = null;
-    };
+    // socket.on('disconnect', (reason) => {
+    //   setIsConnected(false);
+    // });
+
+    // socket.on('connect_error', (error) => {
+    //   console.error('❌ Erro de conexão WebSocket:', error);
+    //   setConnectionError(error.message);
+    //   setIsConnected(false);
+    // });
+
+    // // Evento de pong para manter conexão ativa
+    // socket.on('pong', () => {
+    // });
+
+    // // Cleanup ao desmontar
+    // return () => {
+    //   socket.disconnect();
+    //   socketRef.current = null;
+    // };
   }, [user, token]);
 
   // Função para emitir eventos
