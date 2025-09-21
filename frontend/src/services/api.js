@@ -4,7 +4,7 @@ import axios from 'axios';
 // Usar localhost em desenvolvimento, Vercel em produção
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3001/api'
-  : 'https://backend-eight-gamma-94.vercel.app/api';
+  : 'https://backend-42rxugdfm-mauricio-silva-oliveiras-projects.vercel.app/api';
 
 console.log('🔗 API URL:', API_BASE_URL, '| Hostname:', window.location.hostname);
 
@@ -45,41 +45,15 @@ api.interceptors.response.use(
   }
 );
 
-// Serviços de autenticação com fallback mock
+// Serviços de autenticação
 export const authService = {
   async login(email, password) {
     console.log('🌐 API - Fazendo requisição de login para:', email);
     console.log('🌐 API - URL completa:', api.defaults.baseURL + '/auth/login');
     
-    try {
-      const response = await api.post('/auth/login', { email, password });
-      console.log('🌐 API - Resposta recebida:', response.status, response.data);
-      return response.data;
-    } catch (error) {
-      console.error('🌐 API - Erro na requisição:', error);
-      console.error('🌐 API - Status:', error.response?.status);
-      console.error('🌐 API - Dados:', error.response?.data);
-      
-      // Fallback para dados mockados se o backend falhar
-      if (email === 'guilherme@jurisacompanha.com' && password === 'Gui@2025') {
-        console.log('🔄 Usando dados mockados para login');
-        const mockToken = 'mock-token-' + Date.now();
-        const mockUser = {
-          id: 1,
-          nome: 'Guilherme Fernandes',
-          email: 'guilherme@jurisacompanha.com',
-          role: 'user',
-          ativo: true
-        };
-        return {
-          message: 'Login realizado com sucesso (mock)',
-          token: mockToken,
-          user: mockUser
-        };
-      }
-      
-      throw error;
-    }
+    const response = await api.post('/auth/login', { email, password });
+    console.log('🌐 API - Resposta recebida:', response.status, response.data);
+    return response.data;
   },
 
   async register(userData) {
@@ -89,47 +63,17 @@ export const authService = {
 
   async getProfile() {
     console.log('🌐 API - Fazendo requisição de perfil');
-    try {
-      const response = await api.get('/auth/me');
-      console.log('🌐 API - Perfil recebido:', response.status, response.data);
-      return response.data;
-    } catch (error) {
-      console.error('🌐 API - Erro no perfil:', error);
-      
-      // Fallback para dados mockados
-      console.log('🔄 Usando perfil mockado');
-      const mockUser = {
-        id: 1,
-        nome: 'Guilherme Fernandes',
-        email: 'guilherme@jurisacompanha.com',
-        role: 'user',
-        ativo: true
-      };
-      return { user: mockUser };
-    }
+    const response = await api.get('/auth/me');
+    console.log('🌐 API - Perfil recebido:', response.status, response.data);
+    return response.data;
   }
 };
 
-// Serviços de processos com fallback mock
+// Serviços de processos
 export const processoService = {
   async getAll() {
-    try {
-      const response = await api.get('/processos');
-      return response.data;
-    } catch (error) {
-      console.log('🔄 Usando dados mockados para processos');
-      return {
-        processos: [
-          {
-            id: 1,
-            numero: '1234567-89.2024.8.26.0001',
-            titulo: 'Processo de Teste',
-            status: 'ativo',
-            created_at: new Date().toISOString()
-          }
-        ]
-      };
-    }
+    const response = await api.get('/processos');
+    return response.data;
   },
 
   async getById(id) {
@@ -153,27 +97,11 @@ export const processoService = {
   }
 };
 
-// Serviços de alertas com fallback mock
+// Serviços de alertas
 export const alertService = {
   async getAll() {
-    try {
-      const response = await api.get('/alerts');
-      return response.data;
-    } catch (error) {
-      console.log('🔄 Usando dados mockados para alertas');
-      return {
-        alertas: [
-          {
-            id: 1,
-            titulo: 'Alerta de Teste',
-            descricao: 'Este é um alerta de teste',
-            tipo: 'info',
-            lido: false,
-            created_at: new Date().toISOString()
-          }
-        ]
-      };
-    }
+    const response = await api.get('/alerts');
+    return response.data;
   },
 
   async getById(id) {
@@ -220,16 +148,11 @@ export const consultaService = {
   }
 };
 
-// Serviços de relatórios com fallback mock
+// Serviços de relatórios
 export const relatorioService = {
   async getAll(params = {}) {
-    try {
-      const response = await api.get('/relatorios', { params });
-      return response.data;
-    } catch (error) {
-      console.log('🔄 Usando dados mockados para relatórios');
-      return { relatorios: [] };
-    }
+    const response = await api.get('/relatorios', { params });
+    return response.data;
   },
 
   async getById(id) {
@@ -248,18 +171,8 @@ export const relatorioService = {
   },
 
   async getStats() {
-    try {
-      const response = await api.get('/relatorios/stats');
-      return response.data;
-    } catch (error) {
-      console.log('🔄 Usando dados mockados para stats de relatórios');
-      return {
-        total: 0,
-        concluidos: 0,
-        pendentes: 0,
-        estaSemana: 0
-      };
-    }
+    const response = await api.get('/relatorios/stats');
+    return response.data;
   }
 };
 
