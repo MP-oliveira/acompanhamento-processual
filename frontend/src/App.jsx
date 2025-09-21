@@ -54,7 +54,7 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
   useKeyboardShortcuts();
   
   // Configurar atualizações em tempo real quando autenticado
-  useRealtimeUpdates();
+  // useRealtimeUpdates(); // Temporariamente desabilitado para debug
 
   const handleLogin = async (credentials) => {
     try {

@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
           setToken(savedToken);
         } catch (error) {
           console.error('❌ Token inválido:', error);
+          console.error('❌ Detalhes do erro:', error.response?.status, error.response?.data);
           // Limpar dados inválidos
           localStorage.removeItem('token');
           localStorage.removeItem('user');
