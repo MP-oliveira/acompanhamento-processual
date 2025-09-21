@@ -48,8 +48,19 @@ api.interceptors.response.use(
 // Serviços de autenticação
 export const authService = {
   async login(email, password) {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
+    console.log('🌐 API - Fazendo requisição de login para:', email);
+    console.log('🌐 API - URL completa:', api.defaults.baseURL + '/auth/login');
+    
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      console.log('🌐 API - Resposta recebida:', response.status, response.data);
+      return response.data;
+    } catch (error) {
+      console.error('🌐 API - Erro na requisição:', error);
+      console.error('🌐 API - Status:', error.response?.status);
+      console.error('🌐 API - Dados:', error.response?.data);
+      throw error;
+    }
   },
 
   async register(userData) {
@@ -58,8 +69,15 @@ export const authService = {
   },
 
   async getProfile() {
-    const response = await api.get('/auth/me');
-    return response.data;
+    console.log('🌐 API - Fazendo requisição de perfil');
+    try {
+      const response = await api.get('/auth/me');
+      console.log('🌐 API - Perfil recebido:', response.status, response.data);
+      return response.data;
+    } catch (error) {
+      console.error('🌐 API - Erro no perfil:', error);
+      throw error;
+    }
   }
 };
 

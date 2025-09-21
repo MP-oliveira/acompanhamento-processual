@@ -58,9 +58,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       console.log('🔐 Tentando fazer login para:', email);
+      console.log('🔗 URL da API:', window.location.hostname === 'localhost' ? 'localhost' : 'vercel');
+      
       const response = await authService.login(email, password);
       console.log('✅ Login bem-sucedido:', response);
       const { token: newToken, user: newUser } = response;
+      
+      console.log('👤 Usuário recebido:', newUser);
+      console.log('🔑 Token recebido:', !!newToken);
       
       setToken(newToken);
       setUser(newUser);
@@ -69,9 +74,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(newUser));
       
       console.log('💾 Dados salvos no localStorage');
+      console.log('🎯 Login concluído com sucesso!');
       return response;
     } catch (error) {
       console.error('❌ Erro no login:', error);
+      console.error('❌ Status do erro:', error.response?.status);
+      console.error('❌ Dados do erro:', error.response?.data);
+      console.error('❌ Mensagem do erro:', error.message);
       throw error;
     }
   };
