@@ -57,9 +57,12 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleLogin = async (credentials) => {
     try {
+      console.log('🚀 App.jsx - Iniciando login...');
       await login(credentials.email, credentials.password);
+      console.log('🎉 App.jsx - Login concluído com sucesso!');
       return { success: true };
     } catch (error) {
+      console.error('💥 App.jsx - Erro no login:', error);
       const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
       return { success: false, error: errorMessage };
     }

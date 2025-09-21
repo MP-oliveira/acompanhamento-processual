@@ -110,32 +110,32 @@
     
     <!-- PWA Registration Script -->
     <script>
-      // Registrar Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('✅ SW registrado com sucesso:', registration.scope);
-              
-              // Verificar se há atualizações
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // Nova versão disponível
-                    if (confirm('Nova versão disponível! Deseja atualizar?')) {
-                      newWorker.postMessage({ type: 'SKIP_WAITING' });
-                      window.location.reload();
-                    }
-                  }
-                });
-              });
-            })
-            .catch((error) => {
-              console.log('❌ Falha no registro do SW:', error);
-            });
-        });
-      }
+      // Service Worker temporariamente desabilitado para debug
+      // if ('serviceWorker' in navigator) {
+      //   window.addEventListener('load', () => {
+      //     navigator.serviceWorker.register('/sw.js')
+      //       .then((registration) => {
+      //         console.log('✅ SW registrado com sucesso:', registration.scope);
+      //         
+      //         // Verificar se há atualizações
+      //         registration.addEventListener('updatefound', () => {
+      //           const newWorker = registration.installing;
+      //           newWorker.addEventListener('statechange', () => {
+      //             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+      //               // Nova versão disponível
+      //               if (confirm('Nova versão disponível! Deseja atualizar?')) {
+      //                 newWorker.postMessage({ type: 'SKIP_WAITING' });
+      //                 window.location.reload();
+      //               }
+      //             }
+      //           });
+      //         });
+      //       })
+      //       .catch((error) => {
+      //         console.log('❌ Falha no registro do SW:', error);
+      //       });
+      //   });
+      // }
       
       // Esconder splash screen quando app carregar
       window.addEventListener('load', () => {

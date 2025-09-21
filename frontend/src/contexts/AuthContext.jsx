@@ -19,21 +19,28 @@ export const AuthProvider = ({ children }) => {
   // Verificar token ao inicializar
   useEffect(() => {
     const initAuth = async () => {
+      console.log('🔍 Iniciando verificação de autenticação...');
       const savedToken = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
       
+      console.log('🔑 Token salvo:', !!savedToken);
+      console.log('👤 Usuário salvo:', !!savedUser);
+      
       if (savedToken && savedUser) {
         try {
+          console.log('🔍 Verificando token no backend...');
           // Verificar se o token ainda é válido
           const response = await authService.getProfile();
+          console.log('✅ Token válido, usuário:', response.user);
           setUser(response.user);
           setToken(savedToken);
         } catch (error) {
-          console.error('Token inválido:', error);
+          console.error('❌ Token inválido:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
         }
       }
+      console.log('🏁 Finalizando verificação de autenticação');
       setLoading(false);
     };
 
@@ -42,7 +49,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log('🔐 Tentando fazer login para:', email);
       const response = await authService.login(email, password);
+      console.log('✅ Login bem-sucedido:', response);
       const { token: newToken, user: newUser } = response;
       
       setToken(newToken);
@@ -51,8 +60,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(newUser));
       
+      console.log('💾 Dados salvos no localStorage');
       return response;
     } catch (error) {
+      console.error('❌ Erro no login:', error);
       throw error;
     }
   };
