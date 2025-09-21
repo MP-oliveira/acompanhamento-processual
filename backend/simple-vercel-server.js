@@ -2,8 +2,22 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente
+dotenv.config();
 
 const app = express();
+
+// Configurar Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL || 'https://zejrnsdshiaipptfopqu.supabase.co',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODM5NDc5MSwiZXhwIjoyMDczOTcwNzkxfQ.bXl9yFF_uAS5nWoNB9E43ybls0JwMzi0jC_i9Z4cD70'
+);
+
+console.log('🔗 Supabase URL:', process.env.SUPABASE_URL || 'https://zejrnsdshiaipptfopqu.supabase.co');
+console.log('🔑 Service Role Key configurada:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // Middlewares básicos
 app.use(cors({
@@ -19,20 +33,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
-
-// Simulação de banco de dados em memória
-const users = [
-  {
-    id: 22,
-    nome: "Guilherme Fernandes",
-    email: "guilhermefernandes.adv@hotmail.com",
-    password: "$2b$10$rQKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvKvK", // hash de "Gui@2025"
-    role: "user",
-    ativo: true,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
 
 // Health check
 app.get('/api/health', (req, res) => {

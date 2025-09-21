@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "vercel-server-supabase.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 30
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -14,8 +11,5 @@
       "src": "/(.*)",
       "dest": "vercel-server-supabase.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
