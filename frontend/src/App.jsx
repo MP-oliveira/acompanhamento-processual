@@ -14,6 +14,7 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import PageLoading from './components/PageLoading/PageLoading';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
+import AdminRoute from './components/AdminRoute/AdminRoute';
 import performanceMetrics from './utils/performanceMetrics';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
@@ -108,6 +109,7 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
             <Sidebar 
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
+              user={user}
             />
             
             <main className="main-content">
@@ -124,7 +126,11 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<Consultas />} />
                     <Route path="/relatorios" element={<Relatorios />} />
-                    <Route path="/usuarios" element={<Usuarios />} />
+                    <Route path="/usuarios" element={
+                      <AdminRoute user={user}>
+                        <Usuarios />
+                      </AdminRoute>
+                    } />
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="/performance" element={<PerformanceDashboard />} />

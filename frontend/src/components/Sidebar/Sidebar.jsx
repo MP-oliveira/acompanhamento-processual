@@ -15,7 +15,7 @@ import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, user }) => {
   const location = useLocation();
   const [processosMes, setProcessosMes] = useState(0);
   
@@ -140,14 +140,17 @@ const Sidebar = ({ isOpen, onClose }) => {
                   {/* Seção Sistema */}
                   <div className="sidebar-nav-section">
                     <h4 className="sidebar-nav-section-title">Sistema</h4>
-                    <Link
-                      to="/usuarios"
-                      className={`sidebar-nav-item ${isActiveRoute('/usuarios') ? 'active' : ''}`}
-                      onClick={onClose}
-                    >
-                      <Users className="sidebar-nav-item-icon" size={20} />
-                      <span className="sidebar-nav-item-text">Usuários</span>
-                    </Link>
+                    {/* Usuários - Apenas para administradores */}
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/usuarios"
+                        className={`sidebar-nav-item ${isActiveRoute('/usuarios') ? 'active' : ''}`}
+                        onClick={onClose}
+                      >
+                        <Users className="sidebar-nav-item-icon" size={20} />
+                        <span className="sidebar-nav-item-text">Usuários</span>
+                      </Link>
+                    )}
                     <Link
                       to="/performance"
                       className={`sidebar-nav-item ${isActiveRoute('/performance') ? 'active' : ''}`}
