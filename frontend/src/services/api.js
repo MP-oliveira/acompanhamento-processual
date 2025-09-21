@@ -4,7 +4,7 @@ import axios from 'axios';
 // Usar localhost em desenvolvimento, Vercel em produção
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3001/api'
-  : 'https://backend-ef03vqa58-mauricio-silva-oliveiras-projects.vercel.app/api';
+  : 'https://backend-7su7qxpaa-mauricio-silva-oliveiras-projects.vercel.app/api';
 
 console.log('🔗 API URL:', API_BASE_URL, '| Hostname:', window.location.hostname);
 
