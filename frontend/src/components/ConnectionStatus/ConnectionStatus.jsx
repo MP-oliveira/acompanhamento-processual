@@ -1,10 +1,10 @@
 import React from 'react';
 import { Wifi, WifiOff } from 'lucide-react';
-import { useSocket } from '../../hooks/useSocket';
+import { useSupabaseRealtime } from '../../hooks/useSupabaseRealtime';
 import './ConnectionStatus.css';
 
 const ConnectionStatus = () => {
-  const { isConnected, connectionError } = useSocket();
+  const { isConnected, connectionError } = useSupabaseRealtime();
 
   if (connectionError) {
     return (

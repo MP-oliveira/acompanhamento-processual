@@ -1,111 +1,107 @@
 import { useEffect } from 'react';
-import { useSocket } from './useSocket';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSupabaseRealtime } from './useSupabaseRealtime';
 
 /**
- * Hook para gerenciar atualizações em tempo real
+ * Hook para gerenciar atualizações em tempo real com Supabase
  */
 export const useRealtimeUpdates = () => {
-  const { socket, isConnected, emit, on, off } = useSocket();
   const queryClient = useQueryClient();
+  const { isConnected, subscribeToUserData, emitEvent } = useSupabaseRealtime();
 
   useEffect(() => {
-    if (!isConnected || !socket) {
+    if (!isConnected) {
       return;
     }
 
+    console.log('🔄 Configurando listeners de tempo real...');
 
-    // Inscrever-se em atualizações do dashboard
-    emit('subscribe_dashboard_updates');
-
-    // Inscrever-se em atualizações de alertas
-    emit('subscribe_alert_updates');
-
-    // Eventos de atualização de dados
-    const handleProcessUpdate = (data) => {
+    // Escutar mudanças na tabela de processos
+    const unsubscribeProcessos = subscribeToUserData('processos', (payload) => {
+      console.log('📄 Mudança em processos:', payload);
       
-      // Invalidar queries relacionadas a processos
-      queryClient.invalidateQueries({ queryKey: ['processos'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      
-      // Se for um processo específico, invalidar também
-      if (data.processId) {
-        queryClient.invalidateQueries({ queryKey: ['processo', data.processId] });
+      switch (payload.eventType) {
+        case 'INSERT':
+          console.log('📄 Novo processo criado:', payload.new);
+          queryClient.invalidateQueries(['processos']);
+          break;
+        case 'UPDATE':
+          console.log('📄 Processo atualizado:', payload.new);
+          queryClient.invalidateQueries(['processos']);
+          queryClient.setQueryData(['processo', payload.new.id], payload.new);
+          break;
+        case 'DELETE':
+          console.log('📄 Processo removido:', payload.old);
+          queryClient.invalidateQueries(['processos']);
+          queryClient.removeQueries(['processo', payload.old.id]);
+          break;
       }
-    };
+    });
 
-    const handleAlertUpdate = (data) => {
+    // Escutar mudanças na tabela de alertas
+    const unsubscribeAlertas = subscribeToUserData('alertas', (payload) => {
+      console.log('🚨 Mudança em alertas:', payload);
       
-      // Invalidar queries relacionadas a alertas
-      queryClient.invalidateQueries({ queryKey: ['alertas'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-    };
+      switch (payload.eventType) {
+        case 'INSERT':
+          console.log('🚨 Novo alerta criado:', payload.new);
+          queryClient.invalidateQueries(['alertas']);
+          break;
+        case 'UPDATE':
+          console.log('🚨 Alerta atualizado:', payload.new);
+          queryClient.invalidateQueries(['alertas']);
+          queryClient.setQueryData(['alerta', payload.new.id], payload.new);
+          break;
+        case 'DELETE':
+          console.log('🚨 Alerta removido:', payload.old);
+          queryClient.invalidateQueries(['alertas']);
+          queryClient.removeQueries(['alerta', payload.old.id]);
+          break;
+      }
+    });
 
-    const handleUserUpdate = (data) => {
+    // Escutar mudanças na tabela de relatórios
+    const unsubscribeRelatorios = subscribeToUserData('relatorios', (payload) => {
+      console.log('📊 Mudança em relatórios:', payload);
       
-      // Invalidar queries relacionadas a usuários
-      queryClient.invalidateQueries({ queryKey: ['usuarios'] });
-      queryClient.invalidateQueries({ queryKey: ['perfil'] });
-    };
-
-    const handleRelatorioUpdate = (data) => {
-      
-      // Invalidar queries relacionadas a relatórios
-      queryClient.invalidateQueries({ queryKey: ['relatorios'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-    };
-
-    const handleConsultaUpdate = (data) => {
-      
-      // Invalidar queries relacionadas a consultas
-      queryClient.invalidateQueries({ queryKey: ['consultas'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-    };
-
-    const handleSystemNotification = (data) => {
-      
-      // Invalidar queries relacionadas ao dashboard
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      
-      // Aqui você pode adicionar uma notificação toast
-      // toast.info(data.message);
-    };
-
-    // Registrar listeners
-    on('process_updated', handleProcessUpdate);
-    on('alert_updated', handleAlertUpdate);
-    on('user_updated', handleUserUpdate);
-    on('relatorio_updated', handleRelatorioUpdate);
-    on('consulta_updated', handleConsultaUpdate);
-    on('system_notification', handleSystemNotification);
+      switch (payload.eventType) {
+        case 'INSERT':
+          console.log('📊 Novo relatório criado:', payload.new);
+          queryClient.invalidateQueries(['relatorios']);
+          queryClient.invalidateQueries(['relatoriosStats']);
+          break;
+        case 'UPDATE':
+          console.log('📊 Relatório atualizado:', payload.new);
+          queryClient.invalidateQueries(['relatorios']);
+          queryClient.invalidateQueries(['relatoriosStats']);
+          queryClient.setQueryData(['relatorio', payload.new.id], payload.new);
+          break;
+        case 'DELETE':
+          console.log('📊 Relatório removido:', payload.old);
+          queryClient.invalidateQueries(['relatorios']);
+          queryClient.invalidateQueries(['relatoriosStats']);
+          queryClient.removeQueries(['relatorio', payload.old.id]);
+          break;
+      }
+    });
 
     // Cleanup
     return () => {
-      off('process_updated', handleProcessUpdate);
-      off('alert_updated', handleAlertUpdate);
-      off('user_updated', handleUserUpdate);
-      off('relatorio_updated', handleRelatorioUpdate);
-      off('consulta_updated', handleConsultaUpdate);
-      off('system_notification', handleSystemNotification);
+      console.log('🧹 Limpando listeners de tempo real...');
+      if (unsubscribeProcessos) unsubscribeProcessos.unsubscribe();
+      if (unsubscribeAlertas) unsubscribeAlertas.unsubscribe();
+      if (unsubscribeRelatorios) unsubscribeRelatorios.unsubscribe();
     };
-  }, [isConnected, socket, emit, on, off, queryClient]);
+  }, [isConnected, subscribeToUserData, queryClient]);
 
-  // Função para inscrever-se em atualizações de um processo específico
-  const subscribeToProcess = (processId) => {
-    if (isConnected) {
-      emit('subscribe_process_updates', { processId });
-    }
-  };
-
-  // Função para cancelar inscrição em atualizações de um processo
-  const unsubscribeFromProcess = (processId) => {
-    if (isConnected && socket) {
-      socket.leave(`process_${processId}`);
-    }
+  // Função para emitir eventos customizados
+  const emitRealtimeEvent = (event, data) => {
+    console.log('📡 Emitindo evento:', event, data);
+    emitEvent(event, data);
   };
 
   return {
-    subscribeToProcess,
-    unsubscribeFromProcess
+    isConnected,
+    emitRealtimeEvent
   };
 };
