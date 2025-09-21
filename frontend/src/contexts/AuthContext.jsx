@@ -36,9 +36,16 @@ export const AuthProvider = ({ children }) => {
           setToken(savedToken);
         } catch (error) {
           console.error('❌ Token inválido:', error);
+          // Limpar dados inválidos
           localStorage.removeItem('token');
           localStorage.removeItem('user');
+          setUser(null);
+          setToken(null);
         }
+      } else {
+        // Não há dados salvos, garantir estado limpo
+        setUser(null);
+        setToken(null);
       }
       console.log('🏁 Finalizando verificação de autenticação');
       setLoading(false);

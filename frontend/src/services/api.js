@@ -37,10 +37,9 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token expirado ou inválido
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Token expirado ou inválido - não redirecionar automaticamente
+      // Deixar o AuthContext lidar com isso
+      console.warn('⚠️ Token expirado ou inválido');
     }
     return Promise.reject(error);
   }
