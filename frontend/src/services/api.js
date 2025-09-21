@@ -14,6 +14,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false, // Não usar cookies, apenas JWT token
 });
 
 // Interceptor para adicionar token de autenticação
