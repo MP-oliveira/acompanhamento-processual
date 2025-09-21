@@ -144,47 +144,41 @@
         }, 1000);
       });
       
-      // Detectar se é PWA
+      // Detectar se é PWA (apenas no mobile)
+      let deferredPrompt;
       window.addEventListener('beforeinstallprompt', (e) => {
         console.log('📱 PWA pode ser instalado');
-        e.preventDefault();
+        // Não chamar preventDefault() para evitar o erro
+        deferredPrompt = e;
         
-        // Mostrar botão de instalação (implementar UI)
-        const installButton = document.createElement('button');
-        installButton.textContent = '📱 Instalar App';
-        installButton.style.cssText = `
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          background: #6366f1;
-          color: white;
-          border: none;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-size: 14px;
-          cursor: pointer;
-          z-index: 1000;
-          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        `;
+        // Verificar se é mobile antes de mostrar o banner
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
-        installButton.addEventListener('click', () => {
-          e.prompt();
-          e.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('✅ PWA instalado pelo usuário');
+        if (isMobile) {
+          // Mostrar banner apenas no mobile
+          const pwaBanner = document.createElement('div');
+          pwaBanner.innerHTML = '💡 Você pode instalar este app';
+          pwaBanner.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 1000;
+          `;
+          
+          document.body.appendChild(pwaBanner);
+          
+          // Auto-remover após 5 segundos
+          setTimeout(() => {
+            if (pwaBanner.parentNode) {
+              pwaBanner.remove();
             }
-            installButton.remove();
-          });
-        });
-        
-        document.body.appendChild(installButton);
-        
-        // Auto-remover após 10 segundos
-        setTimeout(() => {
-          if (installButton.parentNode) {
-            installButton.remove();
-          }
-        }, 10000);
+          }, 5000);
+        }
       });
     </script>
   </body>
