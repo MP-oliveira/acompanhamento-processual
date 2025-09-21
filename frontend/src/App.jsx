@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { authService } from './services/api';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Topbar from './components/Topbar/Topbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -46,20 +46,40 @@ const queryClient = new QueryClient({
 });
 
 // Componente interno para usar hooks dentro do Router
-const AppContent = ({ 
-  isAuthenticated, 
-  sidebarOpen, 
-  setSidebarOpen, 
-  user, 
-  handleLogin, 
-  handleLogout, 
-  loading 
-}) => {
+const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
+  const { user, isAuthenticated, loading, login, logout } = useAuth();
+  
   // Ativar atalhos de teclado dentro do Router
   useKeyboardShortcuts();
   
   // Configurar atualizações em tempo real quando autenticado
   useRealtimeUpdates();
+
+  const handleLogin = async (credentials) => {
+    try {
+      await login(credentials.email, credentials.password);
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setSidebarOpen(false);
+  };
+
+  // Mostra loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="app">
+        <div className="loading-screen">
+          <LoadingSpinner size="large" text="Carregando aplicação..." />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -133,65 +153,7 @@ const AppContent = ({
 };
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Verifica se há token válido ao carregar a aplicação
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user');
-      
-      if (token && savedUser) {
-        try {
-          // Verifica se o token ainda é válido
-          const response = await authService.getProfile();
-          setUser(response.user);
-          setIsAuthenticated(true);
-        } catch (error) {
-          // Token inválido, remove dados salvos
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-        }
-      }
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
-
-  const handleLogin = async (credentials) => {
-    try {
-      setLoading(true);
-      const response = await authService.login(credentials.email, credentials.password);
-      
-      // Salva token e dados do usuário
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      
-      setUser(response.user);
-      setIsAuthenticated(true);
-      
-      return { success: true };
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    // Remove dados do localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    setUser(null);
-    setIsAuthenticated(false);
-    setSidebarOpen(false);
-  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -201,30 +163,14 @@ function App() {
     setSidebarOpen(false);
   };
 
-  // Mostra loading enquanto verifica autenticação
-  if (loading) {
-    return (
-      <div className="app">
-        <div className="loading-screen">
-          <LoadingSpinner size="large" text="Carregando aplicação..." />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <ThemeProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <Router>
             <AppContent
-              isAuthenticated={isAuthenticated}
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
-              user={user}
-              handleLogin={handleLogin}
-              handleLogout={handleLogout}
-              loading={loading}
             />
           </Router>
         </QueryClientProvider>
