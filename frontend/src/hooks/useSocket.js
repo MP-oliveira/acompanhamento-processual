@@ -21,7 +21,6 @@ export const useSocket = () => {
       ? 'http://localhost:3001'
       : 'https://backend-42rxugdfm-mauricio-silva-oliveiras-projects.vercel.app';
 
-    console.log('🔌 Conectando WebSocket em:', socketUrl);
 
     // Conectar ao WebSocket
     const socket = io(socketUrl, {
@@ -36,13 +35,11 @@ export const useSocket = () => {
 
     // Eventos de conexão
     socket.on('connect', () => {
-      console.log('✅ WebSocket conectado com sucesso!');
       setIsConnected(true);
       setConnectionError(null);
     });
 
     socket.on('disconnect', (reason) => {
-      console.log('🔌 WebSocket desconectado:', reason);
       setIsConnected(false);
     });
 
@@ -54,7 +51,6 @@ export const useSocket = () => {
 
     // Evento de pong para manter conexão ativa
     socket.on('pong', () => {
-      console.log('🏓 Pong recebido do servidor');
     });
 
     // Cleanup ao desmontar

@@ -18,7 +18,6 @@ export const useSupabaseRealtime = () => {
     }
 
     // Temporariamente desabilitar Realtime para debug
-    console.log('🔌 Supabase Realtime temporariamente desabilitado para debug');
     setIsConnected(false);
     setConnectionError('Realtime desabilitado temporariamente');
 

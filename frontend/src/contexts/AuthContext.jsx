@@ -19,24 +19,16 @@ export const AuthProvider = ({ children }) => {
   // Verificar token ao inicializar
   useEffect(() => {
     const initAuth = async () => {
-      console.log('🔍 Iniciando verificação de autenticação...');
       const savedToken = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
       
-      console.log('🔑 Token salvo:', !!savedToken);
-      console.log('👤 Usuário salvo:', !!savedUser);
-      
       if (savedToken && savedUser) {
         try {
-          console.log('🔍 Verificando token no backend...');
           // Verificar se o token ainda é válido
           const response = await authService.getProfile();
-          console.log('✅ Token válido, usuário:', response.user);
           setUser(response.user);
           setToken(savedToken);
         } catch (error) {
-          console.error('❌ Token inválido:', error);
-          console.error('❌ Detalhes do erro:', error.response?.status, error.response?.data);
           // Limpar dados inválidos
           localStorage.removeItem('token');
           localStorage.removeItem('user');
@@ -48,7 +40,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
       }
-      console.log('🏁 Finalizando verificação de autenticação');
       setLoading(false);
     };
 
@@ -57,30 +48,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      console.log('🔐 Tentando fazer login para:', email);
-      console.log('🔗 URL da API:', window.location.hostname === 'localhost' ? 'localhost' : 'vercel');
-      
       const response = await authService.login(email, password);
-      console.log('✅ Login bem-sucedido:', response);
       const { token: newToken, user: newUser } = response;
-      
-      console.log('👤 Usuário recebido:', newUser);
-      console.log('🔑 Token recebido:', !!newToken);
       
       setToken(newToken);
       setUser(newUser);
       
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(newUser));
-      
-      console.log('💾 Dados salvos no localStorage');
-      console.log('🎯 Login concluído com sucesso!');
       return response;
     } catch (error) {
-      console.error('❌ Erro no login:', error);
-      console.error('❌ Status do erro:', error.response?.status);
-      console.error('❌ Dados do erro:', error.response?.data);
-      console.error('❌ Mensagem do erro:', error.message);
       throw error;
     }
   };
