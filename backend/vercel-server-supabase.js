@@ -3,12 +3,21 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { supabase, supabaseAdmin, testConnection } from './src/config/supabase.js';
+import routes from './src/routes/index.js';
 import dotenv from 'dotenv';
 
 // Carregar variáveis de ambiente
 dotenv.config();
 
 const app = express();
+
+// Debug das variáveis de ambiente
+console.log('🔧 Environment check:', {
+  hasSupabaseUrl: !!process.env.SUPABASE_URL,
+  hasSupabaseAnonKey: !!process.env.SUPABASE_ANON_KEY,
+  hasSupabaseServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+  supabaseUrl: process.env.SUPABASE_URL?.substring(0, 20) + '...'
+});
 
 // Testar conexão com Supabase
 testConnection();
@@ -22,6 +31,9 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
+// Importar todas as rotas do sistema principal
+app.use('/api', routes);
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -31,11 +43,49 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Teste de conexão com banco
+app.get('/api/test/db-test', async (req, res) => {
+  try {
+    const client = supabaseAdmin || supabase;
+    const { count, error } = await client
+      .from('users')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error('Erro ao testar conexão com banco:', error);
+      return res.status(500).json({
+        error: 'Erro de conexão com banco',
+        details: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    res.status(200).json({
+      message: 'Conexão com banco OK',
+      userCount: count || 0,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Erro ao testar conexão com banco:', error);
+    res.status(500).json({
+      error: 'Erro de conexão com banco',
+      details: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Login de usuário
 app.post('/api/auth/login', async (req, res) => {
   try {
     console.log('🔐 Login attempt:', { email: req.body.email, hasPassword: !!req.body.password });
     console.log('🌐 Request headers:', req.headers);
+    console.log('🔧 Environment check:', {
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_KEY,
+      supabaseUrl: process.env.SUPABASE_URL?.substring(0, 20) + '...'
+    });
     
     const { email, password } = req.body;
 
