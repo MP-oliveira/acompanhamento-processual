@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configuração base da API
 // Usar variável de ambiente se disponível, senão usar localhost em desenvolvimento, Vercel em produção
 const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 
-  'https://backend-frfccjoeh-mauricio-silva-oliveiras-projects.vercel.app/api';
+  'https://backend-efbk7pkyq-mauricio-silva-oliveiras-projects.vercel.app/api';
 
 // API URL CORRECTED - BACKEND P6XHHMWID - FORCE REBUILD
 
