@@ -130,8 +130,20 @@ export const initializeApp = async () => {
     await sequelize.authenticate();
     logger.info('Conexão com o banco de dados estabelecida com sucesso');
 
-    // Sincronização automática desabilitada - usando tabelas existentes
-    logger.info('Sincronização automática desabilitada - usando tabelas existentes');
+    // Sincronização do banco de dados
+    await sequelize.sync();
+    logger.info('✅ Banco de dados sincronizado');
+    
+    // Verificar status das tabelas
+    const tables = ['users', 'processos', 'alerts', 'consultas', 'relatorios', 'audit_logs', 'push_subscriptions', 'notification_preferences'];
+    for (const table of tables) {
+      try {
+        const result = await sequelize.query(`SELECT COUNT(*) as count FROM ${table}`, { type: sequelize.QueryTypes.SELECT });
+        logger.info(`📊 Tabela ${table}: ${result[0].count} registros`);
+      } catch (error) {
+        logger.warn(`⚠️  Tabela ${table}: não encontrada ou erro`);
+      }
+    }
 
     // Inicia o agendador de alertas
     alertScheduler.start();
