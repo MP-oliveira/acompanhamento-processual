@@ -1,18 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import { sequelize } from './src/models/index.js';
-import routes from './src/routes/index.js';
-import { errorHandler, notFound } from './src/middlewares/error.js';
-import dotenv from 'dotenv';
-
-// Carregar variáveis de ambiente
-dotenv.config();
 
 const app = express();
 
 // Middlewares básicos
 app.use(cors({
-  origin: true, // Aceita todas as origens em produção
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -25,56 +18,39 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    message: 'Servidor Sequelize + Supabase funcionando'
+    message: 'Servidor funcionando'
   });
 });
 
-// Teste de conexão com banco
-app.get('/api/test/db-test', async (req, res) => {
-  try {
-    const { User } = await import('./src/models/index.js');
-    const userCount = await User.count();
-    
-    res.status(200).json({
-      message: 'Conexão com banco OK',
-      userCount: userCount,
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    console.error('Erro ao testar conexão com banco:', error);
-    res.status(500).json({
-      error: 'Erro de conexão com banco',
-      details: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
+// Teste simples
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Teste OK',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Importar todas as rotas do sistema principal
-app.use('/api', routes);
-
-// Middlewares de erro
-app.use(notFound);
-app.use(errorHandler);
-
-// Inicializar conexão com banco
-const initializeDatabase = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ Conexão com Supabase estabelecida com sucesso');
-    
-    // Sincronizar modelos (apenas em desenvolvimento)
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('✅ Modelos sincronizados com o banco');
-    }
-  } catch (error) {
-    console.error('❌ Erro ao conectar com Supabase:', error);
+// Login simples para teste
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({
+      error: 'Email e senha são obrigatórios'
+    });
   }
-};
-
-// Inicializar banco
-initializeDatabase();
+  
+  // Simular login
+  res.json({
+    message: 'Login realizado com sucesso',
+    token: 'fake-token-for-test',
+    user: {
+      id: 1,
+      email: email,
+      nome: 'Teste',
+      role: 'admin'
+    }
+  });
+});
 
 export default app;
