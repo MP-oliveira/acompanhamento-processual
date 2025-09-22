@@ -3,7 +3,7 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { supabase, supabaseAdmin, testConnection } from './src/config/supabase.js';
-import routes from './src/routes/index.js';
+// import routes from './src/routes/index.js'; // Removido - conflito com Supabase
 import dotenv from 'dotenv';
 
 // Carregar variáveis de ambiente
@@ -31,8 +31,8 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
-// Importar todas as rotas do sistema principal
-app.use('/api', routes);
+// Importar todas as rotas do sistema principal - REMOVIDO (conflito com Supabase)
+// app.use('/api', routes);
 
 // Health check
 app.get('/api/health', (req, res) => {
