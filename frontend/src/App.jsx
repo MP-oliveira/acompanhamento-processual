@@ -1,8 +1,7 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import { authService } from './services/api';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Topbar from './components/Topbar/Topbar';
@@ -15,9 +14,7 @@ import PageLoading from './components/PageLoading/PageLoading';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import AdminRoute from './components/AdminRoute/AdminRoute';
-import performanceMetrics from './utils/performanceMetrics';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
-import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -162,13 +159,6 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const closeSidebar = () => {
-    setSidebarOpen(false);
-  };
 
   return (
     <ThemeProvider>
