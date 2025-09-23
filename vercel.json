@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/src/server.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3001",
+    "DATABASE_URL": "postgresql://postgres:EuamoJesusdetodomeucoracao@db.zejrnsdshiaipptfopqu.supabase.co:5432/postgres",
+    "SUPABASE_URL": "https://zejrnsdshiaipptfopqu.supabase.co",
+    "SUPABASE_SERVICE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODM5NDc5MSwiZXhwIjoyMDczOTcwNzkxfQ.bXl9yFF_uAS5nWoNB9E43ybls0JwMzi0jC_i9Z4cD70",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTQ3OTEsImV4cCI6MjA3Mzk3MDc5MX0.luAPlhy3fVSEVcIO7_9WHMbTiwvqlg1Ysjx7njn6gVk",
+    "JWT_SECRET": "OCTJolbTW3ESnpVf5rFDbyaMA7Vv4TP2SWPI1SSb8vQbh5rhsLM0WxOglhY18zYzzgy0wmMqmUH4oFghfKzvCQ==",
+    "JWT_EXPIRES_IN": "24h",
+    "LOG_LEVEL": "info"
+  }
+}
