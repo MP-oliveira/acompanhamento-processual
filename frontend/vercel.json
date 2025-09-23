@@ -11,19 +11,22 @@
   ],
   "routes": [
     {
+      "src": "/assets/(.*\\.js)$",
+      "dest": "/assets/$1",
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "src": "/assets/(.*\\.css)$",
+      "dest": "/assets/$1",
+      "headers": {
+        "Content-Type": "text/css"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        }
-      ]
     }
   ]
 }
