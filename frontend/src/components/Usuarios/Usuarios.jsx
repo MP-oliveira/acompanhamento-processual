@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
-  Filter, 
-  MoreVertical,
   User,
   Mail,
   Phone,
   Shield,
   Edit,
   Trash2,
-  Eye,
   UserCheck,
   UserX,
   XCircle

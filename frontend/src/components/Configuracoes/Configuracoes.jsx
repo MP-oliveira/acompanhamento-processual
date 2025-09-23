@@ -6,10 +6,7 @@ import {
   Bell,
   Shield,
   Database,
-  Mail,
-  Globe,
   Clock,
-  AlertTriangle,
   CheckCircle,
   Info
 } from 'lucide-react';

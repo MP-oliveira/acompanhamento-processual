@@ -6,11 +6,7 @@ import {
   Plus, 
   Clock,
   FileText,
-  AlertTriangle,
-  CheckCircle,
   XCircle,
-  Filter,
-  Search,
   RefreshCw
 } from 'lucide-react';
 import { processoService } from '../../services/api';

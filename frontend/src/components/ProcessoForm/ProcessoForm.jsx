@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
-  Calendar, 
-  MapPin, 
-  User, 
   AlertCircle,
   Save,
-  X,
-  Plus,
-  Trash2
+  X
 } from 'lucide-react';
 import './ProcessoForm.css';
 

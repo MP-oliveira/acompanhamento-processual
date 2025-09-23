@@ -3,16 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { 
   AlertTriangle, 
   Bell, 
-  Filter, 
   Search, 
   CheckCircle,
   Clock,
-  Calendar,
   FileText,
-  X,
-  MoreVertical,
-  Eye,
-  Trash2
+  X
 } from 'lucide-react';
 import { alertService } from '../../services/api';
 import AlertCard from '../AlertCard/AlertCard';

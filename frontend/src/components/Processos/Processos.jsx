@@ -3,17 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Plus, 
   Search, 
-  Filter, 
-  Download, 
-  MoreVertical,
   FileText,
-  Calendar,
   AlertTriangle,
   CheckCircle,
   Clock,
   X
 } from 'lucide-react';
-import { useProcessos, useProcesso, useDeleteProcesso } from '../../hooks/useProcessos';
+import { useProcessos, useDeleteProcesso } from '../../hooks/useProcessos';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
 import './Processos.css';
 
@@ -30,7 +26,7 @@ const Processos = () => {
   const [statusFilter, setStatusFilter] = useState('todos');
   const [sortBy, setSortBy] = useState('dataDistribuicao');
   const [sortOrder, setSortOrder] = useState('desc');
-  const [viewMode, setViewMode] = useState('grid'); // grid ou list
+  const [viewMode, setViewMode] = useState('grid');
   const [processoSelecionado, setProcessoSelecionado] = useState(null);
   
   // Extrair dados dos processos e garantir que seja um array

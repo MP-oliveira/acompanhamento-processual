@@ -5,11 +5,9 @@ import {
   Clock, 
   User, 
   MapPin, 
-  AlertTriangle,
   Edit,
   Trash2,
-  Eye,
-  MoreVertical
+  Eye
 } from 'lucide-react';
 import './ProcessoCard.css';
 
