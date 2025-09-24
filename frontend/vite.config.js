@@ -6,7 +6,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 export default defineConfig({
   define: {
     // Variáveis de ambiente para produção
-    'import.meta.env.VITE_API_URL': JSON.stringify('https://backend-nlz1y92vm-mauricio-silva-oliveiras-projects.vercel.app/api'),
+    'import.meta.env.VITE_API_URL': JSON.stringify('http://localhost:3001/api'),
     'import.meta.env.VITE_SUPABASE_URL': JSON.stringify('https://zejrnsdshiaipptfopqu.supabase.co'),
     'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTQ3OTEsImV4cCI6MjA3Mzk3MDc5MX0.luAPlhy3fVSEVcIO7_9WHMbTiwvqlg1Ysjx7njn6gVk')
   },
