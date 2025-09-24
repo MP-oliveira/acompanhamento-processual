@@ -1,7 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente
+dotenv.config();
+
+// Verificar se as variáveis de ambiente necessárias estão definidas
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL não está definida nas variáveis de ambiente');
+}
+
+// Importar rotas reais
+import authRoutes from './src/routes/authRoutes.js';
+import userRoutes from './src/routes/userRoutes.js';
+import processoRoutes from './src/routes/processoRoutes.js';
+import alertRoutes from './src/routes/alertRoutes.js';
+import relatorioRoutes from './src/routes/relatorioRoutes.js';
+import consultaRoutes from './src/routes/consultaRoutes.js';
 
 // Criar app Express
 const app = express();
@@ -14,8 +30,17 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:5175',
+    'http://localhost:5176',
     'https://frontend-5zmzxuyiq-mauricio-mp-oliveiras-projects.vercel.app',
     'https://frontend-d7kg7zgrf-mauricio-silva-oliveiras-projects.vercel.app',
+    'https://frontend-dvww2ij17-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-m0v0sd7z8-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-9omio356t-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-6g4y7ne7q-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-8jipb5gtk-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-83sba8eo7-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-14ttv3go7-mauricio-mp-oliveiras-projects.vercel.app',
+    'https://frontend-hdj0hmmx0-mauricio-mp-oliveiras-projects.vercel.app',
     'https://jurisacompanha.vercel.app'
   ],
   credentials: true,
@@ -26,21 +51,26 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware para lidar com requisições OPTIONS (preflight)
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
-});
+// Middleware OPTIONS removido - deixando apenas o CORS do express
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100 // limite de 100 requests por IP
+// Rota para a raiz
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Juris Acompanha Backend funcionando!',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    endpoints: {
+      api: '/api',
+      health: '/api/health',
+      auth: '/api/auth',
+      users: '/api/users',
+      processos: '/api/processos',
+      alerts: '/api/alerts',
+      relatorios: '/api/relatorios',
+      consultas: '/api/consultas'
+    }
+  });
 });
-app.use(limiter);
 
 // Rotas básicas
 app.get('/api', (req, res) => {
@@ -58,32 +88,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Rota de login básica (sem banco por enquanto)
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-  
-  if (!email || !password) {
-    return res.status(400).json({ 
-      error: 'Email e senha são obrigatórios' 
+// Usar rotas reais do backend com tratamento de erro
+try {
+  app.use('/api/auth', authRoutes);
+  app.use('/api/users', userRoutes);
+  app.use('/api/processos', processoRoutes);
+  app.use('/api/alerts', alertRoutes);
+  app.use('/api/relatorios', relatorioRoutes);
+  app.use('/api/consultas', consultaRoutes);
+} catch (error) {
+  console.error('Erro ao configurar rotas:', error);
+  // Rota de fallback para quando há problemas com o banco
+  app.use('/api/*', (req, res) => {
+    res.status(503).json({ 
+      error: 'Serviço temporariamente indisponível',
+      message: 'Problemas de conexão com o banco de dados'
     });
-  }
-  
-  // Resposta temporária - sem validação real
-  res.json({
-    message: 'Login endpoint funcionando',
-    email: email,
-    timestamp: new Date().toISOString()
   });
-});
-
-// Rota para processos (temporária)
-app.get('/api/processos', (req, res) => {
-  res.json({
-    message: 'Endpoint de processos funcionando',
-    processos: [],
-    timestamp: new Date().toISOString()
-  });
-});
+}
 
 // Middleware de erro
 app.use((err, req, res, next) => {
