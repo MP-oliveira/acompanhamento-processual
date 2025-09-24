@@ -24,9 +24,8 @@ export const AuthProvider = ({ children }) => {
       
       if (savedToken && savedUser) {
         try {
-          // Verificar se o token ainda é válido
-          const response = await authService.getProfile();
-          setUser(response.user);
+          // Usar dados salvos sem verificar no servidor por enquanto
+          setUser(JSON.parse(savedUser));
           setToken(savedToken);
         } catch (error) {
           // Limpar dados inválidos

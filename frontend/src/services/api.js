@@ -59,8 +59,23 @@ api.interceptors.response.use(
 // Serviços de autenticação
 export const authService = {
   async login(email, password) {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
+    try {
+      const loginData = { email, password };
+      console.log('🔍 Frontend - Enviando dados de login:', loginData);
+      console.log('🔍 Frontend - Email:', email, 'Type:', typeof email);
+      console.log('🔍 Frontend - Password:', password, 'Type:', typeof password);
+      console.log('🔍 Frontend - API Base URL:', api.defaults.baseURL);
+      
+      const response = await api.post('/auth/login', loginData);
+      console.log('✅ Login response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Login error:', error);
+      console.error('❌ Error response:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      console.error('❌ Error headers:', error.response?.headers);
+      throw error;
+    }
   },
 
   async register(userData) {

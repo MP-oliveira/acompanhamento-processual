@@ -191,6 +191,9 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
   };
 
   const getInitials = (name) => {
+    if (!name || typeof name !== 'string') {
+      return 'U';
+    }
     return name
       .split(' ')
       .map(word => word.charAt(0))
@@ -365,7 +368,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
               aria-label="Menu do usuário"
             >
               <div className="topbar-user-avatar">
-                {user ? getInitials(user.nome) : 'U'}
+                {user ? getInitials(user.name || user.nome) : 'U'}
               </div>
               <span className="topbar-user-name">
                 {user ? user.nome : 'Usuário'}
@@ -376,7 +379,7 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
             <div className={`topbar-user-dropdown ${showUserDropdown ? 'show' : ''}`}>
               <div className="topbar-user-info">
                 <div className="topbar-user-avatar-large">
-                  {user ? getInitials(user.nome) : 'U'}
+                  {user ? getInitials(user.name || user.nome) : 'U'}
                 </div>
                 <div className="topbar-user-details">
                   <div className="topbar-user-fullname">
