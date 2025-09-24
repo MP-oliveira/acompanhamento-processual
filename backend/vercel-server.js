@@ -11,14 +11,29 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'https://frontend-5zmzxuyiq-mauricio-mp-oliveiras-projects.vercel.app',
     'https://frontend-d7kg7zgrf-mauricio-silva-oliveiras-projects.vercel.app',
     'https://jurisacompanha.vercel.app'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware para lidar com requisições OPTIONS (preflight)
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
 
 // Rate limiting
 const limiter = rateLimit({
