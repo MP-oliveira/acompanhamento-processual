@@ -45,32 +45,30 @@ app.use(securityHeaders);
 
 // CORS com headers de segurança
 app.use(corsSecurityHeaders);
-app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-    'http://localhost:5177',
-    'https://jurisacompanha.vercel.app',
-    'https://acompanhamento-processual-kt8g20752.vercel.app',
-    'https://frontend-f62xgiyqy-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-n8oxehapg-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-8351bqycr-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-lznaudnp2-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-erztz6jv7-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-p5aneidng-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-hftw89yq8-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-6cgknjmdl-mauricio-mp-oliveiras-projects.vercel.app',
-    process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app',
-    null // Permitir arquivos HTML locais (origin 'null')
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  optionsSuccessStatus: 200
-}));
+// CORS configurável por ALLOWED_ORIGINS (lista separada por vírgulas)
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,https://frontend-2gj4dbzvi-mauricio-mp-oliveiras-projects.vercel.app';
+const allowedOrigins = allowedOriginsEnv
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0) return callback(null, true);
+    const isAllowed = allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed));
+    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+// Responder preflight de todos os caminhos
+app.options('*', cors(corsOptions));
 
 // Rate limiting geral para proteção contra ataques
 const generalLimiter = rateLimit({
