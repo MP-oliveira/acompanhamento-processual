@@ -46,7 +46,7 @@ app.use(securityHeaders);
 // CORS com headers de segurança
 app.use(corsSecurityHeaders);
 // CORS configurável por ALLOWED_ORIGINS (lista separada por vírgulas)
-const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,https://frontend-2gj4dbzvi-mauricio-mp-oliveiras-projects.vercel.app';
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,https://frontend-2gj4dbzvi-mauricio-mp-oliveiras-projects.vercel.app,https://frontend-mftl7ix5p-mauricio-mp-oliveiras-projects.vercel.app';
 const allowedOrigins = allowedOriginsEnv
   .split(',')
   .map(o => o.trim())
@@ -55,9 +55,15 @@ const allowedOrigins = allowedOriginsEnv
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.length === 0) return callback(null, true);
-    const isAllowed = allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed));
-    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+    
+    // Aceitar qualquer subdomínio do Vercel para este projeto
+    const isVercelFrontend = origin && origin.includes('mauricio-mp-oliveiras-projects.vercel.app');
+    
+    if (isVercelFrontend) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'), false);
+    }
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
