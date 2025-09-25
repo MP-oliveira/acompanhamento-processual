@@ -50,6 +50,15 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(email, password);
       
       if (response.token && response.user) {
+        // Decodificar o token para debug (sem verificar assinatura)
+        try {
+          const tokenParts = response.token.split('.');
+          const payload = JSON.parse(atob(tokenParts[1]));
+          console.log('🔍 AuthContext - Token payload:', payload);
+        } catch (decodeError) {
+          console.log('❌ Erro ao decodificar token:', decodeError);
+        }
+
         setToken(response.token);
         setUser(response.user);
         
