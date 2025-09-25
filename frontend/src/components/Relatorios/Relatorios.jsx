@@ -28,15 +28,8 @@ const Relatorios = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('todos');
   const [selectedType, setSelectedType] = useState('todos');
   const [showFilters, setShowFilters] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRelatorio, setSelectedRelatorio] = useState(null);
-  const [editReport, setEditReport] = useState({
-    tipo: 'processos',
-    titulo: '',
-    descricao: '',
-    periodo: new Date().toISOString().slice(0, 7) // YYYY-MM
-  });
 
   // Buscar relatórios do backend
   useEffect(() => {
@@ -124,47 +117,9 @@ const Relatorios = () => {
     // Aqui você pode adicionar notificação de erro
   };
 
-  const handleEditRelatorio = (relatorio) => {
-    setSelectedRelatorio(relatorio);
-    setEditReport({
-      tipo: relatorio.tipo,
-      titulo: relatorio.titulo,
-      descricao: relatorio.descricao || '',
-      periodo: relatorio.periodo
-    });
-    setShowEditModal(true);
-  };
-
   const handleDeleteRelatorio = (relatorio) => {
     setSelectedRelatorio(relatorio);
     setShowDeleteModal(true);
-  };
-
-  const handleUpdateReport = async () => {
-    if (!selectedRelatorio) return;
-
-    try {
-      setLoading(true);
-      await relatorioService.update(selectedRelatorio.id, editReport);
-      setShowEditModal(false);
-      setSelectedRelatorio(null);
-      setEditReport({
-        tipo: 'processos',
-        titulo: '',
-        descricao: '',
-        periodo: new Date().toISOString().slice(0, 7)
-      });
-      // Recarregar relatórios
-      const response = await relatorioService.getAll({
-        tipo: selectedType !== 'todos' ? selectedType : undefined,
-        status: 'todos'
-      });
-      setRelatorios(response.relatorios || []);
-    } catch (error) {
-      console.error('Erro ao atualizar relatório:', error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleConfirmDelete = async () => {
@@ -527,13 +482,6 @@ const Relatorios = () => {
 
                 <div className="relatorio-card-actions">
                   <button
-                    className="relatorio-card-action-btn relatorio-card-action-edit"
-                    onClick={() => handleEditRelatorio(relatorio)}
-                    title="Editar relatório"
-                  >
-                    <Edit size={16} />
-                  </button>
-                  <button
                     className="relatorio-card-action-btn relatorio-card-action-delete"
                     onClick={() => handleDeleteRelatorio(relatorio)}
                     title="Excluir relatório"
@@ -552,89 +500,6 @@ const Relatorios = () => {
           </div>
         )}
       </div>
-
-      {/* Modal para Editar Relatório */}
-      {showEditModal && (
-        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">Editar Relatório</h2>
-              <button 
-                className="modal-close"
-                onClick={() => setShowEditModal(false)}
-              >
-                <XCircle size={24} />
-              </button>
-            </div>
-            
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label required">Tipo de Relatório</label>
-                <select
-                  className="form-input"
-                  value={editReport.tipo}
-                  onChange={(e) => setEditReport({...editReport, tipo: e.target.value})}
-                >
-                  <option value="processos">Processos</option>
-                  <option value="prazos">Prazos</option>
-                  <option value="alertas">Alertas</option>
-                  <option value="consultas">Consultas</option>
-                  <option value="usuarios">Usuários</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label required">Título</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={editReport.titulo}
-                  onChange={(e) => setEditReport({...editReport, titulo: e.target.value})}
-                  placeholder="Ex: Relatório de Processos por Status"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Descrição</label>
-                <textarea
-                  className="form-input"
-                  rows="3"
-                  value={editReport.descricao}
-                  onChange={(e) => setEditReport({...editReport, descricao: e.target.value})}
-                  placeholder="Descrição do relatório..."
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label required">Período</label>
-                <input
-                  type="month"
-                  className="form-input"
-                  value={editReport.periodo}
-                  onChange={(e) => setEditReport({...editReport, periodo: e.target.value})}
-                />
-              </div>
-            </div>
-
-            <div className="modal-actions">
-              <button 
-                className="btn btn-secondary" 
-                onClick={() => setShowEditModal(false)}
-              >
-                Cancelar
-              </button>
-              <button 
-                className="btn btn-primary" 
-                onClick={handleUpdateReport}
-                disabled={!editReport.titulo || !editReport.periodo}
-              >
-                <Edit size={16} />
-                Salvar Alterações
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Modal de Confirmação para Deletar */}
       {showDeleteModal && (
