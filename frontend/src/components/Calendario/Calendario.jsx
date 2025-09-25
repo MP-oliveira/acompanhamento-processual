@@ -10,9 +10,11 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { processoService } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import './Calendario.css';
 
 const Calendario = () => {
+  const { isAuthenticated, user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState('month'); // month, week, day
@@ -39,8 +41,16 @@ const Calendario = () => {
 
   // Função para buscar processos do backend
   const fetchProcessos = async () => {
+    // Não buscar se não estiver autenticado
+    if (!isAuthenticated || !user) {
+      console.log('👤 Usuário não autenticado - pulando busca de processos');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
+      console.log('📅 Calendário: Buscando processos para o usuário', user.email);
       const response = await processoService.getAll();
       const processos = response.processos || [];
       
@@ -140,19 +150,23 @@ const Calendario = () => {
     }
   };
 
-  // Buscar processos do backend na montagem do componente
+  // Buscar processos do backend quando o usuário estiver autenticado
   useEffect(() => {
-    fetchProcessos();
-  }, []);
+    if (isAuthenticated && user) {
+      fetchProcessos();
+    }
+  }, [isAuthenticated, user]);
 
-  // Atualizar automaticamente a cada 30 segundos
+  // Atualizar automaticamente a cada 30 segundos (somente se autenticado)
   useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    
     const interval = setInterval(() => {
       fetchProcessos();
     }, 30000); // 30 segundos
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated, user]);
 
 
 
