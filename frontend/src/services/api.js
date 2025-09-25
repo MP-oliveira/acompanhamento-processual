@@ -219,6 +219,11 @@ export const relatorioService = {
     return response.data;
   },
 
+  async update(id, data) {
+    const response = await api.put(`/relatorios/${id}`, data);
+    return response.data;
+  },
+
   async delete(id) {
     const response = await api.delete(`/relatorios/${id}`);
     return response.data;

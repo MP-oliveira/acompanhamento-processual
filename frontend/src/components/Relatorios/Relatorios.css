@@ -373,6 +373,25 @@
   margin-top: auto;
 }
 
+.relatorio-card-actions .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-width: auto;
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.relatorio-card-actions .btn-danger {
+  color: var(--error-600);
+  border-color: var(--error-300);
+}
+
+.relatorio-card-actions .btn-danger:hover {
+  background-color: var(--error-50);
+  border-color: var(--error-500);
+}
+
 /* ===== ESTADO VAZIO ===== */
 .relatorios-empty {
   display: flex;
@@ -586,6 +605,43 @@
 .relatorios-filters-toggle:focus-visible {
   outline: 2px solid var(--primary-500);
   outline-offset: 2px;
+}
+
+/* ===== MODAL DE CONFIRMAÇÃO ===== */
+.modal-confirm {
+  max-width: 400px;
+}
+
+.confirm-message {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+}
+
+.confirm-icon {
+  color: var(--warning-500);
+  margin-bottom: var(--spacing-md);
+}
+
+.confirm-message p {
+  margin: var(--spacing-sm) 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.confirm-message strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  display: block;
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm);
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.confirm-warning {
+  font-size: 0.875rem;
+  color: var(--warning-600);
+  font-weight: 500;
 }
 
 /* ===== ACESSIBILIDADE ===== */

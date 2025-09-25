@@ -13,10 +13,12 @@ import {
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
+import { useAuth } from '../../contexts/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, user }) => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const [processosMes, setProcessosMes] = useState(0);
   
   // Hook do React Query para buscar estatísticas de relatórios
@@ -50,7 +52,9 @@ const Sidebar = ({ isOpen, onClose, user }) => {
   }, []);
 
   // Total de relatórios vem do React Query hook
-  const totalRelatorios = relatoriosStats?.total || 0;
+  const totalRelatorios = isAuthenticated 
+    ? (relatoriosStats?.total || 0) // Se autenticado, usar dados reais da API
+    : 0;
 
   const isActiveRoute = (href) => {
     if (href === '/dashboard') {

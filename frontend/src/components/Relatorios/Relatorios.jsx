@@ -12,7 +12,9 @@ import {
   AlertTriangle,
   Filter,
   RefreshCw,
-  Plus
+  Plus,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { relatorioService } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -27,6 +29,9 @@ const Relatorios = () => {
   const [selectedType, setSelectedType] = useState('todos');
   const [showFilters, setShowFilters] = useState(false);
   const [showNewReportModal, setShowNewReportModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedRelatorio, setSelectedRelatorio] = useState(null);
   const [newReport, setNewReport] = useState({
     tipo: 'processos',
     titulo: '',
@@ -51,61 +56,8 @@ const Relatorios = () => {
           status: 'todos'
         });
         
-        // Se não há relatórios no backend, criar alguns dados de demonstração
-        const backendRelatorios = response.relatorios || [];
-        if (backendRelatorios.length === 0) {
-          console.log('📊 Criando relatórios de demonstração...');
-          const relatoriosDemo = [
-            {
-              id: 1,
-              tipo: 'processos',
-              titulo: 'Relatório de Processos - Setembro 2025',
-              descricao: 'Análise completa dos processos do mês de setembro',
-              periodo: '2025-09',
-              status: 'concluido',
-              dataGeracao: '2025-09-25T12:00:00Z',
-              dados: {
-                total: 5,
-                ativos: 4,
-                arquivados: 1,
-                crescimento: 25
-              }
-            },
-            {
-              id: 2,
-              tipo: 'prazos',
-              titulo: 'Relatório de Prazos - Setembro 2025',
-              descricao: 'Monitoramento de prazos processuais',
-              periodo: '2025-09',
-              status: 'concluido',
-              dataGeracao: '2025-09-24T15:30:00Z',
-              dados: {
-                vencidos: 0,
-                proximos: 2,
-                futuros: 3,
-                crescimento: -10
-              }
-            },
-            {
-              id: 3,
-              tipo: 'alertas',
-              titulo: 'Relatório de Alertas - Setembro 2025',
-              descricao: 'Estatísticas de alertas e notificações',
-              periodo: '2025-09',
-              status: 'processando',
-              dataGeracao: '2025-09-25T10:00:00Z',
-              dados: {
-                total: 12,
-                lidos: 8,
-                pendentes: 4,
-                crescimento: 50
-              }
-            }
-          ];
-          setRelatorios(relatoriosDemo);
-        } else {
-          setRelatorios(backendRelatorios);
-        }
+        // Usar dados reais do backend
+        setRelatorios(response.relatorios || []);
       } catch (error) {
         console.error('Erro ao buscar relatórios:', error);
         setRelatorios([]);
@@ -158,6 +110,73 @@ const Relatorios = () => {
     // Aqui você pode adicionar notificação de erro
   };
 
+  const handleEditRelatorio = (relatorio) => {
+    setSelectedRelatorio(relatorio);
+    setNewReport({
+      tipo: relatorio.tipo,
+      titulo: relatorio.titulo,
+      descricao: relatorio.descricao || '',
+      periodo: relatorio.periodo
+    });
+    setShowEditModal(true);
+  };
+
+  const handleDeleteRelatorio = (relatorio) => {
+    setSelectedRelatorio(relatorio);
+    setShowDeleteModal(true);
+  };
+
+  const handleUpdateReport = async () => {
+    if (!selectedRelatorio) return;
+
+    try {
+      setLoading(true);
+      await relatorioService.update(selectedRelatorio.id, newReport);
+      setShowEditModal(false);
+      setSelectedRelatorio(null);
+      setNewReport({
+        tipo: 'processos',
+        titulo: '',
+        descricao: '',
+        periodo: new Date().toISOString().slice(0, 7)
+      });
+      // Recarregar relatórios
+      const response = await relatorioService.getAll({
+        tipo: selectedType !== 'todos' ? selectedType : undefined,
+        status: 'todos'
+      });
+      setRelatorios(response.relatorios || []);
+    } catch (error) {
+      console.error('Erro ao atualizar relatório:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedRelatorio) return;
+
+    try {
+      setLoading(true);
+      await relatorioService.delete(selectedRelatorio.id);
+      setShowDeleteModal(false);
+      setSelectedRelatorio(null);
+      // Recarregar relatórios
+      const response = await relatorioService.getAll({
+        tipo: selectedType !== 'todos' ? selectedType : undefined,
+        status: 'todos'
+      });
+      setRelatorios(response.relatorios || []);
+      // Atualizar estatísticas
+      const statsResponse = await relatorioService.getStats();
+      setStats(statsResponse || { total: 0, concluidos: 0, processando: 0, erro: 0 });
+    } catch (error) {
+      console.error('Erro ao deletar relatório:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const handleRefresh = async () => {
     try {
@@ -191,27 +210,12 @@ const Relatorios = () => {
       try {
         const response = await relatorioService.getStats();
         
-        // Se não há estatísticas no backend, usar dados de demonstração
-        if (!response || Object.keys(response).length === 0) {
-          console.log('📊 Usando estatísticas de demonstração...');
-          setStats({
-            total: 3,
-            concluidos: 2,
-            processando: 1,
-            erro: 0
-          });
-        } else {
-          setStats(response);
-        }
+        // Usar dados reais do backend
+        setStats(response || { total: 0, concluidos: 0, processando: 0, erro: 0 });
       } catch (error) {
         console.error('Erro ao buscar estatísticas:', error);
-        // Em caso de erro, usar dados de demonstração
-        setStats({
-          total: 3,
-          concluidos: 2,
-          processando: 1,
-          erro: 0
-        });
+        // Em caso de erro, zerar estatísticas
+        setStats({ total: 0, concluidos: 0, processando: 0, erro: 0 });
       }
     };
 
@@ -508,6 +512,20 @@ const Relatorios = () => {
                 )}
 
                 <div className="relatorio-card-actions">
+                  <button 
+                    className="btn btn-sm btn-outline"
+                    onClick={() => handleEditRelatorio(relatorio)}
+                    title="Editar relatório"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button 
+                    className="btn btn-sm btn-outline btn-danger"
+                    onClick={() => handleDeleteRelatorio(relatorio)}
+                    title="Deletar relatório"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                   <RelatorioExport 
                     relatorio={relatorio}
                     onSuccess={(type) => handleExportSuccess(relatorio.id, type)}
@@ -598,6 +616,131 @@ const Relatorios = () => {
               >
                 <Plus size={16} />
                 Gerar Relatório
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Editar Relatório */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Editar Relatório</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowEditModal(false)}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label required">Tipo de Relatório</label>
+                <select
+                  className="form-input"
+                  value={newReport.tipo}
+                  onChange={(e) => setNewReport({...newReport, tipo: e.target.value})}
+                >
+                  <option value="processos">Processos</option>
+                  <option value="prazos">Prazos</option>
+                  <option value="alertas">Alertas</option>
+                  <option value="consultas">Consultas</option>
+                  <option value="usuarios">Usuários</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Título</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newReport.titulo}
+                  onChange={(e) => setNewReport({...newReport, titulo: e.target.value})}
+                  placeholder="Ex: Relatório de Processos por Status"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Descrição</label>
+                <textarea
+                  className="form-input"
+                  rows="3"
+                  value={newReport.descricao}
+                  onChange={(e) => setNewReport({...newReport, descricao: e.target.value})}
+                  placeholder="Descrição do relatório..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Período</label>
+                <input
+                  type="month"
+                  className="form-input"
+                  value={newReport.periodo}
+                  onChange={(e) => setNewReport({...newReport, periodo: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleUpdateReport}
+                disabled={!newReport.titulo || !newReport.periodo}
+              >
+                <Edit size={16} />
+                Salvar Alterações
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação para Deletar */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="modal-content modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Confirmar Exclusão</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="confirm-message">
+                <AlertTriangle size={48} className="confirm-icon" />
+                <p>Tem certeza que deseja deletar o relatório:</p>
+                <strong>"{selectedRelatorio?.titulo}"</strong>
+                <p className="confirm-warning">Esta ação não pode ser desfeita.</p>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-danger" 
+                onClick={handleConfirmDelete}
+              >
+                <Trash2 size={16} />
+                Sim, Deletar
               </button>
             </div>
           </div>
