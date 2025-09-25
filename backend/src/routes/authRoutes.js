@@ -3,11 +3,11 @@ import { auth } from '../middlewares/auth.js';
 import { loginLimiter, registerLimiter } from '../middlewares/rateLimiting.js';
 import { 
   register, 
-  login, 
   me, 
   updateProfile,
   debugLogin
 } from '../controllers/authController.js';
+import { login } from '../controllers/authControllerSupabase.js';
 
 const router = Router();
 
