@@ -28,11 +28,10 @@ const Relatorios = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('todos');
   const [selectedType, setSelectedType] = useState('todos');
   const [showFilters, setShowFilters] = useState(false);
-  const [showNewReportModal, setShowNewReportModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRelatorio, setSelectedRelatorio] = useState(null);
-  const [newReport, setNewReport] = useState({
+  const [editReport, setEditReport] = useState({
     tipo: 'processos',
     titulo: '',
     descricao: '',
@@ -76,26 +75,26 @@ const Relatorios = () => {
     return matchesType && matchesPeriod;
   });
 
-  const handleGerarRelatorio = () => {
-    setShowNewReportModal(true);
-  };
+  const handleGerarRelatorio = async () => {
+    const agora = new Date();
+    const periodo = agora.toISOString().slice(0, 7); // YYYY-MM
+    const mesNome = agora.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    
+    // Gerar relatório automático inteligente
+    const reportData = {
+      tipo: 'processos',
+      titulo: `Relatório Mensal - ${mesNome}`,
+      descricao: `Relatório automático com análise completa de processos, prazos e alertas do mês de ${mesNome.toLowerCase()}`,
+      periodo: periodo
+    };
 
-  const handleCreateReport = async () => {
     try {
       setLoading(true);
-      console.log('📊 Criando relatório:', newReport);
-      const result = await relatorioService.create(newReport);
-      console.log('✅ Relatório criado com sucesso:', result);
+      console.log('📊 Gerando relatório automático:', reportData);
+      const result = await relatorioService.create(reportData);
+      console.log('✅ Relatório gerado com sucesso:', result);
       
-      setShowNewReportModal(false);
-      setNewReport({
-        tipo: 'processos',
-        titulo: '',
-        descricao: '',
-        periodo: new Date().toISOString().slice(0, 7)
-      });
-      
-      // Recarregar relatórios com os mesmos filtros
+      // Recarregar relatórios
       const response = await relatorioService.getAll({
         tipo: selectedType !== 'todos' ? selectedType : undefined,
         status: 'todos'
@@ -107,12 +106,14 @@ const Relatorios = () => {
       setStats(statsResponse || { total: 0, concluidos: 0, processando: 0, erro: 0 });
       
     } catch (error) {
-      console.error('❌ Erro ao criar relatório:', error);
-      alert('Erro ao criar relatório: ' + (error.response?.data?.error || error.message));
+      console.error('❌ Erro ao gerar relatório:', error);
+      alert('Erro ao gerar relatório: ' + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const handleExportSuccess = (relatorioId, type) => {
     // Aqui você pode adicionar notificação de sucesso
@@ -125,7 +126,7 @@ const Relatorios = () => {
 
   const handleEditRelatorio = (relatorio) => {
     setSelectedRelatorio(relatorio);
-    setNewReport({
+    setEditReport({
       tipo: relatorio.tipo,
       titulo: relatorio.titulo,
       descricao: relatorio.descricao || '',
@@ -144,10 +145,10 @@ const Relatorios = () => {
 
     try {
       setLoading(true);
-      await relatorioService.update(selectedRelatorio.id, newReport);
+      await relatorioService.update(selectedRelatorio.id, editReport);
       setShowEditModal(false);
       setSelectedRelatorio(null);
-      setNewReport({
+      setEditReport({
         tipo: 'processos',
         titulo: '',
         descricao: '',
@@ -552,89 +553,6 @@ const Relatorios = () => {
         )}
       </div>
 
-      {/* Modal para Novo Relatório */}
-      {showNewReportModal && (
-        <div className="modal-overlay" onClick={() => setShowNewReportModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">Gerar Novo Relatório</h2>
-              <button 
-                className="modal-close"
-                onClick={() => setShowNewReportModal(false)}
-              >
-                <XCircle size={24} />
-              </button>
-            </div>
-            
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label required">Tipo de Relatório</label>
-                <select
-                  className="form-input"
-                  value={newReport.tipo}
-                  onChange={(e) => setNewReport({...newReport, tipo: e.target.value})}
-                >
-                  <option value="processos">Processos</option>
-                  <option value="prazos">Prazos</option>
-                  <option value="alertas">Alertas</option>
-                  <option value="consultas">Consultas</option>
-                  <option value="usuarios">Usuários</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label required">Título</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={newReport.titulo}
-                  onChange={(e) => setNewReport({...newReport, titulo: e.target.value})}
-                  placeholder="Ex: Relatório de Processos por Status"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Descrição</label>
-                <textarea
-                  className="form-input"
-                  rows="3"
-                  value={newReport.descricao}
-                  onChange={(e) => setNewReport({...newReport, descricao: e.target.value})}
-                  placeholder="Descrição do relatório..."
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label required">Período</label>
-                <input
-                  type="month"
-                  className="form-input"
-                  value={newReport.periodo}
-                  onChange={(e) => setNewReport({...newReport, periodo: e.target.value})}
-                />
-              </div>
-            </div>
-
-            <div className="modal-actions">
-              <button 
-                className="btn btn-secondary" 
-                onClick={() => setShowNewReportModal(false)}
-              >
-                Cancelar
-              </button>
-              <button 
-                className="btn btn-primary" 
-                onClick={handleCreateReport}
-                disabled={!newReport.titulo || !newReport.periodo}
-              >
-                <Plus size={16} />
-                Gerar Relatório
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal para Editar Relatório */}
       {showEditModal && (
         <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
@@ -654,8 +572,8 @@ const Relatorios = () => {
                 <label className="form-label required">Tipo de Relatório</label>
                 <select
                   className="form-input"
-                  value={newReport.tipo}
-                  onChange={(e) => setNewReport({...newReport, tipo: e.target.value})}
+                  value={editReport.tipo}
+                  onChange={(e) => setEditReport({...editReport, tipo: e.target.value})}
                 >
                   <option value="processos">Processos</option>
                   <option value="prazos">Prazos</option>
@@ -670,8 +588,8 @@ const Relatorios = () => {
                 <input
                   type="text"
                   className="form-input"
-                  value={newReport.titulo}
-                  onChange={(e) => setNewReport({...newReport, titulo: e.target.value})}
+                  value={editReport.titulo}
+                  onChange={(e) => setEditReport({...editReport, titulo: e.target.value})}
                   placeholder="Ex: Relatório de Processos por Status"
                 />
               </div>
@@ -681,8 +599,8 @@ const Relatorios = () => {
                 <textarea
                   className="form-input"
                   rows="3"
-                  value={newReport.descricao}
-                  onChange={(e) => setNewReport({...newReport, descricao: e.target.value})}
+                  value={editReport.descricao}
+                  onChange={(e) => setEditReport({...editReport, descricao: e.target.value})}
                   placeholder="Descrição do relatório..."
                 />
               </div>
@@ -692,8 +610,8 @@ const Relatorios = () => {
                 <input
                   type="month"
                   className="form-input"
-                  value={newReport.periodo}
-                  onChange={(e) => setNewReport({...newReport, periodo: e.target.value})}
+                  value={editReport.periodo}
+                  onChange={(e) => setEditReport({...editReport, periodo: e.target.value})}
                 />
               </div>
             </div>
@@ -708,7 +626,7 @@ const Relatorios = () => {
               <button 
                 className="btn btn-primary" 
                 onClick={handleUpdateReport}
-                disabled={!newReport.titulo || !newReport.periodo}
+                disabled={!editReport.titulo || !editReport.periodo}
               >
                 <Edit size={16} />
                 Salvar Alterações
