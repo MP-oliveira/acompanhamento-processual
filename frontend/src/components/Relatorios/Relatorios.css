@@ -368,28 +368,46 @@
 /* ===== AÇÕES ===== */
 .relatorio-card-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   justify-content: flex-end;
   margin-top: auto;
+  flex-shrink: 0;
 }
 
-.relatorio-card-actions .btn {
+.relatorio-card-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  min-width: auto;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: transparent;
 }
 
-.relatorio-card-actions .btn-danger {
+.relatorio-card-action-edit {
+  color: var(--primary-600);
+}
+
+.relatorio-card-action-edit:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.relatorio-card-action-delete {
   color: var(--error-600);
-  border-color: var(--error-300);
 }
 
-.relatorio-card-actions .btn-danger:hover {
+.relatorio-card-action-delete:hover {
   background-color: var(--error-50);
-  border-color: var(--error-500);
+  color: var(--error-700);
+}
+
+.relatorio-card-action-btn:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
 }
 
 /* ===== ESTADO VAZIO ===== */
@@ -546,11 +564,7 @@
   }
   
   .relatorio-card-actions {
-    flex-direction: column;
-  }
-  
-  .relatorio-card-actions .btn {
-    width: 100%;
+    align-self: flex-end;
   }
   
   .relatorios-empty {

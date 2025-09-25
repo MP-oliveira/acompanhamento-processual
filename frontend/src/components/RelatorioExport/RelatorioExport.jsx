@@ -111,7 +111,7 @@ const RelatorioExport = ({
   };
 
   const exportToWord = async () => {
-    const { saveAs } = await loadFileSaver();
+    // Função simples para download sem dependências externas
     
     const htmlContent = `
 <!DOCTYPE html>

@@ -525,17 +525,17 @@ const Relatorios = () => {
                 )}
 
                 <div className="relatorio-card-actions">
-                  <button 
-                    className="btn btn-sm btn-outline"
+                  <button
+                    className="relatorio-card-action-btn relatorio-card-action-edit"
                     onClick={() => handleEditRelatorio(relatorio)}
                     title="Editar relatório"
                   >
                     <Edit size={16} />
                   </button>
-                  <button 
-                    className="btn btn-sm btn-outline btn-danger"
+                  <button
+                    className="relatorio-card-action-btn relatorio-card-action-delete"
                     onClick={() => handleDeleteRelatorio(relatorio)}
-                    title="Deletar relatório"
+                    title="Excluir relatório"
                   >
                     <Trash2 size={16} />
                   </button>
