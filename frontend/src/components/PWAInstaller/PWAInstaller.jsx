@@ -7,24 +7,40 @@ const PWAInstaller = () => {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Verificar se é dispositivo móvel
+    const checkIfMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+      const isSmallScreen = window.innerWidth <= 768;
+      
+      setIsMobile(isMobileDevice || isSmallScreen);
+    };
+
     // Verificar se já está instalado
     const checkIfInstalled = () => {
       const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
       const isIOSStandalone = window.navigator.standalone === true;
+      const isInWebApk = document.referrer.includes('android-app://');
       
-      setIsStandalone(isStandaloneMode || isIOSStandalone);
-      setIsInstalled(isStandaloneMode || isIOSStandalone);
+      setIsStandalone(isStandaloneMode || isIOSStandalone || isInWebApk);
+      setIsInstalled(isStandaloneMode || isIOSStandalone || isInWebApk);
     };
 
+    checkIfMobile();
     checkIfInstalled();
 
     // Escutar evento de instalação
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowInstallBanner(true);
+      
+      // Só mostrar banner em dispositivos móveis e se não estiver instalado
+      if (isMobile && !isInstalled) {
+        setShowInstallBanner(true);
+      }
     };
 
     // Escutar evento de instalação concluída
@@ -41,7 +57,7 @@ const PWAInstaller = () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, []);
+  }, [isMobile, isInstalled]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
@@ -83,8 +99,8 @@ const PWAInstaller = () => {
     }
   }, []);
 
-  // Não mostrar se já está instalado ou não pode ser instalado
-  if (isInstalled || !showInstallBanner || !deferredPrompt) {
+  // Não mostrar se já está instalado, não é mobile, ou não pode ser instalado
+  if (isInstalled || !isMobile || !showInstallBanner || !deferredPrompt) {
     return null;
   }
 

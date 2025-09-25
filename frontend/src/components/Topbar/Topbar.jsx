@@ -4,7 +4,6 @@ import { Menu, X, User, LogOut, Settings, Bell, AlertTriangle, Clock, CheckCircl
 import { alertService } from '../../services/api';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import GlobalSearch from '../GlobalSearch/GlobalSearch';
-import ConnectionStatus from '../ConnectionStatus/ConnectionStatus';
 import './Topbar.css';
 
 const Topbar = ({ onMenuToggle, user, onLogout }) => {
@@ -267,9 +266,6 @@ const Topbar = ({ onMenuToggle, user, onLogout }) => {
           >
             <Search size={20} />
           </button>
-          
-          {/* Status de Conexão */}
-          <ConnectionStatus />
           
           {/* Tema Toggle */}
           <div className="topbar-theme-toggle">
