@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   Filter,
   RefreshCw,
-  Eye,
   Plus
 } from 'lucide-react';
 import { relatorioService } from '../../services/api';
@@ -159,9 +158,6 @@ const Relatorios = () => {
     // Aqui você pode adicionar notificação de erro
   };
 
-  const handleVisualizar = (relatorioId) => {
-    // Implementar visualização quando necessário
-  };
 
   const handleRefresh = async () => {
     try {
@@ -512,14 +508,6 @@ const Relatorios = () => {
                 )}
 
                 <div className="relatorio-card-actions">
-                  <button 
-                    className="btn btn-sm btn-outline"
-                    onClick={() => handleVisualizar(relatorio.id)}
-                    disabled={relatorio.status !== 'concluido'}
-                  >
-                    <Eye size={16} />
-                    Visualizar
-                  </button>
                   <RelatorioExport 
                     relatorio={relatorio}
                     onSuccess={(type) => handleExportSuccess(relatorio.id, type)}

@@ -114,114 +114,182 @@ const RelatorioExport = ({
     const { saveAs } = await loadFileSaver();
     
     const htmlContent = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-            xmlns:w="urn:schemas-microsoft-com:office:word" 
-            xmlns="http://www.w3.org/TR/REC-html40">
-      <head>
-        <meta charset="utf-8">
-        <meta name="ProgId" content="Word.Document">
-        <title>Relatório de Processos</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-          h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-          h2 { color: #34495e; margin-top: 30px; }
-          .info-item { margin: 10px 0; }
-          .label { font-weight: bold; color: #2c3e50; }
-          .value { margin-left: 10px; }
-          .section { margin: 20px 0; }
-          table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-          th { background-color: #f2f2f2; }
-        </style>
-      </head>
-      <body>
-        <h1>RELATÓRIO DE PROCESSOS</h1>
-        <p><strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
-        
-        <div class="section">
-          <h2>Informações do Relatório</h2>
-          <div class="info-item">
-            <span class="label">Título:</span>
-            <span class="value">${relatorio.titulo}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Tipo:</span>
-            <span class="value">${getTipoText(relatorio.tipo)}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Período:</span>
-            <span class="value">${relatorio.periodo}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Status:</span>
-            <span class="value">${getStatusText(relatorio.status)}</span>
-          </div>
-          ${relatorio.descricao ? `
-            <div class="info-item">
-              <span class="label">Descrição:</span>
-              <span class="value">${relatorio.descricao}</span>
-            </div>
-          ` : ''}
-        </div>
-
-        ${relatorio.dados ? `
-          <div class="section">
-            <h2>Dados do Relatório</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Campo</th>
-                  <th>Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${Object.entries(relatorio.dados).map(([key, value]) => `
-                  <tr>
-                    <td>${key}</td>
-                    <td>${value}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        ` : ''}
-
-        ${relatorio.estatisticas ? `
-          <div class="section">
-            <h2>Estatísticas</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Métrica</th>
-                  <th>Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${Object.entries(relatorio.estatisticas).map(([key, value]) => `
-                  <tr>
-                    <td>${key}</td>
-                    <td>${value}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        ` : ''}
-      </body>
-      </html>
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+      xmlns:w="urn:schemas-microsoft-com:office:word" 
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8">
+  <meta name="ProgId" content="Word.Document">
+  <meta name="Generator" content="Microsoft Word 15">
+  <meta name="Originator" content="Microsoft Word 15">
+  <title>${relatorio.titulo}</title>
+  <!--[if gte mso 9]><xml>
+    <o:DocumentProperties>
+      <o:Author>JurisAcompanha</o:Author>
+      <o:Title>${relatorio.titulo}</o:Title>
+      <o:Subject>Relatório ${getTipoText(relatorio.tipo)}</o:Subject>
+      <o:Created>${new Date().toISOString()}</o:Created>
+    </o:DocumentProperties>
+  </xml><![endif]-->
+  <style>
+    @page Section1 { 
+      size: 595.3pt 841.9pt; 
+      margin: 72.0pt 72.0pt 72.0pt 72.0pt; 
+    }
+    div.Section1 { page: Section1; }
+    body { 
+      font-family: 'Calibri', sans-serif; 
+      font-size: 11pt; 
+      line-height: 1.4; 
+      margin: 0; 
+      padding: 0; 
+    }
+    h1 { 
+      font-size: 18pt; 
+      font-weight: bold; 
+      color: #2c3e50; 
+      border-bottom: 2pt solid #3498db; 
+      padding-bottom: 8pt; 
+      margin-bottom: 16pt; 
+      text-align: center;
+    }
+    h2 { 
+      font-size: 14pt; 
+      font-weight: bold; 
+      color: #34495e; 
+      margin-top: 24pt; 
+      margin-bottom: 12pt; 
+    }
+    table { 
+      border-collapse: collapse; 
+      width: 100%; 
+      margin: 12pt 0; 
+    }
+    th, td { 
+      border: 1pt solid #ddd; 
+      padding: 6pt 8pt; 
+      text-align: left; 
+      vertical-align: top;
+    }
+    th { 
+      background-color: #f8f9fa; 
+      font-weight: bold; 
+    }
+    .growth-positive { 
+      color: #27ae60; 
+      font-weight: bold; 
+    }
+    .growth-negative { 
+      color: #e74c3c; 
+      font-weight: bold; 
+    }
+    .footer { 
+      margin-top: 32pt; 
+      padding-top: 16pt; 
+      border-top: 1pt solid #eee; 
+      font-size: 9pt; 
+      color: #666; 
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="Section1">
+    <h1>RELATÓRIO ${getTipoText(relatorio.tipo).toUpperCase()}</h1>
+    
+    <p style="text-align: center; margin-bottom: 24pt;">
+      <strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
+    </p>
+    
+    <h2>Informações do Relatório</h2>
+    <table>
+      <tr><th>Título</th><td>${relatorio.titulo}</td></tr>
+      <tr><th>Tipo</th><td>${getTipoText(relatorio.tipo)}</td></tr>
+      <tr><th>Período</th><td>${relatorio.periodo}</td></tr>
+      <tr><th>Status</th><td>${getStatusText(relatorio.status)}</td></tr>
+      ${relatorio.descricao ? `<tr><th>Descrição</th><td>${relatorio.descricao}</td></tr>` : ''}
+    </table>
+    
+    ${relatorio.dados ? `
+    <h2>Principais Indicadores</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Indicador</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Object.entries(relatorio.dados)
+          .filter(([key]) => key !== 'crescimento')
+          .map(([key, value]) => `
+            <tr>
+              <td>${key.charAt(0).toUpperCase() + key.slice(1)}</td>
+              <td>${value}</td>
+            </tr>
+          `).join('')}
+      </tbody>
+    </table>
+    
+    ${relatorio.dados.crescimento !== undefined ? `
+    <p><strong>Variação em relação ao período anterior:</strong> 
+      <span class="${relatorio.dados.crescimento > 0 ? 'growth-positive' : 'growth-negative'}">
+        ${relatorio.dados.crescimento > 0 ? '+' : ''}${relatorio.dados.crescimento}%
+      </span>
+    </p>
+    ` : ''}
+    ` : ''}
+    
+    <div class="footer">
+      <p><strong>Sistema JurisAcompanha</strong><br>
+      Relatório gerado automaticamente em ${new Date().toLocaleString('pt-BR')}<br>
+      Este documento contém informações confidenciais e está sujeito ao sigilo profissional.</p>
+    </div>
+  </div>
+</body>
+</html>
     `;
 
-    const blob = new Blob([htmlContent], { type: 'application/msword' });
-    const fileName = `relatorio_${relatorio.titulo}_${new Date().toISOString().split('T')[0]}.doc`;
-    saveAs(blob, fileName);
+    // Adicionar BOM (Byte Order Mark) para UTF-8 e tipo MIME correto
+    const blob = new Blob(['\ufeff', htmlContent], { 
+      type: 'application/msword;charset=utf-8' 
+    });
+    
+    const fileName = `relatorio_${relatorio.tipo}_${relatorio.periodo?.replace('-', '_') || 'atual'}_${new Date().toISOString().split('T')[0]}.doc`;
+    
+    try {
+      saveAs(blob, fileName);
+    } catch (error) {
+      // Fallback manual para download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }
   };
 
   const getTipoText = (tipo) => {
     switch (tipo) {
       case 'processos':
         return 'Processos';
+      case 'prazos':
+        return 'Prazos';
       case 'alertas':
         return 'Alertas';
+      case 'consultas':
+        return 'Consultas';
       case 'usuarios':
         return 'Usuários';
       case 'financeiro':
@@ -233,8 +301,8 @@ const RelatorioExport = ({
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'gerado':
-        return 'Gerado';
+      case 'concluido':
+        return 'Concluído';
       case 'processando':
         return 'Processando';
       case 'erro':
