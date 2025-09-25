@@ -16,19 +16,22 @@ const sequelize = new Sequelize(databaseConfig, {
     ssl: {
       require: true,
       rejectUnauthorized: false
-    }
+    },
+    connectTimeout: 60000,
+    requestTimeout: 60000
   },
   pool: {
     max: 5,
     min: 0,
-    acquire: 30000,
-    idle: 10000
+    acquire: 60000,
+    idle: 30000
   },
   define: {
     timestamps: true,
     underscored: true,
     freezeTableName: true
-  }
+  },
+  logging: console.log
 });
 
 export default sequelize;
