@@ -45,13 +45,30 @@ app.use(securityHeaders);
 
 // CORS com headers de segurança
 app.use(corsSecurityHeaders);
-// CORS simplificado para Vercel - aceita todas as origens
-app.use(cors({
-  origin: true,
+// CORS configurável por ALLOWED_ORIGINS (igual ao projeto que funciona)
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || '';
+const allowedOrigins = allowedOriginsEnv
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0) return callback(null, true);
+    const isAllowed = allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed));
+    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+// Responder preflight de todos os caminhos
+app.options('*', cors(corsOptions));
 
 // Rate limiting geral para proteção contra ataques
 const generalLimiter = rateLimit({
