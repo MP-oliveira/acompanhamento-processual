@@ -6,7 +6,10 @@ export const useProcessos = () => {
   return useQuery({
     queryKey: ['processos'],
     queryFn: async () => {
+      console.log('🔍 useProcessos: Iniciando busca de processos...');
       const response = await processoService.getAll();
+      console.log('🔍 useProcessos: Resposta da API:', response);
+      console.log('🔍 useProcessos: Processos extraídos:', response.processos || []);
       return response.processos || []; // Extrai a lista de processos da resposta
     },
     staleTime: 5 * 60 * 1000, // 5 minutos

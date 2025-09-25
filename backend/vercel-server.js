@@ -11,6 +11,18 @@ if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL não está definida nas variáveis de ambiente');
 }
 
+// Testar conexão com o banco
+import sequelize from './src/config/database.js';
+
+// Teste de conexão
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Conexão com o banco de dados estabelecida com sucesso');
+  })
+  .catch(err => {
+    console.error('❌ Erro ao conectar com o banco de dados:', err);
+  });
+
 // Importar rotas reais
 import authRoutes from './src/routes/authRoutes.js';
 import userRoutes from './src/routes/userRoutes.js';
@@ -26,22 +38,8 @@ const app = express();
 app.use(helmet());
 app.use(cors({
   origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-    'https://frontend-5zmzxuyiq-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-d7kg7zgrf-mauricio-silva-oliveiras-projects.vercel.app',
-    'https://frontend-dvww2ij17-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-m0v0sd7z8-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-9omio356t-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-6g4y7ne7q-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-8jipb5gtk-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-83sba8eo7-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-14ttv3go7-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-hdj0hmmx0-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://jurisacompanha.vercel.app'
+    'http://localhost:5173', // Frontend local
+    'https://frontend-83sba8eo7-mauricio-mp-oliveiras-projects.vercel.app' // Frontend produção
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -87,6 +85,18 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Rota de debug para verificar variáveis de ambiente
+app.get('/api/debug', (req, res) => {
+  res.json({
+    hasDatabaseUrl: !!process.env.DATABASE_URL,
+    databaseUrlLength: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
+    nodeEnv: process.env.NODE_ENV,
+    hasSupabaseUrl: !!process.env.SUPABASE_URL,
+    hasSupabaseKey: !!process.env.SUPABASE_SERVICE_KEY
+  });
+});
+
 
 // Usar rotas reais do backend com tratamento de erro
 try {

@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-// Configuração base da API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-evg3roxl9-mauricio-mp-oliveiras-projects.vercel.app/api';
+// Configuração base da API - LOCAL
+const API_BASE_URL = 'http://localhost:3001/api';
 
 
 // Debug: Log da URL da API
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
 console.log('🔧 DEV mode:', import.meta.env.DEV);
 console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
+
+// API configurada para usar Supabase diretamente
 
 // API URL CORRECTED - BACKEND P6XHHMWID - FORCE REBUILD
 
@@ -25,9 +27,28 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Verifica se o token está expirado
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+        const isExpired = payload.exp < now;
+        
+        if (isExpired) {
+          console.warn('⚠️ Token expirado! Removendo do localStorage');
+          localStorage.removeItem('token');
+          // Opcional: redirecionar para login
+          // window.location.href = '/login';
+        } else {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('❌ Erro ao decodificar token:', error);
+        localStorage.removeItem('token');
+      }
     }
+    
     return config;
   },
   (error) => {
@@ -38,6 +59,7 @@ api.interceptors.request.use(
 // Interceptor para tratar respostas e erros
 api.interceptors.response.use(
   (response) => {
+    console.log('🔍 API Response:', response.status, response.config.url, response.data);
     return response;
   },
   (error) => {
@@ -46,12 +68,21 @@ api.interceptors.response.use(
       statusText: error.response?.statusText,
       url: error.config?.url,
       data: error.response?.data,
-      message: error.message
+      message: error.message,
+      fullError: error
     });
+    
+    // Log detalhado do erro para debug
+    if (error.response?.data) {
+      console.error('📋 Error details:', JSON.stringify(error.response.data, null, 2));
+    }
     
     if (error.response?.status === 401) {
       console.warn('⚠️ Token expirado ou inválido');
+      // Opcional: redirecionar para login
+      // window.location.href = '/login';
     }
+    
     return Promise.reject(error);
   }
 );
@@ -92,7 +123,10 @@ export const authService = {
 // Serviços de processos
 export const processoService = {
   async getAll() {
+    console.log('🔍 processoService.getAll: Fazendo requisição para /processos');
     const response = await api.get('/processos');
+    console.log('🔍 processoService.getAll: Resposta completa:', response);
+    console.log('🔍 processoService.getAll: Dados da resposta:', response.data);
     return response.data;
   },
 
@@ -230,6 +264,11 @@ export const userService = {
 
   async activate(id) {
     const response = await api.patch(`/users/${id}/activate`);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/users/${id}`);
     return response.data;
   }
 };

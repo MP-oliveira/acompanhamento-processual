@@ -48,14 +48,17 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await authService.login(email, password);
-      const { token: newToken, user: newUser } = response;
       
-      setToken(newToken);
-      setUser(newUser);
-      
-      localStorage.setItem('token', newToken);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      return response;
+      if (response.token && response.user) {
+        setToken(response.token);
+        setUser(response.user);
+        
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        return response;
+      } else {
+        throw new Error('Falha na autenticação');
+      }
     } catch (error) {
       throw error;
     }

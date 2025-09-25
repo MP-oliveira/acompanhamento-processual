@@ -32,6 +32,12 @@ const Processos = () => {
   // Extrair dados dos processos e garantir que seja um array
   const processos = Array.isArray(processosData) ? processosData : [];
   
+  // Debug logs
+  console.log('🔍 Processos.jsx: processosData:', processosData);
+  console.log('🔍 Processos.jsx: processos (array):', processos);
+  console.log('🔍 Processos.jsx: isLoading:', isLoading);
+  console.log('🔍 Processos.jsx: error:', error);
+  
   // Verificar se usuário está logado
   const token = localStorage.getItem('token');
   

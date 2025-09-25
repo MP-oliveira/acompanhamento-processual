@@ -27,11 +27,17 @@ const Usuarios = () => {
   const [newUser, setNewUser] = useState({
     nome: '',
     email: '',
-    telefone: '',
-    role: 'advogado',
-    status: 'ativo',
+    role: 'user',
     senha: '',
     confirmarSenha: ''
+  });
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editUser, setEditUser] = useState({
+    nome: '',
+    email: '',
+    role: 'user',
+    ativo: true
   });
 
   useEffect(() => {
@@ -76,8 +82,7 @@ const Usuarios = () => {
   const getRoleText = (role) => {
     switch (role) {
       case 'admin': return 'Administrador';
-      case 'advogado': return 'Advogado';
-      case 'assistente': return 'Assistente';
+      case 'user': return 'Usuário';
       default: return 'Usuário';
     }
   };
@@ -93,26 +98,17 @@ const Usuarios = () => {
   const getRoleColor = (role) => {
     switch (role) {
       case 'admin': return 'admin';
-      case 'advogado': return 'advogado';
-      case 'assistente': return 'assistente';
-      default: return 'usuario';
+      case 'user': return 'user';
+      default: return 'user';
     }
   };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'ativo': return 'Ativo';
-      case 'inativo': return 'Inativo';
-      default: return 'Desconhecido';
-    }
+  const getStatusText = (ativo) => {
+    return ativo ? 'Ativo' : 'Inativo';
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'ativo': return 'active';
-      case 'inativo': return 'inactive';
-      default: return 'unknown';
-    }
+  const getStatusColor = (ativo) => {
+    return ativo ? 'active' : 'inactive';
   };
 
   const formatDate = (dateString) => {
@@ -128,23 +124,48 @@ const Usuarios = () => {
   };
 
   const handleEdit = (id) => {
-    // Implementar edição
+    const usuario = usuarios.find(u => u.id === id);
+    if (usuario) {
+      setEditingUser(usuario);
+      setEditUser({
+        nome: usuario.nome,
+        email: usuario.email,
+        role: usuario.role,
+        ativo: usuario.ativo
+      });
+      setShowEditUserModal(true);
+    }
   };
 
   const handleDelete = async (id) => {
     const usuario = usuarios.find(u => u.id === id);
     const usuarioNome = usuario ? usuario.nome : 'este usuário';
-    
-    if (window.confirm(`Tem certeza que deseja excluir ${usuarioNome}?\n\nEsta ação não pode ser desfeita.`)) {
+
+    if (window.confirm(`⚠️ ATENÇÃO: Tem certeza que deseja EXCLUIR PERMANENTEMENTE ${usuarioNome}?\n\nEsta ação não pode ser desfeita. O usuário será removido completamente do sistema.`)) {
       try {
         setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Chama a API para excluir o usuário permanentemente
+        await userService.delete(id);
         
-        setUsuarios(prev => prev.filter(u => u.id !== id));
-        alert('Usuário excluído com sucesso!');
+        // Recarrega a lista de usuários
+        const updatedResponse = await userService.getAll({
+          limit: 100,
+          search: searchTerm,
+          role: roleFilter === 'todos' ? '' : roleFilter,
+          status: statusFilter === 'todos' ? '' : statusFilter
+        });
+        
+        console.log('🔍 Usuários atualizados após exclusão:', updatedResponse.users);
+        setUsuarios(updatedResponse.users || []);
+        alert('Usuário excluído permanentemente com sucesso!');
       } catch (error) {
         console.error('Erro ao excluir usuário:', error);
-        alert('Erro ao excluir usuário. Tente novamente.');
+        if (error.response?.data?.error) {
+          alert(`Erro: ${error.response.data.error}`);
+        } else {
+          alert('Erro ao excluir usuário. Tente novamente.');
+        }
       } finally {
         setLoading(false);
       }
@@ -154,19 +175,35 @@ const Usuarios = () => {
   const handleToggleStatus = async (id) => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setUsuarios(prev => prev.map(u => 
-        u.id === id 
-          ? { ...u, status: u.status === 'ativo' ? 'inativo' : 'ativo' }
-          : u
-      ));
       
       const usuario = usuarios.find(u => u.id === id);
-      const novoStatus = usuario?.status === 'ativo' ? 'inativo' : 'ativo';
+      const novoStatus = usuario?.ativo ? 'inativo' : 'ativo';
+      
+      // Chama a API apropriada baseada no status atual
+      if (usuario?.ativo) {
+        await userService.deactivate(id);
+      } else {
+        await userService.activate(id);
+      }
+      
+      // Recarrega a lista de usuários (sempre com status "todos" para mostrar mudanças)
+      const updatedResponse = await userService.getAll({
+        limit: 100,
+        search: searchTerm,
+        role: roleFilter === 'todos' ? '' : roleFilter,
+        status: '' // Sempre carrega todos os status para mostrar mudanças
+      });
+      
+      setUsuarios(updatedResponse.users || []);
+      
+      alert(`Usuário ${novoStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
     } catch (error) {
       console.error('Erro ao alterar status:', error);
-      alert('Erro ao alterar status. Tente novamente.');
+      if (error.response?.data?.error) {
+        alert(`Erro: ${error.response.data.error}`);
+      } else {
+        alert('Erro ao alterar status. Tente novamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -174,8 +211,8 @@ const Usuarios = () => {
 
   const getStats = () => {
     const total = usuarios.length;
-    const ativos = usuarios.filter(u => u.status === 'ativo').length;
-    const inativos = usuarios.filter(u => u.status === 'inativo').length;
+    const ativos = usuarios.filter(u => u.ativo === true).length;
+    const inativos = usuarios.filter(u => u.ativo === false).length;
     const admins = usuarios.filter(u => u.role === 'admin').length;
     
     return { total, ativos, inativos, admins };
@@ -184,15 +221,15 @@ const Usuarios = () => {
   const stats = getStats();
 
   const handleNewUser = () => {
-    setNewUser({
+    const initialState = {
       nome: '',
       email: '',
-      telefone: '',
-      role: 'advogado',
-      status: 'ativo',
+      role: 'user',
       senha: '',
       confirmarSenha: ''
-    });
+    };
+    console.log('🔍 Estado inicial do novo usuário:', initialState);
+    setNewUser(initialState);
     setShowNewUserModal(true);
   };
 
@@ -208,6 +245,8 @@ const Usuarios = () => {
 
     if (!newUser.nome.trim()) {
       errors.push('Nome é obrigatório');
+    } else if (!/^[a-zA-ZÀ-ÿ\u0100-\u017F\u1E00-\u1EFF\s0-9]{2,100}$/.test(newUser.nome.trim())) {
+      errors.push('Nome deve conter apenas letras, espaços, acentos e números (2-100 caracteres)');
     }
 
     if (!newUser.email.trim()) {
@@ -216,9 +255,7 @@ const Usuarios = () => {
       errors.push('Email deve ser válido');
     }
 
-    if (!newUser.telefone.trim()) {
-      errors.push('Telefone é obrigatório');
-    }
+    // Telefone não é obrigatório no backend
 
     if (!newUser.senha.trim()) {
       errors.push('Senha é obrigatória');
@@ -250,29 +287,31 @@ const Usuarios = () => {
     try {
       setLoading(true);
       
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      const user = {
-        id: Date.now(), // ID temporário
+      // Chama a API real para criar o usuário
+      const userData = {
         nome: newUser.nome.trim(),
         email: newUser.email.trim().toLowerCase(),
-        telefone: newUser.telefone.trim(),
-        role: newUser.role,
-        status: newUser.status,
-        ultimoAcesso: null,
-        processosAtivos: 0,
-        createdAt: new Date().toISOString()
+        password: newUser.senha,
+        role: newUser.role
       };
 
-      setUsuarios(prev => [...prev, user]);
+      console.log('🔍 Dados sendo enviados para API:', userData);
+      const response = await userService.create(userData);
+      
+      // Recarrega a lista de usuários
+      const updatedResponse = await userService.getAll({
+        limit: 100,
+        search: searchTerm,
+        role: roleFilter === 'todos' ? '' : roleFilter,
+        status: statusFilter === 'todos' ? '' : statusFilter
+      });
+      
+      setUsuarios(updatedResponse.users || []);
       setShowNewUserModal(false);
       setNewUser({
         nome: '',
         email: '',
-        telefone: '',
-        role: 'advogado',
-        status: 'ativo',
+        role: 'user',
         senha: '',
         confirmarSenha: ''
       });
@@ -280,7 +319,14 @@ const Usuarios = () => {
       alert('Usuário criado com sucesso!');
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
-      alert('Erro ao criar usuário. Tente novamente.');
+      if (error.response?.data?.error) {
+        alert(`Erro: ${error.response.data.error}`);
+      } else if (error.response?.data?.details) {
+        const errorMessages = error.response.data.details.map(detail => detail.message).join('\n');
+        alert(`Erro de validação:\n${errorMessages}`);
+      } else {
+        alert('Erro ao criar usuário. Tente novamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -291,11 +337,71 @@ const Usuarios = () => {
     setNewUser({
       nome: '',
       email: '',
-      telefone: '',
-      role: 'advogado',
-      status: 'ativo',
+      role: 'user',
       senha: '',
       confirmarSenha: ''
+    });
+  };
+
+  const handleEditUserChange = (field, value) => {
+    setEditUser(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveEditUser = async () => {
+    if (!editingUser) return;
+
+    try {
+      setLoading(true);
+      
+      // Chama a API para atualizar o usuário
+      const userData = {
+        nome: editUser.nome.trim(),
+        email: editUser.email.trim().toLowerCase(),
+        role: editUser.role,
+        ativo: editUser.ativo
+      };
+
+      await userService.update(editingUser.id, userData);
+      
+      // Recarrega a lista de usuários (sempre com status "todos" para mostrar mudanças)
+      const updatedResponse = await userService.getAll({
+        limit: 100,
+        search: searchTerm,
+        role: roleFilter === 'todos' ? '' : roleFilter,
+        status: '' // Sempre carrega todos os status para mostrar mudanças
+      });
+      
+      setUsuarios(updatedResponse.users || []);
+      setShowEditUserModal(false);
+      setEditingUser(null);
+      
+      alert('Usuário atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      if (error.response?.data?.error) {
+        alert(`Erro: ${error.response.data.error}`);
+      } else if (error.response?.data?.details) {
+        const errorMessages = error.response.data.details.map(detail => detail.message).join('\n');
+        alert(`Erro de validação:\n${errorMessages}`);
+      } else {
+        alert('Erro ao atualizar usuário. Tente novamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelEditUser = () => {
+    setShowEditUserModal(false);
+    setEditingUser(null);
+    setEditUser({
+      nome: '',
+      email: '',
+      role: 'user',
+      ativo: true
     });
   };
 
@@ -378,7 +484,7 @@ const Usuarios = () => {
             <Search className="usuarios-search-icon" size={20} />
             <input
               type="text"
-              placeholder="Buscar por nome, email ou telefone..."
+              placeholder="Buscar por nome ou email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="usuarios-search-input"
@@ -397,8 +503,7 @@ const Usuarios = () => {
             >
               <option value="todos">Todas</option>
               <option value="admin">Administrador</option>
-              <option value="advogado">Advogado</option>
-              <option value="assistente">Assistente</option>
+              <option value="user">Usuário</option>
             </select>
           </div>
 
@@ -488,9 +593,9 @@ const Usuarios = () => {
                     <button
                       className="usuario-action-btn usuario-action-toggle"
                       onClick={() => handleToggleStatus(usuario.id)}
-                      title={usuario.status === 'ativo' ? 'Desativar usuário' : 'Ativar usuário'}
+                      title={usuario.ativo ? 'Desativar usuário' : 'Ativar usuário'}
                     >
-                      {usuario.status === 'ativo' ? <UserX size={16} /> : <UserCheck size={16} />}
+                      {usuario.ativo ? <UserX size={16} /> : <UserCheck size={16} />}
                     </button>
                     <button
                       className="usuario-action-btn usuario-action-edit"
@@ -502,7 +607,7 @@ const Usuarios = () => {
                     <button
                       className="usuario-action-btn usuario-action-delete"
                       onClick={() => handleDelete(usuario.id)}
-                      title="Excluir usuário"
+                      title="Excluir permanentemente"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -516,10 +621,6 @@ const Usuarios = () => {
                       <span>{usuario.email}</span>
                     </div>
                     <div className="usuario-detail-item">
-                      <Phone size={14} />
-                      <span>{usuario.telefone}</span>
-                    </div>
-                    <div className="usuario-detail-item">
                       <span className="usuario-detail-label">Processos Ativos:</span>
                       <span className="usuario-detail-value">{usuario.processosAtivos}</span>
                     </div>
@@ -527,8 +628,8 @@ const Usuarios = () => {
 
                   <div className="usuario-card-footer">
                     <div className="usuario-card-status">
-                      <span className={`usuario-status-badge usuario-status-${getStatusColor(usuario.status)}`}>
-                        {getStatusText(usuario.status)}
+                      <span className={`usuario-status-badge usuario-status-${getStatusColor(usuario.ativo)}`}>
+                        {getStatusText(usuario.ativo)}
                       </span>
                     </div>
                     <div className="usuario-card-meta">
@@ -581,16 +682,6 @@ const Usuarios = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label required">Telefone</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={newUser.telefone}
-                  onChange={(e) => handleUserInputChange('telefone', e.target.value)}
-                  placeholder="(00) 0000-0000"
-                />
-              </div>
 
               <div className="form-row">
                 <div className="form-group">
@@ -600,23 +691,11 @@ const Usuarios = () => {
                     value={newUser.role}
                     onChange={(e) => handleUserInputChange('role', e.target.value)}
                   >
-                    <option value="advogado">Advogado</option>
-                    <option value="assistente">Assistente</option>
+                    <option value="user">Usuário</option>
                     <option value="admin">Administrador</option>
                   </select>
                 </div>
                 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    className="form-select"
-                    value={newUser.status}
-                    onChange={(e) => handleUserInputChange('status', e.target.value)}
-                  >
-                    <option value="ativo">Ativo</option>
-                    <option value="inativo">Inativo</option>
-                  </select>
-                </div>
               </div>
 
               <div className="form-group">
@@ -657,6 +736,89 @@ const Usuarios = () => {
               >
                 <Plus size={20} />
                 {loading ? 'Criando...' : 'Criar Usuário'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Editar Usuário */}
+      {showEditUserModal && (
+        <div className="modal-overlay" onClick={handleCancelEditUser}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Editar Usuário</h2>
+              <button 
+                className="modal-close"
+                onClick={handleCancelEditUser}
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label required">Nome Completo</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editUser.nome}
+                  onChange={(e) => handleEditUserChange('nome', e.target.value)}
+                  placeholder="Digite o nome completo"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Email</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={editUser.email}
+                  onChange={(e) => handleEditUserChange('email', e.target.value)}
+                  placeholder="Digite o email"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label required">Função</label>
+                <select
+                  className="form-input"
+                  value={editUser.role}
+                  onChange={(e) => handleEditUserChange('role', e.target.value)}
+                >
+                  <option value="user">Usuário</option>
+                  <option value="admin">Administrador</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Status</label>
+                <select
+                  className="form-input"
+                  value={editUser.ativo ? 'ativo' : 'inativo'}
+                  onChange={(e) => handleEditUserChange('ativo', e.target.value === 'ativo')}
+                >
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary"
+                onClick={handleCancelEditUser}
+                disabled={loading}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSaveEditUser}
+                disabled={loading}
+              >
+                <Edit size={20} />
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </div>
