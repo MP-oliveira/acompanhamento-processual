@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://backend-2phn9cc61-mauricio-mp-oliveiras-projects.vercel.app/api/$1"
+      "destination": "https://jurisacompanhaprocesso-api.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
