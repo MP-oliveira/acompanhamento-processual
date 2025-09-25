@@ -17,9 +17,10 @@ export const useSocket = () => {
     }
 
     // Configurar URL do WebSocket baseada no ambiente
-    const socketUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3001'
-      : 'https://backend-evg3roxl9-mauricio-mp-oliveiras-projects.vercel.app';
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3001'
+        : 'https://acompanhamento-processual-backend.vercel.app');
 
 
     // Conectar ao WebSocket

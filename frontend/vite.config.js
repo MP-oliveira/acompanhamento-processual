@@ -4,12 +4,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig({
-  define: {
-    // Variáveis de ambiente - usando backend do Vercel para desenvolvimento local
-    'import.meta.env.VITE_API_URL': JSON.stringify('https://backend-jguz1tu7c-mauricio-mp-oliveiras-projects.vercel.app/api'),
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify('https://zejrnsdshiaipptfopqu.supabase.co'),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJuc2RzaGlhaXBwdGZvcHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTQ3OTEsImV4cCI6MjA3Mzk3MDc5MX0.luAPlhy3fVSEVcIO7_9WHMbTiwvqlg1Ysjx7njn6gVk')
-  },
+  // Variáveis de ambiente serão lidas dos arquivos .env automaticamente
   server: {
     port: 5173,
     host: true,

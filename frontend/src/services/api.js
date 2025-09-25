@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Configuração base da API - LOCAL
-const API_BASE_URL = 'http://localhost:3001/api';
+// Configuração base da API - Environment Variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 
 // Debug: Log da URL da API
