@@ -83,7 +83,10 @@ const Relatorios = () => {
   const handleCreateReport = async () => {
     try {
       setLoading(true);
-      await relatorioService.create(newReport);
+      console.log('📊 Criando relatório:', newReport);
+      const result = await relatorioService.create(newReport);
+      console.log('✅ Relatório criado com sucesso:', result);
+      
       setShowNewReportModal(false);
       setNewReport({
         tipo: 'processos',
@@ -91,11 +94,21 @@ const Relatorios = () => {
         descricao: '',
         periodo: new Date().toISOString().slice(0, 7)
       });
-      // Recarregar relatórios
-      const response = await relatorioService.getAll();
+      
+      // Recarregar relatórios com os mesmos filtros
+      const response = await relatorioService.getAll({
+        tipo: selectedType !== 'todos' ? selectedType : undefined,
+        status: 'todos'
+      });
       setRelatorios(response.relatorios || []);
+      
+      // Atualizar estatísticas
+      const statsResponse = await relatorioService.getStats();
+      setStats(statsResponse || { total: 0, concluidos: 0, processando: 0, erro: 0 });
+      
     } catch (error) {
-      console.error('Erro ao criar relatório:', error);
+      console.error('❌ Erro ao criar relatório:', error);
+      alert('Erro ao criar relatório: ' + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
