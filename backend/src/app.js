@@ -43,9 +43,7 @@ app.use(helmet({
 // Headers de segurança customizados
 app.use(securityHeaders);
 
-// CORS com headers de segurança
-app.use(corsSecurityHeaders);
-// CORS configurável por ALLOWED_ORIGINS (igual ao projeto que funciona)
+// CORS configurável por ALLOWED_ORIGINS (lista separada por vírgulas)
 const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || '';
 const allowedOrigins = allowedOriginsEnv
   .split(',')
@@ -53,12 +51,7 @@ const allowedOrigins = allowedOriginsEnv
   .filter(Boolean);
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.length === 0) return callback(null, true);
-    const isAllowed = allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed));
-    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
-  },
+  origin: true, // Permitir todas as origens temporariamente para teste
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
@@ -66,6 +59,8 @@ const corsOptions = {
   credentials: true
 };
 
+// Middlewares de segurança
+app.use(helmet());
 app.use(cors(corsOptions));
 // Responder preflight de todos os caminhos
 app.options('*', cors(corsOptions));

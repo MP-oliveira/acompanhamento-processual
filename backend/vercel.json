@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "echo 'No build needed for Node.js'",
-  "outputDirectory": ".",
-  "installCommand": "npm install",
   "builds": [
     {
       "src": "vercel-server.js",
