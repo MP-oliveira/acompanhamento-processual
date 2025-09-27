@@ -14,8 +14,7 @@ import {
   updateUser,
   updatePassword,
   deactivateUser,
-  activateUser,
-  deleteUser
+  activateUser
 } from '../controllers/userController.js';
 
 const router = Router();
@@ -29,15 +28,12 @@ router.use(auth);
 // Rotas que requerem permissão de admin
 router.get('/', validateQueryParams(['page', 'limit', 'role', 'status', 'search']), adminOnly, getAllUsers);
 router.post('/', validateCreateUser, adminOnly, createUser);
-
-// Rotas específicas que devem vir antes das rotas genéricas
 router.patch('/:id/deactivate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, deactivateUser);
 router.patch('/:id/activate', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, activateUser);
-router.patch('/:id/password', validateRouteParams({ id: { type: 'number', required: true } }), updatePassword);
 
-// Rotas genéricas (devem vir por último para evitar conflitos)
+// Rotas que qualquer usuário autenticado pode acessar
 router.get('/:id', validateRouteParams({ id: { type: 'number', required: true } }), getUserById);
 router.put('/:id', validateRouteParams({ id: { type: 'number', required: true } }), validateUpdateUser, updateUser);
-router.delete('/:id', validateRouteParams({ id: { type: 'number', required: true } }), adminOnly, deleteUser);
+router.patch('/:id/password', validateRouteParams({ id: { type: 'number', required: true } }), updatePassword);
 
 export default router;

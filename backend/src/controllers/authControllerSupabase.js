@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import { supabaseAuth } from '../services/supabaseAuth.js';
+import { supabase } from '../services/supabaseAuth.js';
 import logger from '../config/logger.js';
 
 // Esquemas de validação
@@ -34,46 +34,65 @@ export const login = async (req, res) => {
 
     const { email, password } = value;
 
-    // Buscar usuário no Supabase
-    const user = await supabaseAuth.getUserByEmail(email);
-    
-    if (!user) {
-      return res.status(401).json({
-        error: 'Credenciais inválidas'
-      });
+    // Fazer login usando Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      logger.error('Erro de autenticação Supabase:', authError.message);
+      return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
+    if (!authData || !authData.user || !authData.session) {
+      return res.status(401).json({ error: 'Falha na autenticação: dados incompletos' });
+    }
+
+    // Buscar dados completos do usuário na tabela users
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', authData.user.id)
+      .single();
+
+    if (userError) {
+      logger.warn('Usuário não encontrado na tabela users, usando dados do auth:', userError.message);
+    }
+
+    // Usar dados do auth como fallback se não encontrar na tabela users
+    const user = userData || {
+      id: authData.user.id,
+      nome: authData.user.user_metadata?.nome || authData.user.email,
+      email: authData.user.email,
+      role: authData.user.user_metadata?.role || 'user',
+      ativo: true
+    };
+
     // Verificar se usuário está ativo
-    if (!user.ativo) {
+    if (user.ativo === false) {
       return res.status(401).json({
         error: 'Usuário desativado'
       });
     }
 
-    // Para simplificar, vamos aceitar qualquer senha por enquanto
-    // Em produção, você deveria usar bcrypt para verificar a senha
-    if (password !== 'Bom@250908') {
-      return res.status(401).json({
-        error: 'Credenciais inválidas'
-      });
-    }
-
-    // Gera o token JWT
+    // Gerar JWT customizado com base nos dados do Supabase
     const token = jwt.sign(
       {
         userId: user.id,
         name: user.nome,
         role: user.role,
-        email: user.email
+        email: user.email,
+        supabaseAccessToken: authData.session.access_token
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
 
-    logger.info(`Login realizado: ${user.email}`);
+    logger.info(`Usuário logado via Supabase: ${user.email}`);
 
     res.json({
-      message: 'Login realizado com sucesso',
+      message: 'Login bem-sucedido',
       token,
       user: {
         id: user.id,
@@ -84,10 +103,8 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-    logger.error('Erro ao fazer login:', error);
-    res.status(500).json({
-      error: 'Erro interno do servidor'
-    });
+    logger.error('Erro ao fazer login com Supabase:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
 
