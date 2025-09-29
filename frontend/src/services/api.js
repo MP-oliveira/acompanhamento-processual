@@ -28,10 +28,28 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     
+    console.log('🔍 Request interceptor - Token encontrado:', !!token);
+    console.log('🔍 Request interceptor - Token value:', token);
+    console.log('🔍 Request interceptor - Token type:', typeof token);
+    console.log('🔍 Request interceptor - Token length:', token?.length);
+    
     if (token) {
       // Verifica se o token está expirado
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Verificar se o token tem o formato correto (JWT tem 3 partes separadas por ponto)
+        const tokenParts = token.split('.');
+        console.log('🔍 Token parts count:', tokenParts.length);
+        
+        if (tokenParts.length !== 3) {
+          console.error('❌ Token não está no formato JWT válido (3 partes)');
+          localStorage.removeItem('token');
+          return config;
+        }
+        
+        // Verificar se a segunda parte (payload) é base64 válido
+        const payload = JSON.parse(atob(tokenParts[1]));
+        console.log('🔍 Token payload:', payload);
+        
         const now = Math.floor(Date.now() / 1000);
         const isExpired = payload.exp < now;
         
@@ -42,10 +60,13 @@ api.interceptors.request.use(
           // window.location.href = '/login';
         } else {
           config.headers.Authorization = `Bearer ${token}`;
+          console.log('✅ Token válido adicionado ao header');
         }
       } catch (error) {
         console.error('❌ Erro ao decodificar token:', error);
+        console.error('❌ Token que causou erro:', token);
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
       }
     }
     
