@@ -34,17 +34,37 @@ import consultaRoutes from './src/routes/consultaRoutes.js';
 // Criar app Express
 const app = express();
 
+// CORS configurável por ALLOWED_ORIGINS (lista separada por vírgulas)
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || '';
+const allowedOrigins = allowedOriginsEnv
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Permite requisições sem origin (como mobile apps, Postman, etc)
+    if (!origin) return callback(null, true);
+    
+    // Se não há origens configuradas, permite todas
+    if (allowedOrigins.length === 0) return callback(null, true);
+    
+    // Verifica se a origem está permitida
+    const isAllowed = allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed));
+    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true
+};
+
 // Middlewares básicos
 app.use(helmet());
-app.use(cors({
-  origin: [
-    'http://localhost:5173', // Frontend local
-    'https://jurisacompanha-frontend-two.vercel.app' // Frontend produção
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(corsOptions));
+// Responder preflight de todos os caminhos
+app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
