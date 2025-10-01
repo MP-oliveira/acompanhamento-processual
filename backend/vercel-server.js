@@ -39,7 +39,7 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'http://localhost:5173', // Frontend local
-    'https://frontend-83sba8eo7-mauricio-mp-oliveiras-projects.vercel.app' // Frontend produção
+    'https://jurisacompanha-frontend-two.vercel.app' // Frontend produção
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
