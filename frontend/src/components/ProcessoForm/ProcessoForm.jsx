@@ -132,6 +132,7 @@ const ProcessoForm = ({
         assunto: formData.assunto,
         tribunal: formData.tribunal,
         comarca: formData.comarca,
+        status: formData.status || 'ativo',
         dataDistribuicao: formData.dataDistribuicao && formData.dataDistribuicao.trim() ? 
           new Date(formData.dataDistribuicao).toISOString() : null,
         dataSentenca: formData.dataSentenca && formData.dataSentenca.trim() ? 
