@@ -168,6 +168,31 @@ const Calendario = () => {
     return () => clearInterval(interval);
   }, [isAuthenticated, user]);
 
+  // Atualizar quando o usuário voltar para a página/aba
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('📅 Calendário: Usuário voltou para a página - atualizando eventos');
+        fetchProcessos();
+      }
+    };
+
+    const handleFocus = () => {
+      console.log('📅 Calendário: Página recebeu foco - atualizando eventos');
+      fetchProcessos();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [isAuthenticated, user]);
+
 
 
   const getDaysInMonth = (date) => {
