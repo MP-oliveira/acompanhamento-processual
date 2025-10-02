@@ -265,8 +265,18 @@ export const atualizarProcesso = async (req, res) => {
       }
     }
 
+    // Converter strings vazias em null para campos de data
+    const cleanValue = { ...value };
+    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia'].forEach(field => {
+      if (cleanValue[field] === '') {
+        cleanValue[field] = null;
+      }
+    });
+
+    logger.info('📝 Dados após limpeza:', cleanValue);
+
     // Atualiza o processo
-    await processo.update(value);
+    await processo.update(cleanValue);
 
     // Se foi informada uma sentença, recalcula os prazos
     if (value.dataSentenca) {
