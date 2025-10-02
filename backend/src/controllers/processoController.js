@@ -29,7 +29,7 @@ const processoSchema = Joi.object({
   observacoes: Joi.string().max(1000).optional()
 });
 
-// Schema para atualização (campos opcionais)
+// Schema para atualização (campos opcionais) - permite desconhecidos
 const processoUpdateSchema = Joi.object({
   numero: Joi.string().min(10).max(50).optional().messages({
     'string.min': 'Número do processo deve ter pelo menos 10 caracteres',
@@ -43,13 +43,28 @@ const processoUpdateSchema = Joi.object({
   tribunal: Joi.string().max(100).optional().allow(''),
   comarca: Joi.string().max(100).optional().allow(''),
   status: Joi.string().valid('ativo', 'arquivado', 'suspenso').optional(),
-  dataDistribuicao: Joi.date().allow(null, '').optional(),
-  dataSentenca: Joi.date().allow(null, '').optional(),
-  prazoRecurso: Joi.date().allow(null, '').optional(),
-  prazoEmbargos: Joi.date().allow(null, '').optional(),
-  proximaAudiencia: Joi.date().allow(null, '').optional(),
+  dataDistribuicao: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().allow('', null)
+  ).optional(),
+  dataSentenca: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().allow('', null)
+  ).optional(),
+  prazoRecurso: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().allow('', null)
+  ).optional(),
+  prazoEmbargos: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().allow('', null)
+  ).optional(),
+  proximaAudiencia: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().allow('', null)
+  ).optional(),
   observacoes: Joi.string().max(1000).optional().allow('')
-});
+}).unknown(false);
 
 /**
  * Lista todos os processos do usuário
