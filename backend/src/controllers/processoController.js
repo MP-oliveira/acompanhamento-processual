@@ -49,7 +49,7 @@ const processoUpdateSchema = Joi.object({
   prazoEmbargos: Joi.string().allow(null, '').optional(),
   proximaAudiencia: Joi.string().allow(null, '').optional(),
   observacoes: Joi.string().max(1000).optional().allow('')
-}).unknown(false);
+});
 
 /**
  * Lista todos os processos do usuário
