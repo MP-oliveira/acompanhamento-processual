@@ -243,6 +243,13 @@ export const atualizarProcesso = async (req, res) => {
       });
     }
 
+    // Log para debug
+    logger.info('📝 Dados recebidos para atualização:', { 
+      body: req.body,
+      value: value,
+      processoId: id
+    });
+
     // Verifica se o número do processo já existe (exceto para o processo atual)
     if (value.numero && value.numero !== processo.numero) {
       const processoExistente = await Processo.findOne({
