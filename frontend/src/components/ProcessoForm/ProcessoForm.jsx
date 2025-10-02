@@ -34,6 +34,10 @@ const ProcessoForm = ({
   // Preencher formulário se estiver editando
   useEffect(() => {
     if (processo) {
+      console.log('🔍 ProcessoForm: Recebeu processo para edição:', processo);
+      console.log('🔍 ProcessoForm: dataDistribuicao:', processo.dataDistribuicao);
+      console.log('🔍 ProcessoForm: proximaAudiencia:', processo.proximaAudiencia);
+      
       setFormData({
         numero: processo.numero || '',
         classe: processo.classe || '',
