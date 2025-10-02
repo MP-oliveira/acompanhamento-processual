@@ -29,6 +29,28 @@ const processoSchema = Joi.object({
   observacoes: Joi.string().max(1000).optional()
 });
 
+// Schema para atualização (campos opcionais)
+const processoUpdateSchema = Joi.object({
+  numero: Joi.string().min(10).max(50).optional().messages({
+    'string.min': 'Número do processo deve ter pelo menos 10 caracteres',
+    'string.max': 'Número do processo deve ter no máximo 50 caracteres'
+  }),
+  classe: Joi.string().min(2).max(100).optional().messages({
+    'string.min': 'Classe deve ter pelo menos 2 caracteres',
+    'string.max': 'Classe deve ter no máximo 100 caracteres'
+  }),
+  assunto: Joi.string().max(500).optional().allow(''),
+  tribunal: Joi.string().max(100).optional().allow(''),
+  comarca: Joi.string().max(100).optional().allow(''),
+  status: Joi.string().valid('ativo', 'arquivado', 'suspenso').optional(),
+  dataDistribuicao: Joi.date().allow(null, '').optional(),
+  dataSentenca: Joi.date().allow(null, '').optional(),
+  prazoRecurso: Joi.date().allow(null, '').optional(),
+  prazoEmbargos: Joi.date().allow(null, '').optional(),
+  proximaAudiencia: Joi.date().allow(null, '').optional(),
+  observacoes: Joi.string().max(1000).optional().allow('')
+});
+
 /**
  * Lista todos os processos do usuário
  */
@@ -209,8 +231,8 @@ export const atualizarProcesso = async (req, res) => {
       });
     }
 
-    // Valida os dados de entrada
-    const { error, value } = processoSchema.validate(req.body);
+    // Valida os dados de entrada usando schema de atualização
+    const { error, value } = processoUpdateSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         error: 'Dados inválidos',
@@ -222,7 +244,7 @@ export const atualizarProcesso = async (req, res) => {
     }
 
     // Verifica se o número do processo já existe (exceto para o processo atual)
-    if (value.numero !== processo.numero) {
+    if (value.numero && value.numero !== processo.numero) {
       const processoExistente = await Processo.findOne({
         where: { 
           numero: value.numero,
