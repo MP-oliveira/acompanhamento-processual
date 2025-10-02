@@ -43,26 +43,11 @@ const processoUpdateSchema = Joi.object({
   tribunal: Joi.string().max(100).optional().allow(''),
   comarca: Joi.string().max(100).optional().allow(''),
   status: Joi.string().valid('ativo', 'arquivado', 'suspenso').optional(),
-  dataDistribuicao: Joi.alternatives().try(
-    Joi.date().iso(),
-    Joi.string().allow('', null)
-  ).optional(),
-  dataSentenca: Joi.alternatives().try(
-    Joi.date().iso(),
-    Joi.string().allow('', null)
-  ).optional(),
-  prazoRecurso: Joi.alternatives().try(
-    Joi.date().iso(),
-    Joi.string().allow('', null)
-  ).optional(),
-  prazoEmbargos: Joi.alternatives().try(
-    Joi.date().iso(),
-    Joi.string().allow('', null)
-  ).optional(),
-  proximaAudiencia: Joi.alternatives().try(
-    Joi.date().iso(),
-    Joi.string().allow('', null)
-  ).optional(),
+  dataDistribuicao: Joi.string().allow(null, '').optional(),
+  dataSentenca: Joi.string().allow(null, '').optional(),
+  prazoRecurso: Joi.string().allow(null, '').optional(),
+  prazoEmbargos: Joi.string().allow(null, '').optional(),
+  proximaAudiencia: Joi.string().allow(null, '').optional(),
   observacoes: Joi.string().max(1000).optional().allow('')
 }).unknown(false);
 
