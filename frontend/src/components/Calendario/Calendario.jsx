@@ -32,11 +32,13 @@ const Calendario = () => {
     status: 'agendado'
   });
 
-  // Função utilitária para converter data UTC para data local
-  const convertUTCToLocal = (utcDateString) => {
-    const date = new Date(utcDateString);
-    // Criar uma nova data usando os componentes locais
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // Função utilitária para extrair apenas a data (ignorando timezone)
+  const getDateOnly = (dateString) => {
+    // Pegar apenas a parte da data (YYYY-MM-DD) sem conversão de timezone
+    const dateStr = dateString.split('T')[0];
+    // Criar data local a partir da string
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
   };
 
   // Função para buscar processos do backend
@@ -61,7 +63,7 @@ const Calendario = () => {
       processos.forEach(processo => {
         // Evento de distribuição
         if (processo.dataDistribuicao) {
-          const dataDistribuicao = convertUTCToLocal(processo.dataDistribuicao);
+          const dataDistribuicao = getDateOnly(processo.dataDistribuicao);
           eventos.push({
             id: `distribuicao-${processo.id}`,
             title: `Distribuição - ${processo.classe}`,
@@ -81,7 +83,7 @@ const Calendario = () => {
         
         // Evento de audiência
         if (processo.proximaAudiencia) {
-          const dataAudiencia = convertUTCToLocal(processo.proximaAudiencia);
+          const dataAudiencia = getDateOnly(processo.proximaAudiencia);
           const dataOriginal = new Date(processo.proximaAudiencia);
           eventos.push({
             id: `audiencia-${processo.id}`,
@@ -102,7 +104,7 @@ const Calendario = () => {
         
         // Evento de prazo de recurso
         if (processo.prazoRecurso) {
-          const dataRecurso = convertUTCToLocal(processo.prazoRecurso);
+          const dataRecurso = getDateOnly(processo.prazoRecurso);
           eventos.push({
             id: `recurso-${processo.id}`,
             title: `Prazo Recurso - ${processo.classe}`,
@@ -122,7 +124,7 @@ const Calendario = () => {
         
         // Evento de prazo de embargos
         if (processo.prazoEmbargos) {
-          const dataEmbargos = convertUTCToLocal(processo.prazoEmbargos);
+          const dataEmbargos = getDateOnly(processo.prazoEmbargos);
           eventos.push({
             id: `embargos-${processo.id}`,
             title: `Prazo Embargos - ${processo.classe}`,
