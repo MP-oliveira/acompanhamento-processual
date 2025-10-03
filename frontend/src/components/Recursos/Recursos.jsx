@@ -197,7 +197,7 @@ const Recursos = () => {
       </div>
 
       {/* Filtros e Busca */}
-      <div className="processos-filters">
+      <div className="processos-filters" style={{ gridTemplateColumns: '1fr auto auto' }}>
         <div className="processos-search">
           <Search className="processos-search-icon" size={20} />
           <input

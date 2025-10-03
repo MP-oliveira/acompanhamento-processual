@@ -171,7 +171,7 @@ const Audiencias = () => {
       </div>
 
       {/* Filtros e Busca */}
-      <div className="processos-filters">
+      <div className="processos-filters" style={{ gridTemplateColumns: '1fr auto' }}>
         <div className="processos-search">
           <Search className="processos-search-icon" size={20} />
           <input
@@ -184,7 +184,7 @@ const Audiencias = () => {
         </div>
         
         <div className="processos-filter-group">
-          <label className="processos-filter-label">Ordenar por:</label>
+          <label className="processos-filter-label">Ordenar:</label>
           <select
             className="processos-filter-select"
             value={sortOrder}
