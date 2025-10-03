@@ -24,6 +24,8 @@ const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const Processos = lazy(() => import('./components/Processos/Processos'));
 const NovoProcesso = lazy(() => import('./components/NovoProcesso/NovoProcesso'));
 const EditarProcesso = lazy(() => import('./components/EditarProcesso/EditarProcesso'));
+const Audiencias = lazy(() => import('./components/Audiencias/Audiencias'));
+const Recursos = lazy(() => import('./components/Recursos/Recursos'));
 const Alertas = lazy(() => import('./components/Alertas/Alertas'));
 const Calendario = lazy(() => import('./components/Calendario/Calendario'));
 const Consultas = lazy(() => import('./components/Consultas/Consultas'));
@@ -117,6 +119,8 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Route path="/processos" element={<Processos />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
+                    <Route path="/audiencias" element={<Audiencias />} />
+                    <Route path="/recursos" element={<Recursos />} />
                     <Route path="/alertas" element={<Alertas />} />
                     <Route path="/calendario" element={<Calendario />} />
                     <Route path="/consultas" element={<Consultas />} />

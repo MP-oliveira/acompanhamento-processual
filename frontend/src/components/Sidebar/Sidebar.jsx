@@ -9,7 +9,9 @@ import {
   Users,
   BarChart3,
   Search,
-  Activity
+  Activity,
+  Scale,
+  Mic
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -101,6 +103,22 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <FileText className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Processos</span>
+                    </Link>
+                    <Link
+                      to="/audiencias"
+                      className={`sidebar-nav-item ${isActiveRoute('/audiencias') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Mic className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Audiências</span>
+                    </Link>
+                    <Link
+                      to="/recursos"
+                      className={`sidebar-nav-item ${isActiveRoute('/recursos') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Scale className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Recursos</span>
                     </Link>
                     <Link
                       to="/alertas"
