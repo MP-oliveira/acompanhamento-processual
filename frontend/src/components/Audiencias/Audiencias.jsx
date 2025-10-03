@@ -171,28 +171,33 @@ const Audiencias = () => {
       </div>
 
       {/* Filtros e Busca */}
-      <div className="processos-filters" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end' }}>
-        <div className="processos-search" style={{ maxWidth: '400px', flex: '0 0 400px' }}>
-          <Search className="processos-search-icon" size={20} />
-          <input
-            type="text"
-            className="processos-search-input"
-            placeholder="Buscar por número, classe, tribunal..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="processos-filters">
+        <div className="processos-search">
+          <div className="processos-search-wrapper">
+            <Search className="processos-search-icon" size={20} />
+            <input
+              type="text"
+              placeholder="Buscar por número, classe, tribunal..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="processos-search-input"
+            />
+          </div>
         </div>
-        
-        <div className="processos-filter-group" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <label className="processos-filter-label" style={{ margin: 0, whiteSpace: 'nowrap' }}>Ordenar:</label>
-          <select
-            className="processos-filter-select"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <option value="asc">Data mais próxima</option>
-            <option value="desc">Data mais distante</option>
-          </select>
+
+        <div className="processos-filters-row">
+          <div className="processos-filter">
+            <label htmlFor="sortOrder">Ordenar:</label>
+            <select
+              id="sortOrder"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="processos-filter-select"
+            >
+              <option value="asc">Data mais próxima</option>
+              <option value="desc">Data mais distante</option>
+            </select>
+          </div>
         </div>
       </div>
 
