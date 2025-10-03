@@ -19,7 +19,15 @@ const EditarProcesso = () => {
       try {
         // Carrega o processo da API
         const response = await processoService.getById(id);
-        setProcesso(response.processo || response);
+        console.log('🔍 EditarProcesso: Response da API:', response);
+        console.log('🔍 EditarProcesso: response.processo:', response.processo);
+        console.log('🔍 EditarProcesso: dataDistribuicao:', response.processo?.dataDistribuicao || response.dataDistribuicao);
+        console.log('🔍 EditarProcesso: proximaAudiencia:', response.processo?.proximaAudiencia || response.proximaAudiencia);
+        
+        const processoData = response.processo || response;
+        console.log('🔍 EditarProcesso: Processo que será passado para o form:', processoData);
+        
+        setProcesso(processoData);
       } catch (error) {
         console.error('Erro ao carregar processo:', error);
         // Processo não encontrado ou erro
