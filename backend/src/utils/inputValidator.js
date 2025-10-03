@@ -498,11 +498,17 @@ export const VALIDATION_SCHEMAS = {
   
   // Schema para atualização de processo
   UPDATE_PROCESSO: {
+    numero: { type: 'string', required: false, maxLength: 50 },
     classe: { type: 'texto_juridico', required: false },
     assunto: { type: 'texto_juridico', required: false },
     tribunal: { type: 'string', required: false, maxLength: 100 },
     comarca: { type: 'string', required: false, maxLength: 100 },
     status: { type: 'string', required: false },
+    dataDistribuicao: { type: 'date', required: false },
+    dataSentenca: { type: 'date', required: false },
+    prazoRecurso: { type: 'date', required: false },
+    prazoEmbargos: { type: 'date', required: false },
+    proximaAudiencia: { type: 'date', required: false },
     observacoes: { type: 'texto_juridico', required: false }
   },
   
