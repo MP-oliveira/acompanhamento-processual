@@ -197,8 +197,8 @@ const Recursos = () => {
       </div>
 
       {/* Filtros e Busca */}
-      <div className="processos-filters" style={{ gridTemplateColumns: '1fr auto auto' }}>
-        <div className="processos-search">
+      <div className="processos-filters" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="processos-search" style={{ maxWidth: '400px', flex: '0 0 400px' }}>
           <Search className="processos-search-icon" size={20} />
           <input
             type="text"
@@ -209,7 +209,7 @@ const Recursos = () => {
           />
         </div>
         
-        <div className="processos-filter-group">
+        <div className="processos-filter-group" style={{ margin: 0 }}>
           <label className="processos-filter-label">Tipo:</label>
           <select
             className="processos-filter-select"
@@ -222,7 +222,7 @@ const Recursos = () => {
           </select>
         </div>
 
-        <div className="processos-filter-group">
+        <div className="processos-filter-group" style={{ margin: 0 }}>
           <label className="processos-filter-label">Ordenar:</label>
           <select
             className="processos-filter-select"
