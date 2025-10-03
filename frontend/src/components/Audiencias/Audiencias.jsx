@@ -171,7 +171,7 @@ const Audiencias = () => {
       </div>
 
       {/* Filtros e Busca */}
-      <div className="processos-filters" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+      <div className="processos-filters" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end' }}>
         <div className="processos-search" style={{ maxWidth: '400px', flex: '0 0 400px' }}>
           <Search className="processos-search-icon" size={20} />
           <input
@@ -183,8 +183,8 @@ const Audiencias = () => {
           />
         </div>
         
-        <div className="processos-filter-group" style={{ margin: 0 }}>
-          <label className="processos-filter-label">Ordenar:</label>
+        <div className="processos-filter-group" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <label className="processos-filter-label" style={{ margin: 0, whiteSpace: 'nowrap' }}>Ordenar:</label>
           <select
             className="processos-filter-select"
             value={sortOrder}
