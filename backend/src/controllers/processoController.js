@@ -243,13 +243,6 @@ export const atualizarProcesso = async (req, res) => {
       });
     }
 
-    // Log para debug
-    logger.info('📝 Dados recebidos para atualização:', { 
-      body: req.body,
-      value: value,
-      processoId: id
-    });
-
     // Verifica se o número do processo já existe (exceto para o processo atual)
     if (value.numero && value.numero !== processo.numero) {
       const processoExistente = await Processo.findOne({
@@ -273,21 +266,8 @@ export const atualizarProcesso = async (req, res) => {
       }
     });
 
-    logger.info('📝 Dados após limpeza:', cleanValue);
-    logger.info('📝 Processo ANTES do update:', {
-      id: processo.id,
-      dataDistribuicao: processo.dataDistribuicao,
-      proximaAudiencia: processo.proximaAudiencia
-    });
-
     // Atualiza o processo
-    const resultado = await processo.update(cleanValue);
-    
-    logger.info('📝 Processo DEPOIS do update:', {
-      id: resultado.id,
-      dataDistribuicao: resultado.dataDistribuicao,
-      proximaAudiencia: resultado.proximaAudiencia
-    });
+    await processo.update(cleanValue);
 
     // Se foi informada uma sentença, recalcula os prazos
     if (value.dataSentenca) {

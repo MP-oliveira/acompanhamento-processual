@@ -34,10 +34,6 @@ const ProcessoForm = ({
   // Preencher formulário se estiver editando
   useEffect(() => {
     if (processo) {
-      console.log('🔍 ProcessoForm: Recebeu processo para edição:', processo);
-      console.log('🔍 ProcessoForm: dataDistribuicao:', processo.dataDistribuicao);
-      console.log('🔍 ProcessoForm: proximaAudiencia:', processo.proximaAudiencia);
-      
       setFormData({
         numero: processo.numero || '',
         classe: processo.classe || '',
@@ -129,10 +125,6 @@ const ProcessoForm = ({
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('🔍 FormData ao submeter:', formData);
-      console.log('🔍 dataDistribuicao no formData:', formData.dataDistribuicao);
-      console.log('🔍 proximaAudiencia no formData:', formData.proximaAudiencia);
-      
       // Converter datas para formato ISO (apenas se não estiverem vazias)
       const submitData = {
         numero: formData.numero,
@@ -153,8 +145,6 @@ const ProcessoForm = ({
           new Date(formData.proximaAudiencia).toISOString() : null,
         observacoes: formData.observacoes
       };
-
-      console.log('🔍 SubmitData que será enviado:', submitData);
 
       onSubmit(submitData);
     }
