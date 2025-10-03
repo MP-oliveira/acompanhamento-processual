@@ -274,9 +274,20 @@ export const atualizarProcesso = async (req, res) => {
     });
 
     logger.info('📝 Dados após limpeza:', cleanValue);
+    logger.info('📝 Processo ANTES do update:', {
+      id: processo.id,
+      dataDistribuicao: processo.dataDistribuicao,
+      proximaAudiencia: processo.proximaAudiencia
+    });
 
     // Atualiza o processo
-    await processo.update(cleanValue);
+    const resultado = await processo.update(cleanValue);
+    
+    logger.info('📝 Processo DEPOIS do update:', {
+      id: resultado.id,
+      dataDistribuicao: resultado.dataDistribuicao,
+      proximaAudiencia: resultado.proximaAudiencia
+    });
 
     // Se foi informada uma sentença, recalcula os prazos
     if (value.dataSentenca) {
