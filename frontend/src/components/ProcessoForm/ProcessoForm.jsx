@@ -129,6 +129,10 @@ const ProcessoForm = ({
     e.preventDefault();
     
     if (validateForm()) {
+      console.log('🔍 FormData ao submeter:', formData);
+      console.log('🔍 dataDistribuicao no formData:', formData.dataDistribuicao);
+      console.log('🔍 proximaAudiencia no formData:', formData.proximaAudiencia);
+      
       // Converter datas para formato ISO (apenas se não estiverem vazias)
       const submitData = {
         numero: formData.numero,
@@ -149,6 +153,8 @@ const ProcessoForm = ({
           new Date(formData.proximaAudiencia).toISOString() : null,
         observacoes: formData.observacoes
       };
+
+      console.log('🔍 SubmitData que será enviado:', submitData);
 
       onSubmit(submitData);
     }
