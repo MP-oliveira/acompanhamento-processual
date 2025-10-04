@@ -1,0 +1,186 @@
+/* ===== TAG BASE ===== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.tag-icon {
+  flex-shrink: 0;
+}
+
+.tag-label {
+  font-size: 0.75rem;
+}
+
+/* ===== TAMANHOS ===== */
+.tag-xs {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.625rem;
+}
+
+.tag-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.tag-md {
+  padding: 0.375rem 1rem;
+  font-size: 0.875rem;
+}
+
+.tag-lg {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9375rem;
+}
+
+/* ===== VARIANTES ===== */
+
+/* Filled */
+.tag-filled.tag-default {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+.tag-filled.tag-primary {
+  background-color: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.tag-filled.tag-success {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.tag-filled.tag-warning {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.tag-filled.tag-error {
+  background-color: var(--error-100);
+  color: var(--error-700);
+}
+
+.tag-filled.tag-info {
+  background-color: var(--info-100);
+  color: var(--info-700);
+}
+
+/* Outline */
+.tag-outline {
+  background-color: transparent;
+  border: 1px solid currentColor;
+}
+
+.tag-outline.tag-default {
+  color: var(--neutral-600);
+  border-color: var(--neutral-300);
+}
+
+.tag-outline.tag-primary {
+  color: var(--primary-600);
+  border-color: var(--primary-300);
+}
+
+.tag-outline.tag-success {
+  color: var(--success-600);
+  border-color: var(--success-300);
+}
+
+.tag-outline.tag-warning {
+  color: var(--warning-600);
+  border-color: var(--warning-300);
+}
+
+.tag-outline.tag-error {
+  color: var(--error-600);
+  border-color: var(--error-300);
+}
+
+.tag-outline.tag-info {
+  color: var(--info-600);
+  border-color: var(--info-300);
+}
+
+/* ===== ESTADOS ===== */
+.tag-clickable {
+  cursor: pointer;
+}
+
+.tag-clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===== BOTÃO DE REMOVER ===== */
+.tag-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.tag-remove:hover {
+  opacity: 1;
+}
+
+/* ===== CORES CUSTOMIZADAS ===== */
+.tag-purple {
+  background-color: #f3e8ff;
+  color: #7c3aed;
+}
+
+.tag-pink {
+  background-color: #fce7f3;
+  color: #db2777;
+}
+
+.tag-orange {
+  background-color: #ffedd5;
+  color: #ea580c;
+}
+
+.tag-teal {
+  background-color: #ccfbf1;
+  color: #0f766e;
+}
+
+.tag-indigo {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+/* ===== TAG LIST ===== */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.tag-more {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--neutral-100);
+}
+

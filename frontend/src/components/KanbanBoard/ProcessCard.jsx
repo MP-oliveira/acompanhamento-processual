@@ -5,6 +5,8 @@ import { Calendar, Clock, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import TagList from '../Tag/TagList';
+import { generateProcessoTags } from '../../utils/processoTags';
 
 const ProcessCard = ({ processo, isDragging }) => {
   const navigate = useNavigate();
@@ -63,6 +65,14 @@ const ProcessCard = ({ processo, isDragging }) => {
         {processo.assunto && (
           <p className="process-card-assunto">{processo.assunto}</p>
         )}
+        
+        {/* Tags Automáticas */}
+        <div className="process-card-tags">
+          <TagList 
+            tags={generateProcessoTags(processo).filter(t => t.type !== 'status')} 
+            maxVisible={3}
+          />
+        </div>
       </div>
 
       <div className="process-card-footer">
