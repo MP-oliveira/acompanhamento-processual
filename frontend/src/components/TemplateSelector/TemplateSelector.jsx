@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { PROCESSO_TEMPLATES, getCategorias } from '../../utils/processoTemplates';
 import './TemplateSelector.css';
 
@@ -17,7 +17,6 @@ const TemplateSelector = ({ onSelectTemplate, onClose }) => {
       <div className="template-selector-modal" onClick={(e) => e.stopPropagation()}>
         <div className="template-selector-header">
           <div className="template-selector-title">
-            <Sparkles size={24} />
             <h3>Selecionar Template</h3>
           </div>
           <button className="template-selector-close" onClick={onClose}>
@@ -37,9 +36,30 @@ const TemplateSelector = ({ onSelectTemplate, onClose }) => {
           ))}
         </div>
 
-        <div className="template-selector-grid">
+        <div className={`template-selector-grid ${selectedCategoria === 'Todos' ? 'grid-compact' : ''}`}>
           {filteredTemplates.map(template => {
             const IconComponent = template.icon;
+            
+            // Card compacto para "Todos"
+            if (selectedCategoria === 'Todos') {
+              return (
+                <div
+                  key={template.id}
+                  className="template-card-compact"
+                  onClick={() => {
+                    onSelectTemplate(template);
+                    onClose();
+                  }}
+                >
+                  <div className="template-card-icon">
+                    <IconComponent size={24} />
+                  </div>
+                  <h4 className="template-card-nome">{template.nome}</h4>
+                </div>
+              );
+            }
+            
+            // Card normal para categorias específicas
             return (
               <div
                 key={template.id}
@@ -49,11 +69,13 @@ const TemplateSelector = ({ onSelectTemplate, onClose }) => {
                   onClose();
                 }}
               >
-                <div className="template-card-icon">
-                  <IconComponent size={32} />
+                <div className="template-card-header">
+                  <div className="template-card-icon">
+                    <IconComponent size={28} />
+                  </div>
+                  <h4 className="template-card-nome">{template.nome}</h4>
                 </div>
                 <div className="template-card-content">
-                  <h4 className="template-card-nome">{template.nome}</h4>
                   <p className="template-card-descricao">{template.descricao}</p>
                   <span className="template-card-categoria">{template.categoria}</span>
                 </div>

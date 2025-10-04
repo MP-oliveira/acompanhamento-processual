@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Save, Sparkles } from 'lucide-react';
+import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
 import TemplateSelector from '../TemplateSelector/TemplateSelector';
@@ -65,11 +65,10 @@ const NovoProcesso = () => {
         </div>
         <div className="page-header-actions">
           <button
-            className="btn btn-outline"
+            className="btn btn-primary"
             onClick={() => setShowTemplateSelector(true)}
             disabled={loading}
           >
-            <Sparkles size={18} />
             Usar Template
           </button>
           <button
