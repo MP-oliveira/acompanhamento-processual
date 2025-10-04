@@ -85,9 +85,39 @@
 /* ===== CONTENT ===== */
 .editar-processo-content {
   margin-top: var(--spacing-xl);
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.editar-processo-form {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.editar-processo-timeline {
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 /* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+  .editar-processo-content {
+    grid-template-columns: 1fr;
+  }
+
+  .editar-processo-timeline {
+    position: static;
+    max-height: none;
+  }
+}
+
 @media (max-width: 768px) {
   .editar-processo {
     padding: var(--spacing-md);
@@ -100,6 +130,10 @@
 
   .page-header-actions .btn {
     width: 100%;
+  }
+
+  .editar-processo-form {
+    padding: var(--spacing-lg);
   }
 }
 

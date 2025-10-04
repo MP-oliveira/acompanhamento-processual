@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, X } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
+import Timeline from '../Timeline/Timeline';
 import './EditarProcesso.css';
 
 const EditarProcesso = () => {
@@ -122,6 +123,11 @@ const EditarProcesso = () => {
             submitText="Salvar Alterações"
             cancelText="Cancelar"
           />
+        </div>
+
+        {/* Timeline do Processo */}
+        <div className="editar-processo-timeline">
+          <Timeline processo={processo} />
         </div>
       </div>
     </div>
