@@ -129,6 +129,10 @@ export const useKeyboardShortcuts = (onShowShortcuts) => {
           event.preventDefault();
           navigate('/processos/novo');
           break;
+        case 't':
+          event.preventDefault();
+          navigate('/processos/novo');
+          break;
         case 'k':
           event.preventDefault();
           navigate('/processos/kanban');

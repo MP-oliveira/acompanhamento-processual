@@ -10,6 +10,7 @@ const SHORTCUTS = [
       { teclas: ['D'], descricao: 'Dashboard' },
       { teclas: ['P'], descricao: 'Lista de processos' },
       { teclas: ['N'], descricao: 'Novo processo' },
+      { teclas: ['T'], descricao: 'Templates (Novo processo)' },
       { teclas: ['K'], descricao: 'Kanban Board' },
       { teclas: ['C'], descricao: 'Calendário' },
       { teclas: ['A'], descricao: 'Alertas' },
