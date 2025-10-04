@@ -1,229 +1,224 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, FileText, AlertTriangle, Calendar, Users, BarChart3, Clock, Filter } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalSearch } from '../../hooks/useGlobalSearch';
+import { 
+  Search, 
+  FileText, 
+  Calendar, 
+  AlertTriangle, 
+  Users, 
+  Settings,
+  TrendingUp,
+  Command,
+  ArrowRight
+} from 'lucide-react';
+import { processoService } from '../../services/api';
 import './GlobalSearch.css';
 
 const GlobalSearch = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
   const navigate = useNavigate();
-  
-  const { 
-    results, 
-    searchWithSuggestions, 
-    clearResults,
-    isLoading 
-  } = useGlobalSearch();
 
-  // Foco automático no input quando o modal abre
+  // Focus no input quando abrir
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen]);
 
-  // Busca em tempo real com debounce
+  // Buscar processos quando o usuário digitar
   useEffect(() => {
-    if (query.trim().length >= 2) {
-      searchWithSuggestions(query.trim());
-    } else {
-      clearResults();
-    }
-  }, [query, searchWithSuggestions, clearResults]);
+    const searchProcessos = async () => {
+      if (query.trim().length < 2) {
+        setResults(getDefaultActions());
+        return;
+      }
 
-  // Navegação por teclado
-  const handleKeyDown = useCallback((e) => {
-    if (!results.length) return;
+      setLoading(true);
+      try {
+        const response = await processoService.getAll();
+        const processos = response.processos || response;
+        
+        // Filtrar processos que correspondem à busca
+        const filtered = processos.filter(p => 
+          p.numero?.toLowerCase().includes(query.toLowerCase()) ||
+          p.classe?.toLowerCase().includes(query.toLowerCase()) ||
+          p.assunto?.toLowerCase().includes(query.toLowerCase()) ||
+          p.tribunal?.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 8);
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setSelectedIndex(prev => 
-          prev < results.length - 1 ? prev + 1 : 0
-        );
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex(prev => 
-          prev > 0 ? prev - 1 : results.length - 1
-        );
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (results[selectedIndex]) {
-          handleResultClick(results[selectedIndex]);
-        }
-        break;
-      case 'Escape':
-        handleClose();
-        break;
-    }
-  }, [results, selectedIndex]);
+        const processResults = filtered.map(p => ({
+          id: p.id,
+          type: 'processo',
+          title: p.numero,
+          subtitle: p.classe,
+          icon: FileText,
+          action: () => navigate(`/processos/editar/${p.id}`)
+        }));
 
-  const handleResultClick = (result) => {
-    if (result.link) {
-      navigate(result.link);
-    } else if (result.route) {
-      navigate(result.route, { 
-        state: result.state || {} 
-      });
-    }
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setQuery('');
-    setSelectedIndex(0);
-    clearResults();
-    onClose();
-  };
-
-  const getResultIcon = (type) => {
-    const icons = {
-      processo: FileText,
-      alerta: AlertTriangle,
-      calendario: Calendar,
-      usuario: Users,
-      relatorio: BarChart3,
-      consulta: Search,
-      recente: Clock
+        setResults([...getDefaultActions(), ...processResults]);
+      } catch (error) {
+        console.error('Erro ao buscar:', error);
+        setResults(getDefaultActions());
+      } finally {
+        setLoading(false);
+      }
     };
-    return icons[type] || Search;
+
+    const debounce = setTimeout(searchProcessos, 300);
+    return () => clearTimeout(debounce);
+  }, [query]);
+
+  const getDefaultActions = () => [
+    {
+      id: 'novo-processo',
+      type: 'action',
+      title: 'Novo Processo',
+      subtitle: 'Criar um novo processo',
+      icon: FileText,
+      action: () => navigate('/processos/novo')
+    },
+    {
+      id: 'processos',
+      type: 'nav',
+      title: 'Processos',
+      subtitle: 'Ver todos os processos',
+      icon: FileText,
+      action: () => navigate('/processos')
+    },
+    {
+      id: 'kanban',
+      type: 'nav',
+      title: 'Kanban Board',
+      subtitle: 'Visualização em quadro',
+      icon: TrendingUp,
+      action: () => navigate('/processos/kanban')
+    },
+    {
+      id: 'calendario',
+      type: 'nav',
+      title: 'Calendário',
+      subtitle: 'Ver audiências e prazos',
+      icon: Calendar,
+      action: () => navigate('/calendario')
+    },
+    {
+      id: 'alertas',
+      type: 'nav',
+      title: 'Alertas',
+      subtitle: 'Ver alertas ativos',
+      icon: AlertTriangle,
+      action: () => navigate('/alertas')
+    },
+    {
+      id: 'usuarios',
+      type: 'nav',
+      title: 'Usuários',
+      subtitle: 'Gerenciar usuários',
+      icon: Users,
+      action: () => navigate('/usuarios')
+    },
+    {
+      id: 'configuracoes',
+      type: 'nav',
+      title: 'Configurações',
+      subtitle: 'Ajustar preferências',
+      icon: Settings,
+      action: () => navigate('/configuracoes')
+    }
+  ];
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev + 1) % results.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev - 1 + results.length) % results.length);
+    } else if (e.key === 'Enter' && results[selectedIndex]) {
+      e.preventDefault();
+      handleSelectResult(results[selectedIndex]);
+    }
   };
 
-  const formatResultText = (result) => {
-    const { type, title, description, highlight } = result;
-    
-    return (
-      <div className="search-result-content">
-        <div className="search-result-title">
-          {highlight?.title ? (
-            <span dangerouslySetInnerHTML={{ __html: highlight.title }} />
-          ) : (
-            title
-          )}
-        </div>
-        {description && (
-          <div className="search-result-subtitle">
-            {highlight?.description ? (
-              <span dangerouslySetInnerHTML={{ __html: highlight.description }} />
-            ) : (
-              description
-            )}
-          </div>
-        )}
-        <div className="search-result-type">{type}</div>
-      </div>
-    );
+  const handleSelectResult = (result) => {
+    result.action();
+    onClose();
+    setQuery('');
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="global-search-overlay" onClick={handleClose}>
+    <div className="global-search-overlay" onClick={onClose}>
       <div className="global-search-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="global-search-header">
-          <div className="global-search-input-container">
-            <Search size={20} className="global-search-input-icon" />
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Buscar processos, alertas, usuários..."
-              className="global-search-input"
-              autoComplete="off"
-            />
-            {query && (
-              <button
-                onClick={() => setQuery('')}
-                className="global-search-clear"
-                aria-label="Limpar busca"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-          <button
-            onClick={handleClose}
-            className="global-search-close"
-            aria-label="Fechar busca"
-          >
-            <X size={20} />
-          </button>
+          <Search className="global-search-icon" size={20} />
+          <input
+            ref={inputRef}
+            type="text"
+            className="global-search-input"
+            placeholder="Buscar processos, ações..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <kbd className="global-search-kbd">ESC</kbd>
         </div>
 
-        {/* Results */}
         <div className="global-search-results">
-          {isLoading ? (
+          {loading && (
             <div className="global-search-loading">
-              <div className="loading-spinner" />
+              <div className="loading-spinner-small" />
               <span>Buscando...</span>
             </div>
-          ) : query.trim().length < 2 ? (
-            <div className="global-search-placeholder">
-              <Search size={48} />
-              <p>Digite pelo menos 2 caracteres para buscar</p>
-              <div className="global-search-shortcuts">
-                <div className="shortcut-item">
-                  <kbd>↑</kbd><kbd>↓</kbd> Navegar
-                </div>
-                <div className="shortcut-item">
-                  <kbd>Enter</kbd> Selecionar
-                </div>
-                <div className="shortcut-item">
-                  <kbd>Esc</kbd> Fechar
-                </div>
-              </div>
-            </div>
-          ) : results.length === 0 ? (
+          )}
+
+          {!loading && results.length === 0 && (
             <div className="global-search-empty">
-              <Search size={48} />
-              <p>Nenhum resultado encontrado para "{query}"</p>
-              <span>Tente termos diferentes ou verifique a ortografia</span>
-            </div>
-          ) : (
-            <div className="global-search-results-list">
-              {results.map((result, index) => {
-                const IconComponent = getResultIcon(result.type);
-                const isSelected = index === selectedIndex;
-                
-                return (
-                  <div
-                    key={`${result.type}-${result.id || index}`}
-                    className={`global-search-result ${isSelected ? 'selected' : ''}`}
-                    onClick={() => handleResultClick(result)}
-                    onMouseEnter={() => setSelectedIndex(index)}
-                  >
-                    <div className="global-search-result-icon">
-                      <IconComponent size={20} />
-                    </div>
-                    {formatResultText(result)}
-                    <div className="global-search-result-arrow">
-                      →
-                    </div>
-                  </div>
-                );
-              })}
+              <p>Nenhum resultado encontrado</p>
             </div>
           )}
+
+          {!loading && results.length > 0 && results.map((result, index) => (
+            <div
+              key={result.id}
+              className={`global-search-result ${index === selectedIndex ? 'selected' : ''}`}
+              onClick={() => handleSelectResult(result)}
+              onMouseEnter={() => setSelectedIndex(index)}
+            >
+              <div className="global-search-result-icon">
+                <result.icon size={18} />
+              </div>
+              <div className="global-search-result-content">
+                <div className="global-search-result-title">{result.title}</div>
+                <div className="global-search-result-subtitle">{result.subtitle}</div>
+              </div>
+              <ArrowRight size={16} className="global-search-result-arrow" />
+            </div>
+          ))}
         </div>
 
-        {/* Footer */}
-        {results.length > 0 && (
-          <div className="global-search-footer">
-            <div className="global-search-footer-info">
-              {results.length} resultado{results.length !== 1 ? 's' : ''} encontrado{results.length !== 1 ? 's' : ''}
-            </div>
-            <div className="global-search-footer-shortcuts">
-              <span>Use as setas para navegar • Enter para selecionar</span>
-            </div>
+        <div className="global-search-footer">
+          <div className="global-search-footer-hint">
+            <kbd>↑</kbd>
+            <kbd>↓</kbd>
+            <span>navegar</span>
           </div>
-        )}
+          <div className="global-search-footer-hint">
+            <kbd>Enter</kbd>
+            <span>selecionar</span>
+          </div>
+          <div className="global-search-footer-hint">
+            <kbd>ESC</kbd>
+            <span>fechar</span>
+          </div>
+        </div>
       </div>
     </div>
   );

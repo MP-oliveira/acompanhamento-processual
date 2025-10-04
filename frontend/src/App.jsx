@@ -14,7 +14,9 @@ import PageLoading from './components/PageLoading/PageLoading';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import AdminRoute from './components/AdminRoute/AdminRoute';
+import GlobalSearch from './components/GlobalSearch/GlobalSearch';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useGlobalSearch } from './hooks/useGlobalSearch';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -52,6 +54,9 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
   
   // Ativar atalhos de teclado dentro do Router
   useKeyboardShortcuts();
+  
+  // Hook de busca global (Cmd+K)
+  const { isOpen: searchOpen, close: closeSearch } = useGlobalSearch();
   
   // Configurar atualizações em tempo real quando autenticado
   // useRealtimeUpdates(); // Temporariamente desabilitado para debug
@@ -158,6 +163,11 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
       
       {/* PWA Installer */}
       <PWAInstaller />
+      
+      {/* Global Search (Cmd+K) */}
+      {isAuthenticated && (
+        <GlobalSearch isOpen={searchOpen} onClose={closeSearch} />
+      )}
     </div>
   );
 };
