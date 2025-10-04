@@ -36,10 +36,15 @@ const ProcessCard = ({ processo, isDragging }) => {
     }
   };
 
-  const handleCardClick = (e) => {
-    // Não navegar se estiver arrastando
+  const handleViewClick = (e) => {
+    e.stopPropagation();
+    // Não abrir se estiver arrastando
     if (isDragging || isSortableDragging) return;
-    navigate(`/processos/editar/${processo.id}`);
+    
+    // Disparar evento customizado para abrir o modal
+    window.dispatchEvent(new CustomEvent('openProcessoDetail', {
+      detail: { processoId: processo.id }
+    }));
   };
 
   return (
@@ -54,7 +59,7 @@ const ProcessCard = ({ processo, isDragging }) => {
         <h4 className="process-card-number">{processo.numero}</h4>
         <button
           className="process-card-view-btn"
-          onClick={handleCardClick}
+          onClick={handleViewClick}
           title="Ver detalhes"
         >
           <Eye size={16} />

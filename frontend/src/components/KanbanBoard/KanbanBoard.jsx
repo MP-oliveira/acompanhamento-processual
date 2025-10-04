@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import KanbanColumn from './KanbanColumn';
 import ProcessCard from './ProcessCard';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import ProcessoDetailModal from '../ProcessoDetailModal/ProcessoDetailModal';
 import './KanbanBoard.css';
 
 const COLUMNS = [
@@ -42,6 +43,8 @@ const KanbanBoard = () => {
   const [processos, setProcessos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState(null);
+  const [selectedProcessoId, setSelectedProcessoId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const sensors = useSensors(
@@ -54,6 +57,20 @@ const KanbanBoard = () => {
 
   useEffect(() => {
     loadProcessos();
+  }, []);
+
+  // Escutar evento para abrir modal de detalhes
+  useEffect(() => {
+    const handleOpenDetail = (e) => {
+      setSelectedProcessoId(e.detail.processoId);
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener('openProcessoDetail', handleOpenDetail);
+
+    return () => {
+      window.removeEventListener('openProcessoDetail', handleOpenDetail);
+    };
   }, []);
 
   const loadProcessos = async () => {
@@ -198,6 +215,13 @@ const KanbanBoard = () => {
           ) : null}
         </DragOverlay>
       </DndContext>
+
+      {/* Modal de Detalhes */}
+      <ProcessoDetailModal
+        processoId={selectedProcessoId}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
