@@ -11,7 +11,10 @@ import {
   Search,
   Activity,
   Scale,
-  Mic
+  Mic,
+  LayoutGrid,
+  Zap,
+  DollarSign
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -95,14 +98,25 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <Home className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Dashboard</span>
+                      <kbd className="sidebar-nav-shortcut">D</kbd>
                     </Link>
                     <Link
                       to="/processos"
-                      className={`sidebar-nav-item ${isActiveRoute('/processos') ? 'active' : ''}`}
+                      className={`sidebar-nav-item ${isActiveRoute('/processos') && !location.pathname.includes('/kanban') ? 'active' : ''}`}
                       onClick={onClose}
                     >
                       <FileText className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Processos</span>
+                      <kbd className="sidebar-nav-shortcut">P</kbd>
+                    </Link>
+                    <Link
+                      to="/processos/kanban"
+                      className={`sidebar-nav-item ${location.pathname.includes('/kanban') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <LayoutGrid className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Kanban Board</span>
+                      <kbd className="sidebar-nav-shortcut">K</kbd>
                     </Link>
                     <Link
                       to="/audiencias"
@@ -127,6 +141,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <AlertTriangle className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Alertas</span>
+                      <kbd className="sidebar-nav-shortcut">A</kbd>
                     </Link>
                     <Link
                       to="/calendario"
@@ -135,6 +150,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <Calendar className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Calendário</span>
+                      <kbd className="sidebar-nav-shortcut">C</kbd>
                     </Link>
                   </div>
 
@@ -157,6 +173,14 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                       <BarChart3 className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Relatórios ({totalRelatorios})</span>
                     </Link>
+                    <Link
+                      to="/financeiro"
+                      className={`sidebar-nav-item ${isActiveRoute('/financeiro') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <DollarSign className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Financeiro</span>
+                    </Link>
                   </div>
 
                   {/* Seção Sistema */}
@@ -173,6 +197,14 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                         <span className="sidebar-nav-item-text">Usuários</span>
                       </Link>
                     )}
+                    <Link
+                      to="/workflows"
+                      className={`sidebar-nav-item ${isActiveRoute('/workflows') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Zap className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Workflows</span>
+                    </Link>
                     <Link
                       to="/performance"
                       className={`sidebar-nav-item ${isActiveRoute('/performance') ? 'active' : ''}`}
@@ -194,6 +226,9 @@ const Sidebar = ({ isOpen, onClose, user }) => {
 
         {/* Footer da Sidebar */}
         <div className="sidebar-footer">
+          <div className="sidebar-shortcuts-hint">
+            <span>Pressione <kbd>Shift</kbd> + <kbd>/</kbd> para ver atalhos</span>
+          </div>
           <div className="sidebar-version">
             <span className="sidebar-version-text">v1.0.0</span>
           </div>

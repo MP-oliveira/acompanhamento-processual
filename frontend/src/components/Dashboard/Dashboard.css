@@ -570,3 +570,17 @@
     transform: none;
   }
 }
+
+/* ===== DASHBOARD CHARTS ===== */
+.dashboard-charts {
+  margin-top: var(--spacing-2xl);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+}

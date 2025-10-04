@@ -14,7 +14,11 @@ import PageLoading from './components/PageLoading/PageLoading';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import AdminRoute from './components/AdminRoute/AdminRoute';
+import GlobalSearch from './components/GlobalSearch/GlobalSearch';
+import ChatBot from './components/ChatBot/ChatBot';
+import ShortcutsList from './components/ShortcutsList/ShortcutsList';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useGlobalSearch } from './hooks/useGlobalSearch';
 import './styles/index.css';
 import './styles/layout/App.css';
 import './styles/components/forms.css';
@@ -22,6 +26,7 @@ import './styles/components/forms.css';
 // Lazy loading de todas as páginas
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const Processos = lazy(() => import('./components/Processos/Processos'));
+const KanbanBoard = lazy(() => import('./components/KanbanBoard/KanbanBoard'));
 const NovoProcesso = lazy(() => import('./components/NovoProcesso/NovoProcesso'));
 const EditarProcesso = lazy(() => import('./components/EditarProcesso/EditarProcesso'));
 const Audiencias = lazy(() => import('./components/Audiencias/Audiencias'));
@@ -34,6 +39,8 @@ const Usuarios = lazy(() => import('./components/Usuarios/Usuarios'));
 const Configuracoes = lazy(() => import('./components/Configuracoes/Configuracoes'));
 const Perfil = lazy(() => import('./components/Perfil/Perfil'));
 const PerformanceDashboard = lazy(() => import('./components/PerformanceDashboard/PerformanceDashboard'));
+const Workflows = lazy(() => import('./components/Workflows/Workflows'));
+const DashboardFinanceiro = lazy(() => import('./components/DashboardFinanceiro/DashboardFinanceiro'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -48,9 +55,13 @@ const queryClient = new QueryClient({
 // Componente interno para usar hooks dentro do Router
 const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, isAuthenticated, loading, login, logout } = useAuth();
+  const [showShortcuts, setShowShortcuts] = React.useState(false);
+  
+  // Hook de busca global (Cmd+K)
+  const { isOpen: searchOpen, close: closeSearch } = useGlobalSearch();
   
   // Ativar atalhos de teclado dentro do Router
-  useKeyboardShortcuts();
+  useKeyboardShortcuts(() => setShowShortcuts(true));
   
   // Configurar atualizações em tempo real quando autenticado
   // useRealtimeUpdates(); // Temporariamente desabilitado para debug
@@ -117,6 +128,7 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/processos" element={<Processos />} />
+                    <Route path="/processos/kanban" element={<KanbanBoard />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
                     <Route path="/audiencias" element={<Audiencias />} />
@@ -130,6 +142,8 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                         <Usuarios />
                       </AdminRoute>
                     } />
+                    <Route path="/workflows" element={<Workflows />} />
+                    <Route path="/financeiro" element={<DashboardFinanceiro />} />
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="/performance" element={<PerformanceDashboard />} />
@@ -156,6 +170,22 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
       
       {/* PWA Installer */}
       <PWAInstaller />
+      
+      {/* Global Search (Cmd+K) */}
+      {isAuthenticated && (
+        <GlobalSearch isOpen={searchOpen} onClose={closeSearch} />
+      )}
+      
+      {/* ChatBot Assistant */}
+      {isAuthenticated && (
+        <ChatBot />
+      )}
+      
+      {/* Shortcuts List (?) */}
+      <ShortcutsList 
+        isOpen={showShortcuts} 
+        onClose={() => setShowShortcuts(false)} 
+      />
     </div>
   );
 };

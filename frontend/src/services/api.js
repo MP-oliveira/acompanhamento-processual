@@ -299,5 +299,74 @@ export const userService = {
   }
 };
 
+// Serviços de comentários
+export const commentService = {
+  async getAll(processoId) {
+    const response = await api.get(`/processos/${processoId}/comments`);
+    return response.data;
+  },
+
+  async create(processoId, texto) {
+    const response = await api.post(`/processos/${processoId}/comments`, { texto });
+    return response.data;
+  },
+
+  async update(id, texto) {
+    const response = await api.put(`/comments/${id}`, { texto });
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/comments/${id}`);
+    return response.data;
+  }
+};
+
+// Serviços de custas processuais
+export const custaService = {
+  async getAll(processoId) {
+    const response = await api.get(`/processos/${processoId}/custas`);
+    return response.data;
+  },
+
+  async create(processoId, dados) {
+    const response = await api.post(`/processos/${processoId}/custas`, dados);
+    return response.data;
+  },
+
+  async update(id, dados) {
+    const response = await api.put(`/custas/${id}`, dados);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/custas/${id}`);
+    return response.data;
+  },
+
+  async getEstatisticas() {
+    const response = await api.get('/custas/estatisticas');
+    return response.data;
+  }
+};
+
+// Serviços de documentos
+export const documentoService = {
+  async getAll(processoId) {
+    const response = await api.get(`/processos/${processoId}/documentos`);
+    return response.data;
+  },
+
+  async create(processoId, dados) {
+    const response = await api.post(`/processos/${processoId}/documentos`, dados);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/documentos/${id}`);
+    return response.data;
+  }
+};
+
 export default api;
 // Force rebuild Sun Sep 21 16:38:03 -03 2025

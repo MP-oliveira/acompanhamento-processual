@@ -1,0 +1,96 @@
+/* ===== USER AVATAR CONTAINER ===== */
+.user-avatar-container {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.user-avatar-container.clickable {
+  cursor: pointer;
+}
+
+/* ===== AVATAR ===== */
+.user-avatar {
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== TAMANHOS ===== */
+.user-avatar-xs {
+  width: 24px;
+  height: 24px;
+  font-size: 0.625rem;
+}
+
+.user-avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.75rem;
+}
+
+.user-avatar-md {
+  width: 40px;
+  height: 40px;
+  font-size: 0.875rem;
+}
+
+.user-avatar-lg {
+  width: 48px;
+  height: 48px;
+  font-size: 1rem;
+}
+
+.user-avatar-xl {
+  width: 64px;
+  height: 64px;
+  font-size: 1.25rem;
+}
+
+/* ===== INITIALS ===== */
+.user-avatar-initials {
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* ===== NAME ===== */
+.user-avatar-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== GROUP DE AVATARES ===== */
+.user-avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar-group .user-avatar {
+  margin-left: -8px;
+  border: 2px solid var(--bg-secondary);
+}
+
+.user-avatar-group .user-avatar:first-child {
+  margin-left: 0;
+}
+
+.user-avatar-group .user-avatar:hover {
+  z-index: 10;
+}
+

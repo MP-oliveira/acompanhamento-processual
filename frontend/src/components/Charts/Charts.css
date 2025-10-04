@@ -1,0 +1,131 @@
+/* ===== CHART CONTAINER ===== */
+.chart-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.chart-container:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.chart-container-wide {
+  grid-column: 1 / -1;
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+/* ===== RECHARTS CUSTOMIZAÇÃO ===== */
+.recharts-surface {
+  border-radius: var(--radius-md);
+}
+
+.recharts-legend-wrapper {
+  margin-top: var(--spacing-md) !important;
+}
+
+.recharts-legend-item-text {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: var(--spacing-md);
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .chart-container-wide {
+    grid-column: 1;
+  }
+}
+
+/* ===== WORKLOAD CHART ===== */
+.workload-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.workload-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.workload-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.workload-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.workload-total {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.workload-breakdown {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.workload-stat {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+.workload-stat-active {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.workload-stat-suspended {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.workload-stat-archived {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+}
+

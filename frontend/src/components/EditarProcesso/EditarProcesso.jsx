@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, X } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
+import Timeline from '../Timeline/Timeline';
+import CommentSection from '../Comments/CommentSection';
+import CustasProcesso from '../CustasProcesso/CustasProcesso';
 import './EditarProcesso.css';
 
 const EditarProcesso = () => {
@@ -122,6 +125,13 @@ const EditarProcesso = () => {
             submitText="Salvar Alterações"
             cancelText="Cancelar"
           />
+        </div>
+
+        {/* Sidebar: Timeline, Comentários e Custas */}
+        <div className="editar-processo-sidebar">
+          <Timeline processo={processo} />
+          <CommentSection processoId={processo.id} />
+          <CustasProcesso processoId={processo.id} />
         </div>
       </div>
     </div>
