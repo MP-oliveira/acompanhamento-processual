@@ -39,6 +39,7 @@ const Usuarios = lazy(() => import('./components/Usuarios/Usuarios'));
 const Configuracoes = lazy(() => import('./components/Configuracoes/Configuracoes'));
 const Perfil = lazy(() => import('./components/Perfil/Perfil'));
 const PerformanceDashboard = lazy(() => import('./components/PerformanceDashboard/PerformanceDashboard'));
+const Workflows = lazy(() => import('./components/Workflows/Workflows'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -140,6 +141,7 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                         <Usuarios />
                       </AdminRoute>
                     } />
+                    <Route path="/workflows" element={<Workflows />} />
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="/performance" element={<PerformanceDashboard />} />

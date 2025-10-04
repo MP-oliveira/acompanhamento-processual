@@ -12,7 +12,8 @@ import {
   Activity,
   Scale,
   Mic,
-  LayoutGrid
+  LayoutGrid,
+  Zap
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -187,6 +188,14 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                         <span className="sidebar-nav-item-text">Usuários</span>
                       </Link>
                     )}
+                    <Link
+                      to="/workflows"
+                      className={`sidebar-nav-item ${isActiveRoute('/workflows') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <Zap className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Workflows</span>
+                    </Link>
                     <Link
                       to="/performance"
                       className={`sidebar-nav-item ${isActiveRoute('/performance') ? 'active' : ''}`}
