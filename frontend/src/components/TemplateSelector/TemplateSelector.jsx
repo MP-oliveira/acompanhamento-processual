@@ -38,23 +38,28 @@ const TemplateSelector = ({ onSelectTemplate, onClose }) => {
         </div>
 
         <div className="template-selector-grid">
-          {filteredTemplates.map(template => (
-            <div
-              key={template.id}
-              className="template-card"
-              onClick={() => {
-                onSelectTemplate(template);
-                onClose();
-              }}
-            >
-              <div className="template-card-icon">{template.icon}</div>
-              <div className="template-card-content">
-                <h4 className="template-card-nome">{template.nome}</h4>
-                <p className="template-card-descricao">{template.descricao}</p>
-                <span className="template-card-categoria">{template.categoria}</span>
+          {filteredTemplates.map(template => {
+            const IconComponent = template.icon;
+            return (
+              <div
+                key={template.id}
+                className="template-card"
+                onClick={() => {
+                  onSelectTemplate(template);
+                  onClose();
+                }}
+              >
+                <div className="template-card-icon">
+                  <IconComponent size={32} />
+                </div>
+                <div className="template-card-content">
+                  <h4 className="template-card-nome">{template.nome}</h4>
+                  <p className="template-card-descricao">{template.descricao}</p>
+                  <span className="template-card-categoria">{template.categoria}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filteredTemplates.length === 0 && (

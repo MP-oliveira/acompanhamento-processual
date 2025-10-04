@@ -1,3 +1,16 @@
+import { 
+  Scale, 
+  Briefcase, 
+  Users, 
+  DollarSign, 
+  Home,
+  FileText,
+  CreditCard,
+  Building,
+  Landmark,
+  Shield
+} from 'lucide-react';
+
 /**
  * Templates pré-definidos de processos para agilizar cadastro
  */
@@ -7,7 +20,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'acao-indenizacao',
     nome: 'Ação de Indenização',
     descricao: 'Ação indenizatória por danos morais e/ou materiais',
-    icon: '⚖️',
+    icon: Scale,
     categoria: 'Cível',
     dados: {
       classe: 'Ação de Indenização',
@@ -20,7 +33,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'acao-trabalhista',
     nome: 'Ação Trabalhista',
     descricao: 'Reclamação trabalhista - Horas extras, verbas rescisórias',
-    icon: '👔',
+    icon: Briefcase,
     categoria: 'Trabalhista',
     dados: {
       classe: 'Reclamação Trabalhista',
@@ -33,7 +46,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'divorcio',
     nome: 'Ação de Divórcio',
     descricao: 'Divórcio consensual ou litigioso',
-    icon: '👨‍👩‍👧',
+    icon: Users,
     categoria: 'Família',
     dados: {
       classe: 'Ação de Divórcio',
@@ -46,7 +59,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'cobranca',
     nome: 'Ação de Cobrança',
     descricao: 'Cobrança de valores',
-    icon: '💰',
+    icon: DollarSign,
     categoria: 'Cível',
     dados: {
       classe: 'Ação de Cobrança',
@@ -59,7 +72,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'despejo',
     nome: 'Ação de Despejo',
     descricao: 'Despejo por falta de pagamento ou término de contrato',
-    icon: '🏠',
+    icon: Home,
     categoria: 'Cível',
     dados: {
       classe: 'Ação de Despejo',
@@ -72,7 +85,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'inventario',
     nome: 'Inventário e Partilha',
     descricao: 'Inventário de bens com partilha entre herdeiros',
-    icon: '📜',
+    icon: FileText,
     categoria: 'Família',
     dados: {
       classe: 'Inventário e Partilha',
@@ -85,7 +98,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'consignacao',
     nome: 'Ação Consignatória',
     descricao: 'Consignação em pagamento',
-    icon: '💳',
+    icon: CreditCard,
     categoria: 'Cível',
     dados: {
       classe: 'Ação de Consignação em Pagamento',
@@ -98,7 +111,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'usucapiao',
     nome: 'Ação de Usucapião',
     descricao: 'Usucapião de imóvel',
-    icon: '🏘️',
+    icon: Building,
     categoria: 'Cível',
     dados: {
       classe: 'Ação de Usucapião',
@@ -111,7 +124,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'execucao-fiscal',
     nome: 'Execução Fiscal',
     descricao: 'Execução de dívida tributária',
-    icon: '🏛️',
+    icon: Landmark,
     categoria: 'Tributário',
     dados: {
       classe: 'Execução Fiscal',
@@ -124,7 +137,7 @@ export const PROCESSO_TEMPLATES = [
     id: 'mandado-seguranca',
     nome: 'Mandado de Segurança',
     descricao: 'Proteção de direito líquido e certo',
-    icon: '🛡️',
+    icon: Shield,
     categoria: 'Constitucional',
     dados: {
       classe: 'Mandado de Segurança',
