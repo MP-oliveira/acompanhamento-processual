@@ -67,3 +67,65 @@
   }
 }
 
+/* ===== WORKLOAD CHART ===== */
+.workload-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.workload-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.workload-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.workload-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.workload-total {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.workload-breakdown {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.workload-stat {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+.workload-stat-active {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.workload-stat-suspended {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.workload-stat-archived {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+}
+

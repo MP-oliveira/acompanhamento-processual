@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Calendar, Clock, Eye } from 'lucide-react';
+import { Calendar, Clock, Eye, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import TagList from '../Tag/TagList';
+import UserAvatar from '../UserAvatar/UserAvatar';
 import { generateProcessoTags } from '../../utils/processoTags';
 
 const ProcessCard = ({ processo, isDragging }) => {
@@ -76,18 +77,29 @@ const ProcessCard = ({ processo, isDragging }) => {
       </div>
 
       <div className="process-card-footer">
-        {processo.proximaAudiencia && (
-          <div className="process-card-info">
-            <Calendar size={14} />
-            <span>{formatDate(processo.proximaAudiencia)}</span>
-          </div>
-        )}
-        {processo.prazoRecurso && (
-          <div className="process-card-info">
-            <Clock size={14} />
-            <span>{formatDate(processo.prazoRecurso)}</span>
-          </div>
-        )}
+        <div className="process-card-footer-left">
+          {processo.proximaAudiencia && (
+            <div className="process-card-info">
+              <Calendar size={14} />
+              <span>{formatDate(processo.proximaAudiencia)}</span>
+            </div>
+          )}
+          {processo.prazoRecurso && (
+            <div className="process-card-info">
+              <Clock size={14} />
+              <span>{formatDate(processo.prazoRecurso)}</span>
+            </div>
+          )}
+        </div>
+        <div className="process-card-footer-right">
+          {processo.user ? (
+            <UserAvatar user={processo.user} size="xs" showTooltip={true} />
+          ) : (
+            <div className="process-card-no-user" title="Não atribuído">
+              <User size={14} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

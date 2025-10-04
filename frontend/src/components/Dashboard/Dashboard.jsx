@@ -14,6 +14,7 @@ import { useAlertas } from '../../hooks/useAlertas';
 import StatusPieChart from '../Charts/StatusPieChart';
 import TribunalBarChart from '../Charts/TribunalBarChart';
 import TimelineChart from '../Charts/TimelineChart';
+import WorkloadChart from '../Charts/WorkloadChart';
 import '../Charts/Charts.css';
 import './Dashboard.css';
 
@@ -384,6 +385,7 @@ const Dashboard = () => {
           <TimelineChart processos={processos} />
           <StatusPieChart processos={processos} />
           <TribunalBarChart processos={processos} />
+          <WorkloadChart processos={processos} />
         </div>
       </div>
     </div>

@@ -199,10 +199,24 @@
 
 .process-card-footer {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   gap: var(--spacing-sm);
   padding-top: var(--spacing-sm);
   border-top: 1px solid var(--border-light);
+}
+
+.process-card-footer-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  flex: 1;
+}
+
+.process-card-footer-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .process-card-info {
@@ -215,6 +229,18 @@
 
 .process-card-info svg {
   flex-shrink: 0;
+}
+
+.process-card-no-user {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background-color: var(--neutral-100);
+  border: 1px dashed var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
 }
 
 /* ===== SCROLLBAR CUSTOMIZADA ===== */
