@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middlewares/auth.js';
+import { auth } from '../middlewares/auth.js';
 import {
   listarComentarios,
   criarComentario,
@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 // Todas as rotas requerem autenticação
-router.use(authenticateToken);
+router.use(auth);
 
 // Rotas de comentários
 router.get('/processos/:processoId/comments', listarComentarios);
