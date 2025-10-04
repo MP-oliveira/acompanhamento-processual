@@ -267,3 +267,197 @@
 .global-search-results::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-400);
 }
+
+/* ===== HEADER ACTIONS ===== */
+.global-search-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.global-search-favorite-btn,
+.global-search-filter-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.global-search-favorite-btn:hover,
+.global-search-filter-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.global-search-favorite-btn.active {
+  color: #f59e0b;
+}
+
+.global-search-filter-btn.active {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+}
+
+/* ===== FILTERS ===== */
+.global-search-filters {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+  animation: slideDown 0.2s ease-out;
+}
+
+.global-search-filter-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.global-search-filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.global-search-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.global-search-filter-field label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.global-search-filter-field input,
+.global-search-filter-field select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+}
+
+.global-search-filter-field input:focus,
+.global-search-filter-field select:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-50);
+}
+
+/* ===== TABS ===== */
+.global-search-tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+.global-search-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.global-search-tab:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.global-search-tab.active {
+  background-color: var(--primary-600);
+  color: white;
+}
+
+/* ===== HISTORY & FAVORITES ===== */
+.global-search-result.history-item,
+.global-search-result.favorite-item {
+  position: relative;
+}
+
+.global-search-result.history-item .global-search-result-icon {
+  background-color: var(--neutral-100);
+  color: var(--neutral-600);
+}
+
+.global-search-result.favorite-item .global-search-result-icon {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.global-search-remove-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.global-search-result:hover .global-search-remove-btn {
+  opacity: 1;
+}
+
+.global-search-remove-btn:hover {
+  background-color: var(--danger-50);
+  color: var(--danger-600);
+}
+
+/* ===== RESULT META ===== */
+.global-search-result-meta {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.global-search-empty svg {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .global-search-filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .global-search-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .global-search-header-actions {
+    gap: 0;
+  }
+}
