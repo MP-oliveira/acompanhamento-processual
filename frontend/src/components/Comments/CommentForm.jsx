@@ -58,6 +58,11 @@ const CommentForm = ({ onSubmit }) => {
           type="submit"
           className="btn btn-primary"
           disabled={!texto.trim() || submitting}
+          style={{ 
+            backgroundColor: '#4A90E2',
+            color: '#ffffff',
+            border: 'none'
+          }}
         >
           <Send size={16} />
           {submitting ? 'Enviando...' : 'Comentar'}

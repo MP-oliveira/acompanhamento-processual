@@ -12,6 +12,7 @@ import auditRoutes from './auditRoutes.js';
 import pushNotificationRoutes from './pushNotificationRoutes.js';
 import emailNotificationRoutes from './emailNotificationRoutes.js';
 import notificationPreferencesRoutes from './notificationPreferencesRoutes.js';
+import commentRoutes from './commentRoutes.js';
 
 const router = Router();
 
@@ -32,6 +33,7 @@ router.use('/audit', auditRoutes);
 router.use('/push', pushNotificationRoutes);
 router.use('/email-notifications', emailNotificationRoutes);
 router.use('/notification-preferences', notificationPreferencesRoutes);
+router.use('/', commentRoutes); // Comentários em processos
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

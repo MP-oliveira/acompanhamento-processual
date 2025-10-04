@@ -105,6 +105,13 @@
   gap: var(--spacing-lg);
 }
 
+.comment-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
 .comment-empty {
   display: flex;
   flex-direction: column;

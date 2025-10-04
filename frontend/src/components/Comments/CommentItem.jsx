@@ -39,7 +39,7 @@ const CommentItem = ({ comment, onEdit, onDelete }) => {
     setIsEditing(false);
   };
 
-  const commentUser = {
+  const commentUser = comment.user || {
     nome: comment.userName || 'Usuário',
     email: comment.userEmail
   };
@@ -51,7 +51,9 @@ const CommentItem = ({ comment, onEdit, onDelete }) => {
       <div className="comment-content">
         <div className="comment-header">
           <div className="comment-author">
-            <span className="comment-author-name">{comment.userName || 'Usuário'}</span>
+            <span className="comment-author-name">
+              {comment.user?.nome || comment.userName || 'Usuário'}
+            </span>
             <span className="comment-date">{formatDate(comment.createdAt)}</span>
             {comment.edited && <span className="comment-edited">(editado)</span>}
           </div>

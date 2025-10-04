@@ -299,5 +299,28 @@ export const userService = {
   }
 };
 
+// Serviços de comentários
+export const commentService = {
+  async getAll(processoId) {
+    const response = await api.get(`/processos/${processoId}/comments`);
+    return response.data;
+  },
+
+  async create(processoId, texto) {
+    const response = await api.post(`/processos/${processoId}/comments`, { texto });
+    return response.data;
+  },
+
+  async update(id, texto) {
+    const response = await api.put(`/comments/${id}`, { texto });
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/comments/${id}`);
+    return response.data;
+  }
+};
+
 export default api;
 // Force rebuild Sun Sep 21 16:38:03 -03 2025

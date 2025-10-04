@@ -7,6 +7,7 @@ import Relatorio from './Relatorio.js';
 import AuditLog from './AuditLog.js';
 import PushSubscription from './PushSubscription.js';
 import NotificationPreferences from './NotificationPreferences.js';
+import Comment from './Comment.js';
 
 // Definindo associações
 User.hasMany(Processo, { foreignKey: 'userId', as: 'processos' });
@@ -34,6 +35,13 @@ PushSubscription.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // Associações para NotificationPreferences (já definidas no modelo)
 
+// Associações para Comments
+Processo.hasMany(Comment, { foreignKey: 'processoId', as: 'comments' });
+Comment.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
+
+User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
+Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 export { 
   sequelize, 
   User, 
@@ -43,5 +51,6 @@ export {
   Relatorio, 
   AuditLog, 
   PushSubscription, 
-  NotificationPreferences 
+  NotificationPreferences,
+  Comment
 };
