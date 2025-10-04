@@ -15,6 +15,7 @@ import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import GlobalSearch from './components/GlobalSearch/GlobalSearch';
+import ChatBot from './components/ChatBot/ChatBot';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useGlobalSearch } from './hooks/useGlobalSearch';
 import './styles/index.css';
@@ -167,6 +168,11 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
       {/* Global Search (Cmd+K) */}
       {isAuthenticated && (
         <GlobalSearch isOpen={searchOpen} onClose={closeSearch} />
+      )}
+      
+      {/* ChatBot Assistant */}
+      {isAuthenticated && (
+        <ChatBot />
       )}
     </div>
   );
