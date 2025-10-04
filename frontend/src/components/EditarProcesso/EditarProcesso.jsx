@@ -4,6 +4,7 @@ import { ArrowLeft, Save, X } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
 import Timeline from '../Timeline/Timeline';
+import CommentSection from '../Comments/CommentSection';
 import './EditarProcesso.css';
 
 const EditarProcesso = () => {
@@ -125,9 +126,10 @@ const EditarProcesso = () => {
           />
         </div>
 
-        {/* Timeline do Processo */}
-        <div className="editar-processo-timeline">
+        {/* Sidebar: Timeline e Comentários */}
+        <div className="editar-processo-sidebar">
           <Timeline processo={processo} />
+          <CommentSection processoId={processo.id} />
         </div>
       </div>
     </div>
