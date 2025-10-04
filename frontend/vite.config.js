@@ -92,10 +92,8 @@ export default defineConfig({
     // Excluir bibliotecas pesadas do pre-bundle
     exclude: ['jspdf', 'file-saver', 'html2canvas']
   },
-  // Configurações de esbuild para tree shaking
+  // Configurações de esbuild
   esbuild: {
-    treeShaking: true,
-    drop: ['console', 'debugger'], // Remove console.log em produção
-    pure: ['console.log', 'console.warn'], // Marca como pure functions
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
   },
 })
