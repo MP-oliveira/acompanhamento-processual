@@ -49,12 +49,17 @@ const CommentForm = ({ onSubmit }) => {
         disabled={submitting}
       />
       <div className="comment-form-actions">
+        <div className="comment-form-hint">
+          <kbd>⌘</kbd>
+          <kbd>Enter</kbd>
+          <span>para enviar</span>
+        </div>
         <button
           type="submit"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary"
           disabled={!texto.trim() || submitting}
         >
-          <Send size={14} />
+          <Send size={16} />
           {submitting ? 'Enviando...' : 'Comentar'}
         </button>
       </div>
