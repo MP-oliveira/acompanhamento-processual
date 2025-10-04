@@ -8,6 +8,7 @@ import AuditLog from './AuditLog.js';
 import PushSubscription from './PushSubscription.js';
 import NotificationPreferences from './NotificationPreferences.js';
 import Comment from './Comment.js';
+import Custa from './Custa.js';
 
 // Definindo associações
 User.hasMany(Processo, { foreignKey: 'userId', as: 'processos' });
@@ -42,6 +43,13 @@ Comment.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
 User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
 Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// Associações para Custas
+Processo.hasMany(Custa, { foreignKey: 'processoId', as: 'custas' });
+Custa.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
+
+User.hasMany(Custa, { foreignKey: 'registradoPor', as: 'custasRegistradas' });
+Custa.belongsTo(User, { foreignKey: 'registradoPor', as: 'registrador' });
+
 export { 
   sequelize, 
   User, 
@@ -52,5 +60,6 @@ export {
   AuditLog, 
   PushSubscription, 
   NotificationPreferences,
-  Comment
+  Comment,
+  Custa
 };

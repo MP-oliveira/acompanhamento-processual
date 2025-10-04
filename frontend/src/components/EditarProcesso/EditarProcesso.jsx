@@ -5,6 +5,7 @@ import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
 import Timeline from '../Timeline/Timeline';
 import CommentSection from '../Comments/CommentSection';
+import CustasProcesso from '../CustasProcesso/CustasProcesso';
 import './EditarProcesso.css';
 
 const EditarProcesso = () => {
@@ -126,10 +127,11 @@ const EditarProcesso = () => {
           />
         </div>
 
-        {/* Sidebar: Timeline e Comentários */}
+        {/* Sidebar: Timeline, Comentários e Custas */}
         <div className="editar-processo-sidebar">
           <Timeline processo={processo} />
           <CommentSection processoId={processo.id} />
+          <CustasProcesso processoId={processo.id} />
         </div>
       </div>
     </div>
