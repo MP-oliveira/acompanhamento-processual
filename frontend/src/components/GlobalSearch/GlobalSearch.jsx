@@ -131,20 +131,34 @@ const GlobalSearch = ({ isOpen, onClose }) => {
     }
   ];
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      onClose();
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedIndex(prev => (prev + 1) % results.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setSelectedIndex(prev => (prev - 1 + results.length) % results.length);
-    } else if (e.key === 'Enter' && results[selectedIndex]) {
-      e.preventDefault();
-      handleSelectResult(results[selectedIndex]);
+  // Listener global para navegação por teclado
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev + 1) % results.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev - 1 + results.length) % results.length);
+      } else if (e.key === 'Enter' && results[selectedIndex]) {
+        e.preventDefault();
+        handleSelectResult(results[selectedIndex]);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
     }
-  };
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose, results, selectedIndex]);
 
   const handleSelectResult = (result) => {
     result.action();
@@ -166,7 +180,6 @@ const GlobalSearch = ({ isOpen, onClose }) => {
             placeholder="Buscar processos, ações..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
           />
           <kbd className="global-search-kbd">ESC</kbd>
         </div>
