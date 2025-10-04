@@ -196,7 +196,7 @@ const CustasProcesso = ({ processoId }) => {
               />
             </div>
 
-            <div className="form-field full-width">
+            <div className="form-field">
               <label>Descrição *</label>
               <input
                 type="text"
@@ -251,7 +251,7 @@ const CustasProcesso = ({ processoId }) => {
               />
             </div>
 
-            <div className="form-field full-width">
+            <div className="form-field">
               <label>Observações</label>
               <textarea
                 value={formData.observacoes}
