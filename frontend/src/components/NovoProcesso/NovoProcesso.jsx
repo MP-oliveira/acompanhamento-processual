@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
@@ -8,6 +8,7 @@ import './NovoProcesso.css';
 
 const NovoProcesso = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
@@ -55,6 +56,15 @@ const NovoProcesso = () => {
   const handleSelectTemplate = (template) => {
     setSelectedTemplate(template);
   };
+
+  // Abrir modal de templates se veio do atalho T
+  useEffect(() => {
+    if (location.state?.openTemplates) {
+      setShowTemplateSelector(true);
+      // Limpa o state para não reabrir se o usuário navegar de volta
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
 
   return (
     <div className="novo-processo">

@@ -131,7 +131,8 @@ export const useKeyboardShortcuts = (onShowShortcuts) => {
           break;
         case 't':
           event.preventDefault();
-          navigate('/processos/novo');
+          // Navega para novo processo e abre templates
+          navigate('/processos/novo', { state: { openTemplates: true } });
           break;
         case 'k':
           event.preventDefault();
