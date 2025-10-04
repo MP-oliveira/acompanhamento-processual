@@ -16,6 +16,7 @@ import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import GlobalSearch from './components/GlobalSearch/GlobalSearch';
 import ChatBot from './components/ChatBot/ChatBot';
+import ShortcutsList from './components/ShortcutsList/ShortcutsList';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useGlobalSearch } from './hooks/useGlobalSearch';
 import './styles/index.css';
@@ -52,12 +53,13 @@ const queryClient = new QueryClient({
 // Componente interno para usar hooks dentro do Router
 const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, isAuthenticated, loading, login, logout } = useAuth();
-  
-  // Ativar atalhos de teclado dentro do Router
-  useKeyboardShortcuts();
+  const [showShortcuts, setShowShortcuts] = useState(false);
   
   // Hook de busca global (Cmd+K)
   const { isOpen: searchOpen, close: closeSearch } = useGlobalSearch();
+  
+  // Ativar atalhos de teclado dentro do Router
+  useKeyboardShortcuts(() => setShowShortcuts(true));
   
   // Configurar atualizações em tempo real quando autenticado
   // useRealtimeUpdates(); // Temporariamente desabilitado para debug
@@ -174,6 +176,12 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
       {isAuthenticated && (
         <ChatBot />
       )}
+      
+      {/* Shortcuts List (?) */}
+      <ShortcutsList 
+        isOpen={showShortcuts} 
+        onClose={() => setShowShortcuts(false)} 
+      />
     </div>
   );
 };
