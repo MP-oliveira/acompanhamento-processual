@@ -1,0 +1,69 @@
+/* ===== CHART CONTAINER ===== */
+.chart-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.chart-container:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.chart-container-wide {
+  grid-column: 1 / -1;
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+/* ===== RECHARTS CUSTOMIZAÇÃO ===== */
+.recharts-surface {
+  border-radius: var(--radius-md);
+}
+
+.recharts-legend-wrapper {
+  margin-top: var(--spacing-md) !important;
+}
+
+.recharts-legend-item-text {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: var(--spacing-md);
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .chart-container-wide {
+    grid-column: 1;
+  }
+}
+

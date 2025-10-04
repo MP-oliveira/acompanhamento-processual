@@ -11,6 +11,10 @@ import {
 } from 'lucide-react';
 import { useProcessos } from '../../hooks/useProcessos';
 import { useAlertas } from '../../hooks/useAlertas';
+import StatusPieChart from '../Charts/StatusPieChart';
+import TribunalBarChart from '../Charts/TribunalBarChart';
+import TimelineChart from '../Charts/TimelineChart';
+import '../Charts/Charts.css';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -373,6 +377,13 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Gráficos e Analytics */}
+        <div className="dashboard-charts">
+          <TimelineChart processos={processos} />
+          <StatusPieChart processos={processos} />
+          <TribunalBarChart processos={processos} />
         </div>
       </div>
     </div>
