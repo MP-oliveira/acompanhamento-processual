@@ -22,6 +22,7 @@ import './styles/components/forms.css';
 // Lazy loading de todas as páginas
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const Processos = lazy(() => import('./components/Processos/Processos'));
+const KanbanBoard = lazy(() => import('./components/KanbanBoard/KanbanBoard'));
 const NovoProcesso = lazy(() => import('./components/NovoProcesso/NovoProcesso'));
 const EditarProcesso = lazy(() => import('./components/EditarProcesso/EditarProcesso'));
 const Audiencias = lazy(() => import('./components/Audiencias/Audiencias'));
@@ -117,6 +118,7 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/processos" element={<Processos />} />
+                    <Route path="/processos/kanban" element={<KanbanBoard />} />
                     <Route path="/processos/novo" element={<NovoProcesso />} />
                     <Route path="/processos/editar/:id" element={<EditarProcesso />} />
                     <Route path="/audiencias" element={<Audiencias />} />

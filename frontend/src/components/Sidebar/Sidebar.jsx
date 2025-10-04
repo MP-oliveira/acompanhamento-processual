@@ -11,7 +11,8 @@ import {
   Search,
   Activity,
   Scale,
-  Mic
+  Mic,
+  LayoutGrid
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -98,11 +99,19 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     </Link>
                     <Link
                       to="/processos"
-                      className={`sidebar-nav-item ${isActiveRoute('/processos') ? 'active' : ''}`}
+                      className={`sidebar-nav-item ${isActiveRoute('/processos') && !location.pathname.includes('/kanban') ? 'active' : ''}`}
                       onClick={onClose}
                     >
                       <FileText className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Processos</span>
+                    </Link>
+                    <Link
+                      to="/processos/kanban"
+                      className={`sidebar-nav-item ${location.pathname.includes('/kanban') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <LayoutGrid className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Kanban Board</span>
                     </Link>
                     <Link
                       to="/audiencias"
