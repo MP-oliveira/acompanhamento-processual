@@ -97,8 +97,23 @@ const KanbanBoard = () => {
           )
         );
 
-        // Atualizar no backend
-        await processoService.update(active.id, { status: newStatus });
+        // Atualizar no backend - enviar dados completos do processo
+        const updateData = {
+          numero: activeProcesso.numero,
+          classe: activeProcesso.classe,
+          assunto: activeProcesso.assunto || '',
+          tribunal: activeProcesso.tribunal || '',
+          comarca: activeProcesso.comarca || '',
+          status: newStatus,
+          dataDistribuicao: activeProcesso.dataDistribuicao || '',
+          dataSentenca: activeProcesso.dataSentenca || '',
+          prazoRecurso: activeProcesso.prazoRecurso || '',
+          prazoEmbargos: activeProcesso.prazoEmbargos || '',
+          proximaAudiencia: activeProcesso.proximaAudiencia || '',
+          observacoes: activeProcesso.observacoes || ''
+        };
+
+        await processoService.update(active.id, updateData);
         toast.success(`Processo movido para ${COLUMNS.find(c => c.id === newStatus)?.title}`);
       } catch (error) {
         console.error('Erro ao atualizar status:', error);
