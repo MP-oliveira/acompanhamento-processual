@@ -13,7 +13,8 @@ import {
   Scale,
   Mic,
   LayoutGrid,
-  Zap
+  Zap,
+  DollarSign
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -171,6 +172,14 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <BarChart3 className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Relatórios ({totalRelatorios})</span>
+                    </Link>
+                    <Link
+                      to="/financeiro"
+                      className={`sidebar-nav-item ${isActiveRoute('/financeiro') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
+                      <DollarSign className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Financeiro</span>
                     </Link>
                   </div>
 

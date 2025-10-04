@@ -14,6 +14,7 @@ import emailNotificationRoutes from './emailNotificationRoutes.js';
 import notificationPreferencesRoutes from './notificationPreferencesRoutes.js';
 import commentRoutes from './commentRoutes.js';
 import custaRoutes from './custaRoutes.js';
+import documentoRoutes from './documentoRoutes.js';
 
 const router = Router();
 
@@ -36,6 +37,7 @@ router.use('/email-notifications', emailNotificationRoutes);
 router.use('/notification-preferences', notificationPreferencesRoutes);
 router.use('/', commentRoutes); // Comentários em processos
 router.use('/', custaRoutes); // Custas processuais
+router.use('/', documentoRoutes); // Documentos processuais
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

@@ -350,5 +350,23 @@ export const custaService = {
   }
 };
 
+// Serviços de documentos
+export const documentoService = {
+  async getAll(processoId) {
+    const response = await api.get(`/processos/${processoId}/documentos`);
+    return response.data;
+  },
+
+  async create(processoId, dados) {
+    const response = await api.post(`/processos/${processoId}/documentos`, dados);
+    return response.data;
+  },
+
+  async delete(id) {
+    const response = await api.delete(`/documentos/${id}`);
+    return response.data;
+  }
+};
+
 export default api;
 // Force rebuild Sun Sep 21 16:38:03 -03 2025
