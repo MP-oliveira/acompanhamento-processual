@@ -96,6 +96,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <Home className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Dashboard</span>
+                      <kbd className="sidebar-nav-shortcut">D</kbd>
                     </Link>
                     <Link
                       to="/processos"
@@ -104,6 +105,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <FileText className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Processos</span>
+                      <kbd className="sidebar-nav-shortcut">P</kbd>
                     </Link>
                     <Link
                       to="/processos/kanban"
@@ -112,6 +114,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <LayoutGrid className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Kanban Board</span>
+                      <kbd className="sidebar-nav-shortcut">K</kbd>
                     </Link>
                     <Link
                       to="/audiencias"
@@ -136,6 +139,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <AlertTriangle className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Alertas</span>
+                      <kbd className="sidebar-nav-shortcut">A</kbd>
                     </Link>
                     <Link
                       to="/calendario"
@@ -144,6 +148,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <Calendar className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Calendário</span>
+                      <kbd className="sidebar-nav-shortcut">C</kbd>
                     </Link>
                   </div>
 
@@ -203,6 +208,9 @@ const Sidebar = ({ isOpen, onClose, user }) => {
 
         {/* Footer da Sidebar */}
         <div className="sidebar-footer">
+          <div className="sidebar-shortcuts-hint">
+            <span>Pressione <kbd>?</kbd> para ver atalhos</span>
+          </div>
           <div className="sidebar-version">
             <span className="sidebar-version-text">v1.0.0</span>
           </div>
