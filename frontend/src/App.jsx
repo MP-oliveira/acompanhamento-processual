@@ -53,7 +53,7 @@ const queryClient = new QueryClient({
 // Componente interno para usar hooks dentro do Router
 const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, isAuthenticated, loading, login, logout } = useAuth();
-  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showShortcuts, setShowShortcuts] = React.useState(false);
   
   // Hook de busca global (Cmd+K)
   const { isOpen: searchOpen, close: closeSearch } = useGlobalSearch();

@@ -209,7 +209,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
         {/* Footer da Sidebar */}
         <div className="sidebar-footer">
           <div className="sidebar-shortcuts-hint">
-            <span>Pressione <kbd>?</kbd> para ver atalhos</span>
+            <span>Pressione <kbd>Shift</kbd> + <kbd>/</kbd> para ver atalhos</span>
           </div>
           <div className="sidebar-version">
             <span className="sidebar-version-text">v1.0.0</span>

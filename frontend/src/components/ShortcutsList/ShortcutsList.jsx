@@ -18,7 +18,7 @@ const SHORTCUTS = [
   {
     categoria: 'Ações',
     atalhos: [
-      { teclas: ['?'], descricao: 'Mostrar atalhos' },
+      { teclas: ['Shift', '/'], descricao: 'Mostrar atalhos' },
       { teclas: ['ESC'], descricao: 'Fechar modais' },
       { teclas: ['Enter'], descricao: 'Confirmar / Selecionar' },
     ]
@@ -62,7 +62,7 @@ const ShortcutsList = ({ isOpen, onClose }) => {
         </div>
 
         <div className="shortcuts-footer">
-          <p>Pressione <kbd>?</kbd> a qualquer momento para ver esta lista</p>
+          <p>Pressione <kbd>Shift</kbd> + <kbd>/</kbd> a qualquer momento para ver esta lista</p>
         </div>
       </div>
     </div>

@@ -15,10 +15,13 @@ export const useKeyboardShortcuts = (onShowShortcuts) => {
       target.contentEditable === 'true' ||
       target.closest('[contenteditable="true"]');
     
-    // Atalho ? funciona mesmo em inputs
-    if (event.key === '?' && event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
+    // Atalho ? funciona em qualquer contexto
+    // Apenas quando a tecla for exatamente '?'
+    if (event.key === '?' && !event.ctrlKey && !event.altKey && !event.metaKey) {
       event.preventDefault();
-      if (onShowShortcuts) onShowShortcuts();
+      if (onShowShortcuts) {
+        onShowShortcuts();
+      }
       return;
     }
     
