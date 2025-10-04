@@ -9,6 +9,7 @@ import './ProcessoForm.css';
 
 const ProcessoForm = ({ 
   processo = null, 
+  initialData = null,
   onSubmit, 
   onCancel, 
   loading = false,
@@ -31,7 +32,7 @@ const ProcessoForm = ({
 
   const [errors, setErrors] = useState({});
 
-  // Preencher formulário se estiver editando
+  // Preencher formulário se estiver editando ou usando template
   useEffect(() => {
     if (processo) {
       setFormData({
@@ -55,6 +56,16 @@ const ProcessoForm = ({
       });
     }
   }, [processo]);
+
+  // Preencher com dados do template selecionado
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({
+        ...prev,
+        ...initialData
+      }));
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

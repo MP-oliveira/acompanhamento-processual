@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Sparkles } from 'lucide-react';
 import { processoService } from '../../services/api';
 import ProcessoForm from '../ProcessoForm/ProcessoForm';
+import TemplateSelector from '../TemplateSelector/TemplateSelector';
 import './NovoProcesso.css';
 
 const NovoProcesso = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const handleSubmit = async (formData) => {
     setLoading(true);
@@ -49,14 +52,28 @@ const NovoProcesso = () => {
     navigate('/processos');
   };
 
+  const handleSelectTemplate = (template) => {
+    setSelectedTemplate(template);
+  };
+
   return (
     <div className="novo-processo">
       {/* Header da Página */}
       <div className="page-header">
         <div className="page-header-content">
-          <div></div>
+          <h1 className="page-title">Novo Processo</h1>
+        </div>
+        <div className="page-header-actions">
           <button
-            className="page-header-back"
+            className="btn btn-outline"
+            onClick={() => setShowTemplateSelector(true)}
+            disabled={loading}
+          >
+            <Sparkles size={18} />
+            Usar Template
+          </button>
+          <button
+            className="btn btn-secondary"
             onClick={() => navigate('/processos')}
             disabled={loading}
           >
@@ -73,8 +90,17 @@ const NovoProcesso = () => {
           onCancel={handleCancel}
           loading={loading}
           error={error}
+          initialData={selectedTemplate?.dados}
         />
       </div>
+
+      {/* Template Selector Modal */}
+      {showTemplateSelector && (
+        <TemplateSelector
+          onSelectTemplate={handleSelectTemplate}
+          onClose={() => setShowTemplateSelector(false)}
+        />
+      )}
 
       {/* Dicas */}
       <div className="novo-processo-tips">
