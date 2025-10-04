@@ -53,6 +53,7 @@ app.use(cors({
     'http://localhost:5175',
     'http://localhost:5176',
     'https://jurisacompanha.vercel.app',
+    'https://jurisacompanha-frontend-two.vercel.app',
     'https://acompanhamento-processual-kt8g20752.vercel.app',
     'https://frontend-f62xgiyqy-mauricio-mp-oliveiras-projects.vercel.app',
     'https://frontend-n8oxehapg-mauricio-mp-oliveiras-projects.vercel.app',
