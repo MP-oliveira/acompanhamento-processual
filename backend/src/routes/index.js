@@ -47,7 +47,8 @@ router.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    version: '2.0.0'
   });
 });
 
