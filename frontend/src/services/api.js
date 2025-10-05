@@ -5,9 +5,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 
 // Debug: Log da URL da API
-console.log('🔧 API_BASE_URL:', API_BASE_URL);
-console.log('🔧 DEV mode:', import.meta.env.DEV);
-console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
 
 // API configurada para usar Supabase diretamente
 
@@ -28,43 +25,32 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     
-    console.log('🔍 Request interceptor - Token encontrado:', !!token);
-    console.log('🔍 Request interceptor - Token value:', token);
-    console.log('🔍 Request interceptor - Token type:', typeof token);
-    console.log('🔍 Request interceptor - Token length:', token?.length);
     
     if (token) {
       // Verifica se o token está expirado
       try {
         // Verificar se o token tem o formato correto (JWT tem 3 partes separadas por ponto)
         const tokenParts = token.split('.');
-        console.log('🔍 Token parts count:', tokenParts.length);
         
         if (tokenParts.length !== 3) {
-          console.error('❌ Token não está no formato JWT válido (3 partes)');
           localStorage.removeItem('token');
           return config;
         }
         
         // Verificar se a segunda parte (payload) é base64 válido
         const payload = JSON.parse(atob(tokenParts[1]));
-        console.log('🔍 Token payload:', payload);
         
         const now = Math.floor(Date.now() / 1000);
         const isExpired = payload.exp < now;
         
         if (isExpired) {
-          console.warn('⚠️ Token expirado! Removendo do localStorage');
           localStorage.removeItem('token');
           // Opcional: redirecionar para login
           // window.location.href = '/login';
         } else {
           config.headers.Authorization = `Bearer ${token}`;
-          console.log('✅ Token válido adicionado ao header');
         }
       } catch (error) {
-        console.error('❌ Erro ao decodificar token:', error);
-        console.error('❌ Token que causou erro:', token);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
@@ -80,28 +66,13 @@ api.interceptors.request.use(
 // Interceptor para tratar respostas e erros
 api.interceptors.response.use(
   (response) => {
-    console.log('🔍 API Response:', response.status, response.config.url, response.data);
     return response;
   },
   (error) => {
-    console.error('❌ Response interceptor error:', {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      url: error.config?.url,
-      data: error.response?.data,
-      message: error.message,
-      fullError: error
-    });
-    
-    // Log detalhado do erro para debug
-    if (error.response?.data) {
-      console.error('📋 Error details:', JSON.stringify(error.response.data, null, 2));
-    }
-    
     if (error.response?.status === 401) {
-      console.warn('⚠️ Token expirado ou inválido');
-      // Opcional: redirecionar para login
-      // window.location.href = '/login';
+      // Token inválido ou expirado
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
     
     return Promise.reject(error);
@@ -113,19 +84,10 @@ export const authService = {
   async login(email, password) {
     try {
       const loginData = { email, password };
-      console.log('🔍 Frontend - Enviando dados de login:', loginData);
-      console.log('🔍 Frontend - Email:', email, 'Type:', typeof email);
-      console.log('🔍 Frontend - Password:', password, 'Type:', typeof password);
-      console.log('🔍 Frontend - API Base URL:', api.defaults.baseURL);
       
       const response = await api.post('/auth/login', loginData);
-      console.log('✅ Login response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('❌ Login error:', error);
-      console.error('❌ Error response:', error.response?.data);
-      console.error('❌ Error status:', error.response?.status);
-      console.error('❌ Error headers:', error.response?.headers);
       throw error;
     }
   },
@@ -144,10 +106,7 @@ export const authService = {
 // Serviços de processos
 export const processoService = {
   async getAll() {
-    console.log('🔍 processoService.getAll: Fazendo requisição para /processos');
     const response = await api.get('/processos');
-    console.log('🔍 processoService.getAll: Resposta completa:', response);
-    console.log('🔍 processoService.getAll: Dados da resposta:', response.data);
     return response.data;
   },
 
