@@ -30,6 +30,9 @@ import processoRoutes from './src/routes/processoRoutes.js';
 import alertRoutes from './src/routes/alertRoutes.js';
 import relatorioRoutes from './src/routes/relatorioRoutes.js';
 import consultaRoutes from './src/routes/consultaRoutes.js';
+import commentRoutes from './src/routes/commentRoutes.js';
+import custaRoutes from './src/routes/custaRoutes.js';
+import documentoRoutes from './src/routes/documentoRoutes.js';
 
 // Criar app Express
 const app = express();
@@ -126,6 +129,9 @@ try {
   app.use('/api/alerts', alertRoutes);
   app.use('/api/relatorios', relatorioRoutes);
   app.use('/api/consultas', consultaRoutes);
+  app.use('/api/comments', commentRoutes);
+  app.use('/api/custas', custaRoutes);
+  app.use('/api/documentos', documentoRoutes);
 } catch (error) {
   console.error('Erro ao configurar rotas:', error);
   // Rota de fallback para quando há problemas com o banco
