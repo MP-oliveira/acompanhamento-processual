@@ -218,6 +218,7 @@ export const corsSecurityHeaders = (req, res, next) => {
     'http://localhost:5175',
     'http://localhost:5176',
     'https://jurisacompanha.vercel.app',
+    'https://jurisacompanha-frontend-two.vercel.app',
     'https://acompanhamento-processual-kt8g20752.vercel.app',
     process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app',
     null // Permitir arquivos HTML locais (origin 'null')
