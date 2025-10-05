@@ -302,12 +302,12 @@ export const userService = {
 // Serviços de comentários
 export const commentService = {
   async getAll(processoId) {
-    const response = await api.get(`/processos/${processoId}/comments`);
+    const response = await api.get(`/comments/processos/${processoId}`);
     return response.data;
   },
 
   async create(processoId, texto) {
-    const response = await api.post(`/processos/${processoId}/comments`, { texto });
+    const response = await api.post(`/comments/processos/${processoId}`, { texto });
     return response.data;
   },
 
@@ -325,12 +325,12 @@ export const commentService = {
 // Serviços de custas processuais
 export const custaService = {
   async getAll(processoId) {
-    const response = await api.get(`/processos/${processoId}/custas`);
+    const response = await api.get(`/custas/processos/${processoId}`);
     return response.data;
   },
 
   async create(processoId, dados) {
-    const response = await api.post(`/processos/${processoId}/custas`, dados);
+    const response = await api.post(`/custas/processos/${processoId}`, dados);
     return response.data;
   },
 
@@ -353,12 +353,12 @@ export const custaService = {
 // Serviços de documentos
 export const documentoService = {
   async getAll(processoId) {
-    const response = await api.get(`/processos/${processoId}/documentos`);
+    const response = await api.get(`/documentos/processos/${processoId}`);
     return response.data;
   },
 
   async create(processoId, dados) {
-    const response = await api.post(`/processos/${processoId}/documentos`, dados);
+    const response = await api.post(`/documentos/processos/${processoId}`, dados);
     return response.data;
   },
 
