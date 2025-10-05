@@ -46,25 +46,29 @@ app.use(securityHeaders);
 // CORS com headers de segurança
 app.use(corsSecurityHeaders);
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-    'https://jurisacompanha.vercel.app',
-    'https://jurisacompanha-frontend-two.vercel.app',
-    'https://acompanhamento-processual-kt8g20752.vercel.app',
-    'https://frontend-f62xgiyqy-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-n8oxehapg-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-8351bqycr-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-lznaudnp2-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-erztz6jv7-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-p5aneidng-mauricio-mp-oliveiras-projects.vercel.app',
-    'https://frontend-hftw89yq8-mauricio-mp-oliveiras-projects.vercel.app',
-    process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app',
-    null // Permitir arquivos HTML locais (origin 'null')
-  ],
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL || 'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:5175',
+      'http://localhost:5176',
+      'https://jurisacompanha.vercel.app',
+      'https://jurisacompanha-frontend-two.vercel.app',
+      'https://acompanhamento-processual-kt8g20752.vercel.app',
+      process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app'
+    ];
+    
+    // Permitir requisições sem origin (mobile apps, Postman, etc)
+    if (!origin) return callback(null, true);
+    
+    // Verificar se a origem está na lista ou é um deployment do Vercel
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('mauricio-mp-oliveiras-projects.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

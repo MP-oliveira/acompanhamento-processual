@@ -220,12 +220,12 @@ export const corsSecurityHeaders = (req, res, next) => {
     'https://jurisacompanha.vercel.app',
     'https://jurisacompanha-frontend-two.vercel.app',
     'https://acompanhamento-processual-kt8g20752.vercel.app',
-    process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app',
-    null // Permitir arquivos HTML locais (origin 'null')
+    process.env.CORS_ORIGIN || 'https://your-frontend.vercel.app'
   ];
   
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin) || origin === null) {
+  // Permitir se estiver na lista OU for um deployment do Vercel do projeto
+  if (allowedOrigins.includes(origin) || !origin || (origin && origin.includes('mauricio-mp-oliveiras-projects.vercel.app'))) {
     res.setHeader('Access-Control-Allow-Origin', origin || '*');
   }
   
