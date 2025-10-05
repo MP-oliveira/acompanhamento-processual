@@ -35,9 +35,9 @@ router.use('/audit', auditRoutes);
 router.use('/push', pushNotificationRoutes);
 router.use('/email-notifications', emailNotificationRoutes);
 router.use('/notification-preferences', notificationPreferencesRoutes);
-router.use('/', commentRoutes); // Comentários em processos
-router.use('/', custaRoutes); // Custas processuais
-router.use('/', documentoRoutes); // Documentos processuais
+router.use('/comments', commentRoutes); // Comentários em processos
+router.use('/custas', custaRoutes); // Custas processuais
+router.use('/documentos', documentoRoutes); // Documentos processuais
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

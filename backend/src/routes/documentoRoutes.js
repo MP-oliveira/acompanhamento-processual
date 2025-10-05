@@ -11,10 +11,12 @@ const router = express.Router();
 // Todas as rotas requerem autenticação
 router.use(auth);
 
-// Rotas de documentos
-router.get('/processos/:processoId/documentos', listarDocumentos);
-router.post('/processos/:processoId/documentos', criarDocumento);
-router.delete('/documentos/:id', deletarDocumento);
+// Rotas de documentos por processo
+router.get('/processos/:processoId', listarDocumentos);
+router.post('/processos/:processoId', criarDocumento);
+
+// Rotas de documentos individuais
+router.delete('/:id', deletarDocumento);
 
 export default router;
 

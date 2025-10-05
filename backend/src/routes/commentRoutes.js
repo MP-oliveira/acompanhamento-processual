@@ -12,11 +12,13 @@ const router = express.Router();
 // Todas as rotas requerem autenticação
 router.use(auth);
 
-// Rotas de comentários
-router.get('/processos/:processoId/comments', listarComentarios);
-router.post('/processos/:processoId/comments', criarComentario);
-router.put('/comments/:id', atualizarComentario);
-router.delete('/comments/:id', deletarComentario);
+// Rotas de comentários por processo
+router.get('/processos/:processoId', listarComentarios);
+router.post('/processos/:processoId', criarComentario);
+
+// Rotas de comentários individuais
+router.put('/:id', atualizarComentario);
+router.delete('/:id', deletarComentario);
 
 export default router;
 

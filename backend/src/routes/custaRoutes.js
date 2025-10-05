@@ -14,13 +14,15 @@ const router = express.Router();
 router.use(auth);
 
 // Estatísticas financeiras (DEVE vir ANTES das rotas parametrizadas)
-router.get('/custas/estatisticas', obterEstatisticas);
+router.get('/estatisticas', obterEstatisticas);
 
-// Rotas de custas
-router.get('/processos/:processoId/custas', listarCustas);
-router.post('/processos/:processoId/custas', criarCusta);
-router.put('/custas/:id', atualizarCusta);
-router.delete('/custas/:id', deletarCusta);
+// Rotas de custas por processo
+router.get('/processos/:processoId', listarCustas);
+router.post('/processos/:processoId', criarCusta);
+
+// Rotas de custas individuais
+router.put('/:id', atualizarCusta);
+router.delete('/:id', deletarCusta);
 
 export default router;
 
