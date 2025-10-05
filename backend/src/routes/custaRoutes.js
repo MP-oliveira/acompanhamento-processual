@@ -10,6 +10,11 @@ import {
 
 const router = express.Router();
 
+// Rota de teste SEM autenticação
+router.get('/test', (req, res) => {
+  res.json({ message: 'Rota de custas funcionando!', timestamp: new Date().toISOString() });
+});
+
 // Todas as rotas requerem autenticação
 router.use(auth);
 
