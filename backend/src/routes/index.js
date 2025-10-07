@@ -17,6 +17,7 @@ import custaRoutes from './custaRoutes.js';
 import documentoRoutes from './documentoRoutes.js';
 import calendarRoutes from './calendarRoutes.js';
 import timesheetRoutes from './timesheetRoutes.js';
+import clienteRoutes from './clienteRoutes.js';
 
 const router = Router();
 
@@ -42,6 +43,7 @@ router.use('/custas', custaRoutes); // Custas processuais
 router.use('/documentos', documentoRoutes); // Documentos processuais
 router.use('/calendar', calendarRoutes); // Calendário de eventos e prazos
 router.use('/timesheets', timesheetRoutes); // Controle de horas trabalhadas
+router.use('/clientes', clienteRoutes); // Gestão de clientes
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

@@ -33,10 +33,13 @@ const UploadDocumentos = ({ processoId }) => {
     try {
       setLoading(true);
       const data = await documentoService.getAll(processoId);
-      setDocumentos(data);
+      // A API pode retornar array direto ou objeto com propriedade documentos
+      const docs = Array.isArray(data) ? data : (data.documentos || []);
+      setDocumentos(docs);
     } catch (err) {
       console.error('Erro ao carregar documentos:', err);
       setError('Erro ao carregar documentos');
+      setDocumentos([]);
     } finally {
       setLoading(false);
     }

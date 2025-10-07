@@ -35,6 +35,7 @@ import custaRoutes from './src/routes/custaRoutes.js';
 import documentoRoutes from './src/routes/documentoRoutes.js';
 import calendarRoutes from './src/routes/calendarRoutes.js';
 import timesheetRoutes from './src/routes/timesheetRoutes.js';
+import clienteRoutes from './src/routes/clienteRoutes.js';
 
 // Criar app Express
 const app = express();
@@ -136,6 +137,7 @@ try {
   app.use('/api/documentos', documentoRoutes);
   app.use('/api/calendar', calendarRoutes);
   app.use('/api/timesheets', timesheetRoutes);
+  app.use('/api/clientes', clienteRoutes);
 } catch (error) {
   console.error('Erro ao configurar rotas:', error);
   // Rota de fallback para quando há problemas com o banco
