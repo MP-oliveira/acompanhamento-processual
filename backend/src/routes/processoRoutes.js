@@ -31,7 +31,29 @@ router.post('/', validateCreateProcesso, criarProcesso);
 router.put('/:id', validateRouteParams({ id: { type: 'number', required: true } }), validateUpdateProcesso, atualizarProcesso);
 router.delete('/:id', validateRouteParams({ id: { type: 'number', required: true } }), removerProcesso);
 
+// Validação do status
+const validateStatus = (req, res, next) => {
+  const { status } = req.body;
+  
+  if (!status) {
+    return res.status(400).json({
+      error: 'Status é obrigatório',
+      receivedBody: req.body
+    });
+  }
+  
+  if (!['ativo', 'arquivado', 'suspenso'].includes(status)) {
+    return res.status(400).json({
+      error: 'Status inválido',
+      received: status,
+      validOptions: ['ativo', 'arquivado', 'suspenso']
+    });
+  }
+  
+  next();
+};
+
 // Atualização de status
-router.patch('/:id/status', validateRouteParams({ id: { type: 'number', required: true } }), atualizarStatus);
+router.patch('/:id/status', validateRouteParams({ id: { type: 'number', required: true } }), validateStatus, atualizarStatus);
 
 export default router;
