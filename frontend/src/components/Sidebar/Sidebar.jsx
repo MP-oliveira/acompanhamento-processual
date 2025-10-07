@@ -14,7 +14,9 @@ import {
   Mic,
   LayoutGrid,
   Zap,
-  DollarSign
+  DollarSign,
+  Users,
+  Clock
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -180,6 +182,20 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     >
                       <DollarSign className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Financeiro</span>
+                    </Link>
+                  </div>
+
+                  <div className="sidebar-nav-item">
+                    <Link to="/clientes" className="sidebar-nav-link">
+                      <Users className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Clientes</span>
+                    </Link>
+                  </div>
+
+                  <div className="sidebar-nav-item">
+                    <Link to="/timesheet" className="sidebar-nav-link">
+                      <Clock className="sidebar-nav-item-icon" size={20} />
+                      <span className="sidebar-nav-item-text">Timesheet</span>
                     </Link>
                   </div>
 
