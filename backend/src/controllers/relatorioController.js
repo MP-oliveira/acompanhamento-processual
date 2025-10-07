@@ -1,4 +1,4 @@
-import { Relatorio, User, Processo, Alert, Consulta } from '../models/index.js';
+import { Relatorio, User, Processo, Alert, Consulta, Timesheet, Cliente } from '../models/index.js';
 import { Op } from 'sequelize';
 import logger from '../config/logger.js';
 import Joi from 'joi';
@@ -312,6 +312,168 @@ export const estatisticasRelatorios = async (req, res) => {
     });
   } catch (error) {
     logger.error('Erro ao buscar estatísticas de relatórios:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Busca dados para o relatório (estatísticas, processos, timesheet, etc.)
+ */
+export const getRelatorioData = async (req, res) => {
+  try {
+    const { mes, ano, userId } = req.query;
+    const targetUserId = userId || req.user.id;
+
+    // Validar parâmetros
+    if (!mes || !ano) {
+      return res.status(400).json({
+        error: 'Mês e ano são obrigatórios'
+      });
+    }
+
+    // Criar range de datas para o mês
+    const startDate = new Date(ano, mes - 1, 1);
+    const endDate = new Date(ano, mes, 0, 23, 59, 59);
+
+    // Buscar estatísticas de processos
+    const [
+      totalProcessos,
+      processosAtivos,
+      processosArquivados,
+      processosSuspensos,
+      totalAudiencias,
+      timesheets,
+      processos
+    ] = await Promise.all([
+      // Total de processos
+      Processo.count({ where: { userId: targetUserId } }),
+      
+      // Processos ativos
+      Processo.count({ 
+        where: { 
+          userId: targetUserId,
+          status: 'ativo'
+        } 
+      }),
+      
+      // Processos arquivados
+      Processo.count({ 
+        where: { 
+          userId: targetUserId,
+          status: 'arquivado'
+        } 
+      }),
+      
+      // Processos suspensos
+      Processo.count({ 
+        where: { 
+          userId: targetUserId,
+          status: 'suspenso'
+        } 
+      }),
+      
+      // Total de audiências (consultas do mês)
+      Consulta.count({
+        where: {
+          userId: targetUserId,
+          dataConsulta: {
+            [Op.between]: [startDate, endDate]
+          }
+        }
+      }),
+      
+      // Timesheets do mês
+      Timesheet.findAll({
+        where: {
+          userId: targetUserId,
+          dataInicio: {
+            [Op.between]: [startDate, endDate]
+          }
+        },
+        include: [
+          {
+            model: Processo,
+            as: 'processo',
+            attributes: ['id', 'numero'],
+            include: [
+              {
+                model: Cliente,
+                as: 'cliente',
+                attributes: ['id', 'nome']
+              }
+            ]
+          }
+        ]
+      }),
+      
+      // Processos do mês
+      Processo.findAll({
+        where: {
+          userId: targetUserId,
+          createdAt: {
+            [Op.between]: [startDate, endDate]
+          }
+        },
+        include: [
+          {
+            model: Cliente,
+            as: 'cliente',
+            attributes: ['id', 'nome']
+          }
+        ],
+        limit: 10,
+        order: [['createdAt', 'DESC']]
+      })
+    ]);
+
+    // Calcular estatísticas de timesheet
+    const totalHoras = timesheets.reduce((sum, t) => sum + (t.duracao || 0), 0) / 60; // converter minutos para horas
+    const valorTotal = timesheets.reduce((sum, t) => sum + ((t.duracao || 0) * (t.valorHora || 0) / 60), 0);
+
+    // Calcular estatísticas financeiras (mockadas por enquanto)
+    const receitas = valorTotal;
+    const despesas = receitas * 0.3; // 30% das receitas como despesas
+    const lucro = receitas - despesas;
+
+    // Processar dados de timesheet para o frontend
+    const timesheetData = timesheets.slice(0, 5).map(t => ({
+      descricao: t.descricao,
+      processo: t.processo?.numero || 'N/A',
+      horas: Math.round((t.duracao || 0) / 60 * 10) / 10, // arredondar para 1 casa decimal
+      valor: Math.round((t.duracao || 0) * (t.valorHora || 0) / 60)
+    }));
+
+    // Processar dados de processos para o frontend
+    const processosData = processos.map(p => ({
+      numero: p.numero,
+      cliente: p.cliente?.nome || 'N/A',
+      status: p.status?.toUpperCase() || 'ATIVO',
+      data: new Date(p.createdAt).toLocaleDateString('pt-BR')
+    }));
+
+    res.json({
+      estatisticas: {
+        totalProcessos,
+        processosAtivos,
+        processosArquivados,
+        processosSuspensos,
+        totalAudiencias,
+        totalHoras: Math.round(totalHoras * 10) / 10,
+        valorTotal: Math.round(valorTotal),
+        receitas: Math.round(receitas),
+        despesas: Math.round(despesas),
+        lucro: Math.round(lucro),
+        processosDistribuidos: processosAtivos,
+        processosConcluidos: processosArquivados
+      },
+      timesheet: timesheetData,
+      processos: processosData
+    });
+
+  } catch (error) {
+    logger.error('Erro ao buscar dados do relatório:', error);
     res.status(500).json({
       error: 'Erro interno do servidor'
     });

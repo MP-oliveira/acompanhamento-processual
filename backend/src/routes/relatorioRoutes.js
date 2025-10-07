@@ -6,7 +6,8 @@ import {
   buscarRelatorio,
   gerarRelatorio,
   removerRelatorio,
-  estatisticasRelatorios
+  estatisticasRelatorios,
+  getRelatorioData
 } from '../controllers/relatorioController.js';
 
 const router = Router();
@@ -17,6 +18,7 @@ router.use(auth);
 // CRUD de relatórios
 router.get('/', validateQueryParams(['page', 'limit', 'search', 'tipo', 'status']), listarRelatorios);
 router.get('/stats', estatisticasRelatorios);
+router.get('/data', validateQueryParams(['mes', 'ano', 'userId']), getRelatorioData);
 router.get('/:id', buscarRelatorio);
 router.post('/', gerarRelatorio);
 router.delete('/:id', removerRelatorio);
