@@ -96,41 +96,38 @@ const ProcessoCard = ({
 
   return (
     <div className={`processo-card ${compact ? 'processo-card-compact' : ''} processo-card-${statusColor}`}>
-      {/* Header do Card */}
+      {/* Header Minimalista */}
       <div className="processo-card-header">
-        <div className="processo-card-icon">
-          <FileText size={20} />
-        </div>
         <div className="processo-card-meta">
           <div className="processo-card-number">
             {processo.numero}
           </div>
-          <div className={`processo-card-status process-status-${statusColor}`}>
+          <div className={`processo-card-status`}>
             {getStatusText(processo.status)}
           </div>
         </div>
         {showActions && (
           <div className="processo-card-actions">
             <button
-              className="processo-card-action-btn processo-card-action-view"
+              className="processo-card-action-btn"
               onClick={() => onView && onView(processo.id)}
-              title="Visualizar processo"
+              title="Visualizar"
             >
-              <Eye size={16} />
+              <Eye size={18} />
             </button>
             <button
-              className="processo-card-action-btn processo-card-action-edit btn-icon"
+              className="processo-card-action-btn"
               onClick={() => onEdit && onEdit(processo.id)}
-              title="Editar processo"
+              title="Editar"
             >
-              <Edit size={16} />
+              <Edit size={18} />
             </button>
             <button
               className="processo-card-action-btn processo-card-action-delete"
               onClick={() => onDelete && onDelete(processo.id)}
-              title="Excluir processo"
+              title="Excluir"
             >
-              <Trash2 size={16} />
+              <Trash2 size={18} />
             </button>
           </div>
         )}
@@ -148,78 +145,56 @@ const ProcessoCard = ({
           </p>
         )}
 
-        {/* Informações do Processo */}
+        {/* Informações Essenciais */}
         <div className="processo-card-info">
           <div className="processo-card-info-item">
-            <MapPin size={14} />
+            <MapPin size={16} />
             <span>{processo.tribunal} - {processo.comarca}</span>
           </div>
           
           <div className="processo-card-info-item">
-            <Calendar size={14} />
-            <span>Distribuído em {formatDate(processo.dataDistribuicao)}</span>
+            <Calendar size={16} />
+            <span>{formatDate(processo.dataDistribuicao)}</span>
           </div>
-
-          {processo.dataSentenca && (
-            <div className="processo-card-info-item">
-              <FileText size={14} />
-              <span>Sentença em {formatDate(processo.dataSentenca)}</span>
-            </div>
-          )}
         </div>
 
         {/* Próximo Prazo */}
         {nextDeadline && (
           <div className="processo-card-deadline">
             <div className="processo-card-deadline-header">
-              <Clock size={14} />
-              <span>Próximo: {nextDeadline.label}</span>
+              <Clock size={16} />
+              <span>{nextDeadline.label}</span>
             </div>
             <div className="processo-card-deadline-content">
               <span className="processo-card-deadline-date">
-                {formatDateTime(nextDeadline.date)}
+                {formatDate(nextDeadline.date)}
               </span>
-              {nextDeadline.daysLeft !== null && (
+              {nextDeadline.daysLeft !== null && nextDeadline.daysLeft !== undefined && (
                 <span className={`processo-card-deadline-days ${
-                  nextDeadline.daysLeft <= 0 ? 'overdue' :
-                  nextDeadline.daysLeft <= 3 ? 'urgent' : 'normal'
+                  nextDeadline.daysLeft < 0 ? 'overdue' :
+                  nextDeadline.daysLeft === 0 ? 'urgent' :
+                  nextDeadline.daysLeft <= 7 ? 'urgent' : 'normal'
                 }`}>
-                  {nextDeadline.daysLeft <= 0 ? 
-                    `Vencido há ${Math.abs(nextDeadline.daysLeft)} ${Math.abs(nextDeadline.daysLeft) === 1 ? 'dia' : 'dias'}` :
-                    nextDeadline.daysLeft === 0 ? 'Vence hoje!' :
-                    `${nextDeadline.daysLeft} ${nextDeadline.daysLeft === 1 ? 'dia' : 'dias'} restantes`
+                  {nextDeadline.daysLeft < 0 ? 
+                    'Vencido' :
+                    nextDeadline.daysLeft === 0 ? 
+                    'Hoje' :
+                    `${nextDeadline.daysLeft}d`
                   }
                 </span>
               )}
             </div>
           </div>
         )}
-
-        {/* Observações */}
-        {processo.observacoes && !compact && (
-          <div className="processo-card-observations">
-            <p className="processo-card-observations-text">
-              {processo.observacoes}
-            </p>
-          </div>
-        )}
       </div>
 
-      {/* Footer do Card */}
+      {/* Footer Simples */}
       <div className="processo-card-footer">
         <div className="processo-card-user">
-          <User size={14} />
-          <span>Responsável: {processo.user?.nome || 'Não informado'}</span>
-        </div>
-        
-        <div className="processo-card-dates">
-          <span className="processo-card-created">
-            Criado em {formatDate(processo.createdAt)}
-          </span>
+          <User size={16} />
+          <span>{processo.user?.nome || 'Não atribuído'}</span>
         </div>
       </div>
-
-      {/* Indicador de Status removido - usando apenas borda esquerda */}
     </div>
   );
 };
