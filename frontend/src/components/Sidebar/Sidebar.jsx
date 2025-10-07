@@ -184,19 +184,22 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     </Link>
                   </div>
 
-                  <div className="sidebar-nav-item">
-                    <Link to="/clientes" className="sidebar-nav-link">
+                    <Link
+                      to="/clientes"
+                      className={`sidebar-nav-item ${isActiveRoute('/clientes') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
                       <Users className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Clientes</span>
                     </Link>
-                  </div>
-
-                  <div className="sidebar-nav-item">
-                    <Link to="/timesheet" className="sidebar-nav-link">
+                    <Link
+                      to="/timesheet"
+                      className={`sidebar-nav-item ${isActiveRoute('/timesheet') ? 'active' : ''}`}
+                      onClick={onClose}
+                    >
                       <Clock className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Timesheet</span>
                     </Link>
-                  </div>
 
                   {/* Seção Sistema */}
                   <div className="sidebar-nav-section">
