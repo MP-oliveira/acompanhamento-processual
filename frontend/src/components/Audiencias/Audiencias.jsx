@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useProcessos } from '../../hooks/useProcessos';
 import ProcessoCard from '../ProcessoCard/ProcessoCard';
+import ProcessoDetailModal from '../ProcessoDetailModal/ProcessoDetailModal';
 import '../Processos/Processos.css';
 
 const Audiencias = () => {
@@ -227,6 +228,15 @@ const Audiencias = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Detalhes do Processo */}
+      {processoSelecionado && (
+        <ProcessoDetailModal
+          processoId={processoSelecionado.id}
+          isOpen={!!processoSelecionado}
+          onClose={handleCloseView}
+        />
+      )}
     </div>
   );
 };

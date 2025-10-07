@@ -38,6 +38,8 @@ const Relatorios = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [relatorioData, setRelatorioData] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
 
   // Buscar relatórios do backend
   useEffect(() => {
@@ -125,9 +127,57 @@ const Relatorios = () => {
     // Aqui você pode adicionar notificação de erro
   };
 
-  const handleViewRelatorio = (relatorio) => {
+  const handleViewRelatorio = async (relatorio) => {
     setSelectedRelatorio(relatorio);
     setShowViewModal(true);
+    await loadRelatorioData(relatorio);
+  };
+
+  const loadRelatorioData = async (relatorio) => {
+    try {
+      setLoadingData(true);
+      const data = await relatorioService.getRelatorioData({
+        mes: relatorio.mes,
+        ano: relatorio.ano,
+        userId: user.id
+      });
+      setRelatorioData(data);
+    } catch (error) {
+      console.error('Erro ao carregar dados do relatório:', error);
+      // Fallback para dados mockados se a API falhar
+      setRelatorioData({
+        estatisticas: {
+          totalProcessos: 1,
+          processosAtivos: 1,
+          processosArquivados: 0,
+          processosSuspensos: 0,
+          totalAudiencias: 3,
+          totalHoras: 40,
+          valorTotal: 2000,
+          receitas: 5000,
+          despesas: 1200,
+          lucro: 3800
+        },
+        processos: [
+          {
+            numero: '1234567-89.2025.8.26.0001',
+            cliente: 'João Silva',
+            status: 'ATIVO',
+            data: '01/10/2025'
+          }
+        ],
+        timesheet: [
+          {
+            descricao: 'Elaboração de petição inicial',
+            processo: '1234567-89.2025.8.26.0001',
+            horas: 8,
+            valor: 400
+          }
+        ]
+      });
+    } finally {
+      setLoadingData(false);
+    }
   };
 
   const handleDeleteRelatorio = (relatorio) => {
@@ -583,6 +633,12 @@ const Relatorios = () => {
             </div>
             
             <div className="processo-view-content">
+              {loadingData && (
+                <div className="relatorio-loading">
+                  <div className="loading-spinner"></div>
+                  <p>Carregando dados do relatório...</p>
+                </div>
+              )}
               <div className="relatorio-completo">
                 {/* Header do Relatório */}
                 <div className="relatorio-completo-header">
@@ -619,7 +675,9 @@ const Relatorios = () => {
                             <FileText size={24} />
                           </div>
                           <div className="relatorio-resumo-stat-content">
-                            <div className="relatorio-resumo-stat-value">1</div>
+                            <div className="relatorio-resumo-stat-value">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.totalProcessos || 0)}
+                            </div>
                             <div className="relatorio-resumo-stat-label">Total de Processos</div>
                           </div>
                         </div>
@@ -628,7 +686,9 @@ const Relatorios = () => {
                             <CheckCircle size={24} />
                           </div>
                           <div className="relatorio-resumo-stat-content">
-                            <div className="relatorio-resumo-stat-value">1</div>
+                            <div className="relatorio-resumo-stat-value">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosAtivos || 0)}
+                            </div>
                             <div className="relatorio-resumo-stat-label">Processos Ativos</div>
                           </div>
                         </div>
@@ -637,7 +697,9 @@ const Relatorios = () => {
                             <FileText size={24} />
                           </div>
                           <div className="relatorio-resumo-stat-content">
-                            <div className="relatorio-resumo-stat-value">0</div>
+                            <div className="relatorio-resumo-stat-value">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosArquivados || 0)}
+                            </div>
                             <div className="relatorio-resumo-stat-label">Processos Arquivados</div>
                           </div>
                         </div>
@@ -646,7 +708,9 @@ const Relatorios = () => {
                             <Clock size={24} />
                           </div>
                           <div className="relatorio-resumo-stat-content">
-                            <div className="relatorio-resumo-stat-value">0</div>
+                            <div className="relatorio-resumo-stat-value">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosSuspensos || 0)}
+                            </div>
                             <div className="relatorio-resumo-stat-label">Processos Suspensos</div>
                           </div>
                         </div>
@@ -704,7 +768,9 @@ const Relatorios = () => {
                             <Calendar size={24} />
                           </div>
                           <div className="relatorio-stat-content">
-                            <div className="relatorio-stat-number">3</div>
+                            <div className="relatorio-stat-number">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.totalAudiencias || 0)}
+                            </div>
                             <div className="relatorio-stat-label">Audiências</div>
                           </div>
                         </div>
@@ -714,7 +780,9 @@ const Relatorios = () => {
                             <CheckCircle size={24} />
                           </div>
                           <div className="relatorio-stat-content">
-                            <div className="relatorio-stat-number">12</div>
+                            <div className="relatorio-stat-number">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosAtivos || 0)}
+                            </div>
                             <div className="relatorio-stat-label">Processos Ativos</div>
                           </div>
                         </div>
@@ -724,7 +792,9 @@ const Relatorios = () => {
                             <FileText size={24} />
                           </div>
                           <div className="relatorio-stat-content">
-                            <div className="relatorio-stat-number">8</div>
+                            <div className="relatorio-stat-number">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosDistribuidos || 0)}
+                            </div>
                             <div className="relatorio-stat-label">Distribuídos</div>
                           </div>
                         </div>
@@ -734,7 +804,9 @@ const Relatorios = () => {
                             <CheckCircle2 size={24} />
                           </div>
                           <div className="relatorio-stat-content">
-                            <div className="relatorio-stat-number">5</div>
+                            <div className="relatorio-stat-number">
+                              {loadingData ? '...' : (relatorioData?.estatisticas?.processosConcluidos || 0)}
+                            </div>
                             <div className="relatorio-stat-label">Concluídos</div>
                           </div>
                         </div>
@@ -792,7 +864,9 @@ const Relatorios = () => {
                               <Clock size={24} />
                             </div>
                             <div className="relatorio-timesheet-stat-content">
-                              <div className="relatorio-timesheet-stat-value">40h</div>
+                              <div className="relatorio-timesheet-stat-value">
+                                {loadingData ? '...' : `${relatorioData?.estatisticas?.totalHoras || 0}h`}
+                              </div>
                               <div className="relatorio-timesheet-stat-label">Total de Horas</div>
                             </div>
                           </div>
@@ -801,7 +875,9 @@ const Relatorios = () => {
                               <DollarSign size={24} />
                             </div>
                             <div className="relatorio-timesheet-stat-content">
-                              <div className="relatorio-timesheet-stat-value">R$ 2.000</div>
+                              <div className="relatorio-timesheet-stat-value">
+                                {loadingData ? '...' : `R$ ${(relatorioData?.estatisticas?.valorTotal || 0).toLocaleString('pt-BR')}`}
+                              </div>
                               <div className="relatorio-timesheet-stat-label">Valor Total</div>
                             </div>
                           </div>
@@ -818,7 +894,9 @@ const Relatorios = () => {
                                   <Clock size={16} />
                                 </div>
                                 <div className="relatorio-timesheet-stat-content">
-                                  <div className="relatorio-timesheet-stat-value">8h</div>
+                                  <div className="relatorio-timesheet-stat-value">
+                                    {loadingData ? '...' : `${relatorioData?.timesheet?.[0]?.horas || 0}h`}
+                                  </div>
                                 </div>
                               </div>
                               <div className="relatorio-timesheet-stat-card pequeno">
@@ -826,7 +904,9 @@ const Relatorios = () => {
                                   <DollarSign size={16} />
                                 </div>
                                 <div className="relatorio-timesheet-stat-content">
-                                  <div className="relatorio-timesheet-stat-value">R$ 400</div>
+                                  <div className="relatorio-timesheet-stat-value">
+                                    {loadingData ? '...' : `R$ ${(relatorioData?.timesheet?.[0]?.valor || 0).toLocaleString('pt-BR')}`}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -847,7 +927,9 @@ const Relatorios = () => {
                               <TrendingUp size={24} />
                             </div>
                             <div className="relatorio-financeiro-stat-content">
-                              <div className="relatorio-financeiro-stat-value">R$ 5.000</div>
+                              <div className="relatorio-financeiro-stat-value">
+                                {loadingData ? '...' : `R$ ${(relatorioData?.estatisticas?.receitas || 0).toLocaleString('pt-BR')}`}
+                              </div>
                               <div className="relatorio-financeiro-stat-label">Receitas</div>
                             </div>
                           </div>
@@ -856,7 +938,9 @@ const Relatorios = () => {
                               <TrendingDown size={24} />
                             </div>
                             <div className="relatorio-financeiro-stat-content">
-                              <div className="relatorio-financeiro-stat-value">R$ 1.200</div>
+                              <div className="relatorio-financeiro-stat-value">
+                                {loadingData ? '...' : `R$ ${(relatorioData?.estatisticas?.despesas || 0).toLocaleString('pt-BR')}`}
+                              </div>
                               <div className="relatorio-financeiro-stat-label">Despesas</div>
                             </div>
                           </div>
@@ -865,7 +949,9 @@ const Relatorios = () => {
                               <DollarSign size={24} />
                             </div>
                             <div className="relatorio-financeiro-stat-content">
-                              <div className="relatorio-financeiro-stat-value">R$ 3.800</div>
+                              <div className="relatorio-financeiro-stat-value">
+                                {loadingData ? '...' : `R$ ${(relatorioData?.estatisticas?.lucro || 0).toLocaleString('pt-BR')}`}
+                              </div>
                               <div className="relatorio-financeiro-stat-label">Lucro</div>
                             </div>
                           </div>

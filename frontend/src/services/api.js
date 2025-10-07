@@ -224,6 +224,11 @@ export const relatorioService = {
   async getStats() {
     const response = await api.get('/relatorios/stats');
     return response.data;
+  },
+
+  async getRelatorioData(params = {}) {
+    const response = await api.get('/relatorios/data', { params });
+    return response.data;
   }
 };
 
