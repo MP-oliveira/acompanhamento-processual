@@ -430,7 +430,7 @@
   }
 
   .usuarios-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     padding: var(--spacing-md);
   }
 
@@ -474,6 +474,14 @@
 
   .usuario-card-actions {
     align-self: flex-end;
+  }
+}
+
+/* ===== RESPONSIVIDADE PARA IPHONE ===== */
+@media (max-width: 480px) {
+  .usuarios-grid {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-sm);
   }
 }
 

@@ -41,10 +41,16 @@ export const auth = async (req, res, next) => {
 };
 
 export const adminOnly = (req, res, next) => {
+  console.log('🔍 adminOnly middleware - usuário:', req.user);
+  console.log('🔍 adminOnly middleware - role:', req.user?.role);
+  
   if (req.user.role !== 'admin') {
+    console.log('🔍 adminOnly middleware - ACESSO NEGADO');
     return res.status(403).json({ 
       error: 'Acesso negado. Apenas administradores.' 
     });
   }
+  
+  console.log('🔍 adminOnly middleware - ACESSO PERMITIDO');
   next();
 };

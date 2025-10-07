@@ -179,11 +179,20 @@ const Usuarios = () => {
       const usuario = usuarios.find(u => u.id === id);
       const novoStatus = usuario?.ativo ? 'inativo' : 'ativo';
       
+      console.log('🔍 Usuário encontrado:', usuario);
+      console.log('🔍 Status atual (ativo):', usuario?.ativo);
+      console.log('🔍 Tipo do status:', typeof usuario?.ativo);
+      console.log('🔍 Novo status:', novoStatus);
+      
       // Chama a API apropriada baseada no status atual
-      if (usuario?.ativo) {
-        await userService.deactivate(id);
+      if (usuario?.ativo === true) {
+        console.log('🔍 Usuário está ATIVO - chamando deactivate para usuário:', id);
+        const result = await userService.deactivate(id);
+        console.log('🔍 Resultado deactivate:', result);
       } else {
-        await userService.activate(id);
+        console.log('🔍 Usuário está INATIVO - chamando activate para usuário:', id);
+        const result = await userService.activate(id);
+        console.log('🔍 Resultado activate:', result);
       }
       
       // Recarrega a lista de usuários (sempre com status "todos" para mostrar mudanças)
@@ -194,9 +203,15 @@ const Usuarios = () => {
         status: '' // Sempre carrega todos os status para mostrar mudanças
       });
       
-      setUsuarios(updatedResponse.users || []);
+      console.log('🔍 Resposta da API após toggle:', updatedResponse);
+      console.log('🔍 Usuários retornados:', updatedResponse.users);
       
-      console.log('🔍 Usuários após toggle status:', updatedResponse.users);
+      // Força atualização do estado
+      setUsuarios([]);
+      setTimeout(() => {
+        setUsuarios(updatedResponse.users || []);
+      }, 100);
+      
       alert(`Usuário ${novoStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
     } catch (error) {
       console.error('Erro ao alterar status:', error);
@@ -589,7 +604,10 @@ const Usuarios = () => {
                   <div className="usuario-card-actions">
                     <button
                       className="usuario-card-action-btn"
-                      onClick={() => handleToggleStatus(usuario.id)}
+                      onClick={() => {
+                        console.log('🔍 Botão clicado para usuário ID:', usuario.id);
+                        handleToggleStatus(usuario.id);
+                      }}
                       title={usuario.ativo ? 'Desativar usuário' : 'Ativar usuário'}
                     >
                       {usuario.ativo ? <UserX size={18} /> : <UserCheck size={18} />}
