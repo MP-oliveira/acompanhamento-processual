@@ -19,7 +19,12 @@ const TimesheetApproval = () => {
   const [estatisticas, setEstatisticas] = useState(null);
 
   useEffect(() => {
-    carregarDados();
+    // Debounce para evitar muitas requisições
+    const timeoutId = setTimeout(() => {
+      carregarDados();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
   }, [filtroStatus, filtroAdvogado, filtroPeriodo]);
 
   const carregarDados = async () => {

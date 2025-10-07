@@ -78,12 +78,28 @@ app.use(cors({
 // Rate limiting geral para proteção contra ataques
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP por janela
+  max: process.env.NODE_ENV === 'development' ? 100000 : 100, // Mais permissivo em desenvolvimento
   message: {
     error: 'Muitas tentativas. Tente novamente em 15 minutos.'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // DESABILITAR completamente em desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      return true;
+    }
+    
+    // Em produção, permitir localhost e IPs locais
+    if (req.ip === '::1' ||
+        req.ip === '127.0.0.1' ||
+        req.ip.includes('localhost') ||
+        req.ip.includes('192.168') ||
+        req.hostname === 'localhost') {
+      return true;
+    }
+    return false;
+  }
 });
 
 // Importar limitadores específicos
