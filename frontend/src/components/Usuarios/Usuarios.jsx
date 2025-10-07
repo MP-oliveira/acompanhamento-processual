@@ -196,6 +196,7 @@ const Usuarios = () => {
       
       setUsuarios(updatedResponse.users || []);
       
+      console.log('🔍 Usuários após toggle status:', updatedResponse.users);
       alert(`Usuário ${novoStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
     } catch (error) {
       console.error('Erro ao alterar status:', error);
@@ -576,67 +577,61 @@ const Usuarios = () => {
         ) : (
           <div className="usuarios-grid">
             {sortedUsuarios.map(usuario => (
-              <div key={usuario.id} className="usuario-card">
+              <div key={usuario.id} className={`usuario-card usuario-card-${getStatusColor(usuario.ativo)}`}>
+                {/* Header */}
                 <div className="usuario-card-header">
-                  <div className="usuario-card-avatar">
-                    {getInitials(usuario.nome)}
-                  </div>
-                  <div className="usuario-card-info">
-                    <h4 className="usuario-card-name">{usuario.nome}</h4>
-                    <div className="usuario-card-role">
-                      <span className={`usuario-role-badge usuario-role-${getRoleColor(usuario.role)}`}>
-                        {getRoleText(usuario.role)}
-                      </span>
+                  <div className="usuario-card-meta">
+                    <div className="usuario-card-number">{usuario.nome}</div>
+                    <div className="usuario-card-status">
+                      {getStatusText(usuario.ativo)}
                     </div>
                   </div>
                   <div className="usuario-card-actions">
                     <button
-                      className="usuario-action-btn usuario-action-toggle"
+                      className="usuario-card-action-btn"
                       onClick={() => handleToggleStatus(usuario.id)}
                       title={usuario.ativo ? 'Desativar usuário' : 'Ativar usuário'}
                     >
-                      {usuario.ativo ? <UserX size={16} /> : <UserCheck size={16} />}
+                      {usuario.ativo ? <UserX size={18} /> : <UserCheck size={18} />}
                     </button>
                     <button
-                      className="usuario-action-btn usuario-action-edit"
+                      className="usuario-card-action-btn"
                       onClick={() => handleEdit(usuario.id)}
                       title="Editar usuário"
                     >
-                      <Edit size={16} />
+                      <Edit size={18} />
                     </button>
                     <button
-                      className="usuario-action-btn usuario-action-delete"
+                      className="usuario-card-action-btn"
                       onClick={() => handleDelete(usuario.id)}
                       title="Excluir permanentemente"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
 
+                {/* Content */}
                 <div className="usuario-card-content">
+                  <div className="usuario-card-title">{getRoleText(usuario.role)}</div>
+                  
                   <div className="usuario-card-details">
-                    <div className="usuario-detail-item">
-                      <Mail size={14} />
+                    <div className="usuario-card-detail-item">
+                      <Mail size={16} />
                       <span>{usuario.email}</span>
                     </div>
-                    <div className="usuario-detail-item">
-                      <span className="usuario-detail-label">Processos Ativos:</span>
-                      <span className="usuario-detail-value">{usuario.processosAtivos}</span>
+                    <div className="usuario-card-detail-item">
+                      <User size={16} />
+                      <span>Processos Ativos: {usuario.processosAtivos || 0}</span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="usuario-card-footer">
-                    <div className="usuario-card-status">
-                      <span className={`usuario-status-badge usuario-status-${getStatusColor(usuario.ativo)}`}>
-                        {getStatusText(usuario.ativo)}
-                      </span>
-                    </div>
-                    <div className="usuario-card-meta">
-                      <span className="usuario-card-last-access">
-                        Último acesso: {formatDate(usuario.ultimoAcesso)}
-                      </span>
-                    </div>
+                {/* Footer */}
+                <div className="usuario-card-footer">
+                  <div className="usuario-card-meta-item">
+                    <User size={14} />
+                    <span>Cadastrado em {formatDate(usuario.createdAt)}</span>
                   </div>
                 </div>
               </div>

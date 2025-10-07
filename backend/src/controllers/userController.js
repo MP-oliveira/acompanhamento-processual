@@ -62,6 +62,7 @@ export const getAllUsers = async (req, res) => {
     
     if (status !== '') {
       whereClause.ativo = status === 'ativo';
+      console.log('🔍 Filtro de status aplicado:', { status, ativo: whereClause.ativo });
     }
 
     const { count, rows: users } = await User.findAndCountAll({

@@ -213,7 +213,7 @@
 /* ===== GRID DE USUÁRIOS ===== */
 .usuarios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
 }
@@ -430,7 +430,7 @@
   }
 
   .usuarios-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     padding: var(--spacing-md);
   }
 
@@ -573,4 +573,189 @@
   .modal-footer .btn {
     width: 100%;
   }
+}
+
+/* ===== NOVOS ESTILOS PARA PADRÃO CLIENTE ===== */
+/* ===== USUÁRIO CARD - ULTRA PREMIUM DESIGN ===== */
+.usuario-card {
+  background: 
+    linear-gradient(145deg, 
+      rgba(255, 255, 255, 0.9), 
+      rgba(255, 255, 255, 0.7)
+    ),
+    var(--bg-secondary);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  padding: 1.75rem;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Largura máxima apenas quando está na grid */
+.usuarios-grid .usuario-card {
+  max-width: none;
+}
+
+.usuario-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: var(--border-medium);
+}
+
+.usuario-card-compact {
+  padding: 1.25rem;
+}
+
+/* ===== BARRA LATERAL POR STATUS ===== */
+.usuario-card-active {
+  border-left: 3px solid var(--success-500);
+}
+
+.usuario-card-inactive {
+  border-left: 3px solid var(--neutral-300);
+  opacity: 0.85;
+}
+
+/* ===== HEADER CLEAN ===== */
+.usuario-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.usuario-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.usuario-card-number {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.usuario-card-status {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.usuario-card-active .usuario-card-status {
+  background-color: var(--success-600);
+  color: white;
+}
+
+.usuario-card-inactive .usuario-card-status {
+  background-color: var(--neutral-500);
+  color: white;
+}
+
+/* ===== AÇÕES COM MICRO-INTERAÇÕES ===== */
+.usuario-card-actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.usuario-card-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.usuario-card-action-btn:hover {
+  background-color: var(--primary-500);
+  color: white;
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+}
+
+/* ===== CONTEÚDO MINIMALISTA ===== */
+.usuario-card-content {
+  margin-bottom: 1.5rem;
+}
+
+.usuario-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.875rem 0;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.usuario-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.usuario-card-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.usuario-card-detail-item svg {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== FOOTER MINIMALISTA ===== */
+.usuario-card-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.usuario-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.usuario-card-meta-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
