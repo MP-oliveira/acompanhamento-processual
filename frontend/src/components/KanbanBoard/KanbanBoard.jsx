@@ -103,7 +103,14 @@ const KanbanBoard = () => {
     }
 
     const activeProcesso = processos.find(p => p.id === active.id);
-    const newStatus = over.id;
+    
+    // Se over.id é um número, significa que soltou em cima de outro card
+    // Precisamos pegar o status daquele card
+    let newStatus = over.id;
+    if (typeof over.id === 'number') {
+      const overProcesso = processos.find(p => p.id === over.id);
+      newStatus = overProcesso ? overProcesso.status : activeProcesso.status;
+    }
 
     if (activeProcesso && activeProcesso.status !== newStatus) {
       try {
