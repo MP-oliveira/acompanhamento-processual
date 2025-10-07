@@ -15,7 +15,6 @@ import {
   LayoutGrid,
   Zap,
   DollarSign,
-  Users,
   Clock
 } from 'lucide-react';
 import { processoService } from '../../services/api';
