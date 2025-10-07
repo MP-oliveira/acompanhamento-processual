@@ -596,3 +596,77 @@
     justify-content: center;
   }
 }
+
+/* ===== NOVOS ESTILOS PARA PADRÃO DASHBOARD ===== */
+.approval-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.approval-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.approval-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.approval-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.approval-stat-icon.pendente {
+  background: #fbbf24;
+  color: white;
+}
+
+.approval-stat-icon.aprovado {
+  background: #10b981;
+  color: white;
+}
+
+.approval-stat-icon.rejeitado {
+  background: #ef4444;
+  color: white;
+}
+
+.approval-stat-icon.pago {
+  background: var(--primary-500);
+  color: white;
+}
+
+.approval-stat-content {
+  flex: 1;
+}
+
+.approval-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.approval-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}

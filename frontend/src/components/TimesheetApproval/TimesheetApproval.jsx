@@ -149,11 +149,10 @@ const TimesheetApproval = () => {
       {/* Header */}
       <div className="approval-header">
         <div className="approval-title">
-          <CheckCircle size={24} />
           <h1>Dashboard de Aprovação de Horas</h1>
         </div>
         <div className="approval-actions">
-          <button onClick={carregarDados} className="refresh-button">
+          <button onClick={carregarDados} className="btn btn-primary">
             <Clock size={16} />
             Atualizar
           </button>
@@ -162,41 +161,41 @@ const TimesheetApproval = () => {
 
       {/* Estatísticas */}
       {estatisticas && (
-        <div className="approval-stats">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <Clock size={20} />
+        <div className="approval-stats-grid">
+          <div className="approval-stat-card">
+            <div className="approval-stat-icon pendente">
+              <Clock size={24} />
             </div>
-            <div className="stat-content">
-              <div className="stat-value">{timesheets.length}</div>
-              <div className="stat-label">Pendentes</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">
-              <CheckCircle size={20} />
-            </div>
-            <div className="stat-content">
-              <div className="stat-value">{estatisticas.aprovados || 0}</div>
-              <div className="stat-label">Aprovados</div>
+            <div className="approval-stat-content">
+              <div className="approval-stat-value">{timesheets.length}</div>
+              <div className="approval-stat-label">Pendentes</div>
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">
-              <XCircle size={20} />
+          <div className="approval-stat-card">
+            <div className="approval-stat-icon aprovado">
+              <CheckCircle size={24} />
             </div>
-            <div className="stat-content">
-              <div className="stat-value">{estatisticas.rejeitados || 0}</div>
-              <div className="stat-label">Rejeitados</div>
+            <div className="approval-stat-content">
+              <div className="approval-stat-value">{estatisticas.aprovados || 0}</div>
+              <div className="approval-stat-label">Aprovados</div>
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">
-              <DollarSign size={20} />
+          <div className="approval-stat-card">
+            <div className="approval-stat-icon rejeitado">
+              <XCircle size={24} />
             </div>
-            <div className="stat-content">
-              <div className="stat-value">{estatisticas.pagos || 0}</div>
-              <div className="stat-label">Pagos</div>
+            <div className="approval-stat-content">
+              <div className="approval-stat-value">{estatisticas.rejeitados || 0}</div>
+              <div className="approval-stat-label">Rejeitados</div>
+            </div>
+          </div>
+          <div className="approval-stat-card">
+            <div className="approval-stat-icon pago">
+              <DollarSign size={24} />
+            </div>
+            <div className="approval-stat-content">
+              <div className="approval-stat-value">{estatisticas.pagos || 0}</div>
+              <div className="approval-stat-label">Pagos</div>
             </div>
           </div>
         </div>
