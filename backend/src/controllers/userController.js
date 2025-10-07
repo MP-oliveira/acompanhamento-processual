@@ -293,8 +293,7 @@ export const deactivateUser = async (req, res) => {
   try {
     const { id } = req.params;
     
-    console.log('🔍 deactivateUser chamado para ID:', id);
-    console.log('🔍 Usuário que fez a requisição:', req.user);
+    console.log('🔍 DEACTIVATE USER - ID:', id, 'User:', req.user?.email);
 
     const user = await User.findByPk(id);
     if (!user) {
@@ -304,20 +303,19 @@ export const deactivateUser = async (req, res) => {
       });
     }
 
-    console.log('🔍 Usuário encontrado:', { id: user.id, email: user.email, ativo: user.ativo });
+    console.log('🔍 Usuário encontrado - ANTES:', { id: user.id, email: user.email, ativo: user.ativo });
 
     // Não permite desativar a si mesmo
-    console.log('🔍 Comparando IDs - req.user.id:', req.user.id, 'id:', id, 'parseInt(id):', parseInt(id));
     if (req.user.id === parseInt(id)) {
       console.log('🔍 Tentativa de desativar próprio usuário - BLOQUEADO');
       return res.status(400).json({
         error: 'Não é possível desativar seu próprio usuário'
       });
     }
-    
-    console.log('🔍 Usuário pode ser desativado - continuando...');
 
-    await user.update({ ativo: false });
+    const updatedUser = await user.update({ ativo: false });
+    
+    console.log('🔍 Usuário atualizado - DEPOIS:', { id: updatedUser.id, email: updatedUser.email, ativo: updatedUser.ativo });
     
     console.log('🔍 Usuário desativado com sucesso');
 
@@ -341,8 +339,7 @@ export const activateUser = async (req, res) => {
   try {
     const { id } = req.params;
     
-    console.log('🔍 activateUser chamado para ID:', id);
-    console.log('🔍 Usuário que fez a requisição:', req.user);
+    console.log('🔍 ACTIVATE USER - ID:', id, 'User:', req.user?.email);
 
     const user = await User.findByPk(id);
     if (!user) {
@@ -352,11 +349,11 @@ export const activateUser = async (req, res) => {
       });
     }
 
-    console.log('🔍 Usuário encontrado:', { id: user.id, email: user.email, ativo: user.ativo });
+    console.log('🔍 Usuário encontrado - ANTES:', { id: user.id, email: user.email, ativo: user.ativo });
     
-    await user.update({ ativo: true });
+    const updatedUser = await user.update({ ativo: true });
     
-    console.log('🔍 Usuário atualizado com sucesso');
+    console.log('🔍 Usuário atualizado - DEPOIS:', { id: updatedUser.id, email: updatedUser.email, ativo: updatedUser.ativo });
 
     logger.info(`Usuário ativado: ${user.email} por ${req.user.email}`);
 

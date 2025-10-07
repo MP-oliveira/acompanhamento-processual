@@ -23,6 +23,7 @@ import { relatorioService } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import RelatorioExport from '../RelatorioExport/RelatorioExport';
 import './Relatorios.css';
+import '../Clientes/Clientes.css';
 
 const Relatorios = () => {
   const { isAuthenticated, user } = useAuth();
@@ -290,7 +291,11 @@ const Relatorios = () => {
   }, [isAuthenticated, user]);
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Data não disponível';
+    
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Data inválida';
+    
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
@@ -509,98 +514,96 @@ const Relatorios = () => {
             )}
           </div>
         ) : (
-          <div className="relatorios-grid">
+          <div className="processos-grid">
             {filteredRelatorios.map(relatorio => (
-              <div key={relatorio.id} className={`relatorio-card relatorio-card-${relatorio.status}`}>
-                <div className="relatorio-card-header">
-                  <div className="relatorio-card-type">
-                    {getTipoIcon(relatorio.tipo)}
-                    <span>{getTipoText(relatorio.tipo)}</span>
+              <div key={relatorio.id} className={`cliente-card cliente-card-${relatorio.status === 'concluido' ? 'active' : relatorio.status === 'erro' ? 'archived' : 'suspended'}`}>
+                {/* Header Minimalista */}
+                <div className="cliente-card-header">
+                  <div className="cliente-card-meta">
+                    <div className="cliente-card-number">
+                      {relatorio.titulo}
+                    </div>
+                    <div className="cliente-card-status">
+                      {getStatusText(relatorio.status)}
+                    </div>
                   </div>
-                  <div className="relatorio-card-status">
-                    {getStatusIcon(relatorio.status)}
-                    <span>{getStatusText(relatorio.status)}</span>
+                  <div className="cliente-card-actions">
+                    <button className="cliente-card-action-btn" onClick={() => handleViewRelatorio(relatorio)} title="Visualizar relatório completo">
+                      <Eye size={18} />
+                    </button>
+                    {user?.role === 'admin' && (
+                      <button className="cliente-card-action-btn cliente-card-action-delete" onClick={() => handleDeleteRelatorio(relatorio)} title="Excluir relatório">
+                        <Trash2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                <div className="relatorio-card-content">
-                  <h4 className="relatorio-card-title">
-                    {relatorio.titulo}
+                {/* Conteúdo Principal */}
+                <div className="cliente-card-content">
+                  <h4 className="cliente-card-title">
+                    {getTipoText(relatorio.tipo)}
                   </h4>
-                  <p className="relatorio-card-description">
+                  
+                  <p className="cliente-card-subject">
                     {relatorio.descricao}
                   </p>
-                  
-                  <div className="relatorio-card-meta">
-                    <div className="relatorio-card-period">
-                      <Calendar size={14} />
+
+                  {/* Informações Essenciais */}
+                  <div className="cliente-card-info">
+                    <div className="cliente-card-info-item">
+                      <Calendar size={16} />
                       <span>Período: {relatorio.periodo}</span>
                     </div>
-                    <div className="relatorio-card-date">
-                      <Clock size={14} />
+                    
+                    <div className="cliente-card-info-item">
+                      <Clock size={16} />
                       <span>Gerado em: {formatDate(relatorio.dataGeracao)}</span>
                     </div>
                   </div>
+
+                  {/* Principais Indicadores - usando a estrutura de deadline */}
+                  {relatorio.dados && (
+                    <div className="cliente-card-deadline">
+                      <div className="cliente-card-deadline-header">
+                        <BarChart3 size={16} />
+                        <span>Principais Indicadores</span>
+                      </div>
+                      <div className="cliente-card-deadline-content">
+                        {Object.entries(relatorio.dados).map(([key, value]) => {
+                          if (key === 'crescimento') return null;
+                          return (
+                            <span key={key} className="cliente-card-deadline-date">
+                              {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                            </span>
+                          );
+                        })}
+                        {relatorio.dados.crescimento && (
+                          <span className={`cliente-card-deadline-date ${
+                            relatorio.dados.crescimento > 0 ? 'positive' : 'negative'
+                          }`}>
+                            {relatorio.dados.crescimento > 0 ? '↗' : '↘'} {Math.abs(relatorio.dados.crescimento)}% vs período anterior
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {relatorio.dados && (
-                  <div className="relatorio-card-data">
-                    <h5>Principais Indicadores:</h5>
-                    <div className="relatorio-data-grid">
-                      {Object.entries(relatorio.dados).map(([key, value]) => {
-                        if (key === 'crescimento') return null;
-                        return (
-                          <div key={key} className="relatorio-data-item">
-                            <span className="relatorio-data-label">
-                              {key.charAt(0).toUpperCase() + key.slice(1)}:
-                            </span>
-                            <span className="relatorio-data-value">{value}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    
-                    {relatorio.dados.crescimento && (
-                      <div className="relatorio-crescimento">
-                        <div className={`relatorio-crescimento-value ${
-                          relatorio.dados.crescimento > 0 ? 'positive' : 'negative'
-                        }`}>
-                          {relatorio.dados.crescimento > 0 ? (
-                            <TrendingUp size={16} />
-                          ) : (
-                            <TrendingDown size={16} />
-                          )}
-                          <span>{Math.abs(relatorio.dados.crescimento)}%</span>
-                        </div>
-                        <span className="relatorio-crescimento-label">vs período anterior</span>
-                      </div>
-                    )}
+                {/* Footer Simples */}
+                <div className="cliente-card-footer">
+                  <div className="cliente-card-export-actions">
+                    <RelatorioExport 
+                      relatorio={relatorio}
+                      onSuccess={(type) => handleExportSuccess(relatorio.id, type)}
+                      onError={handleExportError}
+                      className={relatorio.status !== 'concluido' ? 'disabled' : ''}
+                    />
                   </div>
-                )}
-
-                <div className="relatorio-card-actions">
-                  <button
-                    className="relatorio-card-action-btn relatorio-card-action-view"
-                    onClick={() => handleViewRelatorio(relatorio)}
-                    title="Visualizar relatório completo"
-                  >
-                    <Eye size={16} />
-                  </button>
-                  {user?.role === 'admin' && (
-                    <button
-                      className="relatorio-card-action-btn relatorio-card-action-delete"
-                      onClick={() => handleDeleteRelatorio(relatorio)}
-                      title="Excluir relatório (apenas admin)"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  )}
-                  <RelatorioExport 
-                    relatorio={relatorio}
-                    onSuccess={(type) => handleExportSuccess(relatorio.id, type)}
-                    onError={handleExportError}
-                    className={relatorio.status !== 'concluido' ? 'disabled' : ''}
-                  />
+                  <div className="cliente-card-user">
+                    <FileText size={16} />
+                    <span>Relatório gerado automaticamente</span>
+                  </div>
                 </div>
               </div>
             ))}

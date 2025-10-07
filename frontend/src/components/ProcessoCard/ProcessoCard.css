@@ -120,6 +120,31 @@
   cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   background-color: var(--bg-elevated);
+  position: relative;
+}
+
+/* Garantir que tooltips funcionem */
+.processo-card-action-btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  margin-top: 4px;
+}
+
+/* Reduzir tamanho dos botões para evitar sobreposição */
+.processo-card-action-btn {
+  width: 32px;
+  height: 32px;
   color: var(--text-secondary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   position: relative;

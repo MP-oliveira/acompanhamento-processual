@@ -431,6 +431,124 @@
   cursor: pointer;
   transition: all 0.2s ease;
   background-color: transparent;
+  position: relative;
+}
+
+/* Tooltips são gerenciados pelo CSS do cliente */
+
+/* ===== WIDTH MAIOR PARA RELATÓRIOS ===== */
+.processos-grid .cliente-card {
+  max-width: 370px; /* Era 340px, agora 370px (+30px) */
+}
+
+/* ===== FOOTER COM EXPORT ===== */
+.cliente-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cliente-card-export-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ===== INDICADORES EM COLUNA ===== */
+.cliente-card-deadline-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+
+.cliente-card-export-actions .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.cliente-card-export-actions .btn * {
+  color: white !important;
+}
+
+/* Sobrescrever estilos do RelatorioExport */
+.cliente-card-export-actions .relatorio-export-btn {
+  padding: 0.5rem 1rem !important;
+  border-radius: 4px !important;
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.cliente-card-export-actions .relatorio-export-btn:hover {
+  background-color: var(--primary-600) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.cliente-card-export-actions .relatorio-export-btn * {
+  color: white !important;
+}
+
+.cliente-card-export-actions .relatorio-export-pdf,
+.cliente-card-export-actions .relatorio-export-word {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.cliente-card-export-actions .relatorio-export-pdf:hover,
+.cliente-card-export-actions .relatorio-export-word:hover {
+  background-color: var(--primary-600) !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* ===== MODAL CLOSE BUTTON ===== */
+.modal-close-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  color: var(--text-primary);
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  z-index: 10;
+  padding: 0;
+}
+
+.modal-close-btn:hover {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.cliente-card-export-actions .btn:hover {
+  background-color: var(--primary-600) !important;
+  color: white !important;
+}
+
+.cliente-card-export-actions .btn:hover * {
+  color: white !important;
+}
+
+.cliente-card-export-actions .btn:disabled {
+  background-color: var(--neutral-300);
+  color: var(--neutral-500);
+  cursor: not-allowed;
 }
 
 .relatorio-card-action-view {

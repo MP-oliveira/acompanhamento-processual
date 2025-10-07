@@ -185,14 +185,12 @@ const Usuarios = () => {
       console.log('🔍 Novo status:', novoStatus);
       
       // Chama a API apropriada baseada no status atual
-      if (usuario?.ativo === true) {
+      if (usuario?.ativo) {
         console.log('🔍 Usuário está ATIVO - chamando deactivate para usuário:', id);
-        const result = await userService.deactivate(id);
-        console.log('🔍 Resultado deactivate:', result);
+        await userService.deactivate(id);
       } else {
         console.log('🔍 Usuário está INATIVO - chamando activate para usuário:', id);
-        const result = await userService.activate(id);
-        console.log('🔍 Resultado activate:', result);
+        await userService.activate(id);
       }
       
       // Recarrega a lista de usuários (sempre com status "todos" para mostrar mudanças)
@@ -206,11 +204,8 @@ const Usuarios = () => {
       console.log('🔍 Resposta da API após toggle:', updatedResponse);
       console.log('🔍 Usuários retornados:', updatedResponse.users);
       
-      // Força atualização do estado
-      setUsuarios([]);
-      setTimeout(() => {
-        setUsuarios(updatedResponse.users || []);
-      }, 100);
+      // Atualiza o estado diretamente
+      setUsuarios(updatedResponse.users || []);
       
       alert(`Usuário ${novoStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
     } catch (error) {
@@ -373,11 +368,11 @@ const Usuarios = () => {
       setLoading(true);
       
       // Chama a API para atualizar o usuário
+      // NOTA: O campo 'ativo' foi removido, pois o status deve ser alterado pelo botão de toggle
       const userData = {
         nome: editUser.nome.trim(),
         email: editUser.email.trim().toLowerCase(),
-        role: editUser.role,
-        ativo: editUser.ativo
+        role: editUser.role
       };
 
       await userService.update(editingUser.id, userData);
@@ -804,17 +799,7 @@ const Usuarios = () => {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Status</label>
-                <select
-                  className="form-input"
-                  value={editUser.ativo ? 'ativo' : 'inativo'}
-                  onChange={(e) => handleEditUserChange('ativo', e.target.value === 'ativo')}
-                >
-                  <option value="ativo">Ativo</option>
-                  <option value="inativo">Inativo</option>
-                </select>
-              </div>
+              {/* Status removido - use o botão de toggle no card do usuário */}
             </div>
             
             <div className="modal-footer">

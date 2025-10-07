@@ -242,6 +242,24 @@
   flex-wrap: wrap;
 }
 
+/* Garantir que tooltips funcionem em todos os botões */
+button[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  margin-top: 4px;
+}
+
 /* ===== STATUS BADGES ===== */
 .status-badge {
   padding: 0.25rem 0.75rem;

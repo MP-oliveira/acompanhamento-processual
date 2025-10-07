@@ -152,7 +152,7 @@ const TimesheetApproval = () => {
           <h1>Dashboard de Aprovação de Horas</h1>
         </div>
         <div className="approval-actions">
-          <button onClick={carregarDados} className="btn btn-primary">
+          <button onClick={carregarDados} className="btn btn-primary" title="Atualizar lista de timesheets">
             <Clock size={16} />
             Atualizar
           </button>
@@ -291,6 +291,7 @@ const TimesheetApproval = () => {
                     }}
                     className="action-button reject"
                     disabled={timesheet.statusAprovacao !== 'pendente'}
+                    title="Rejeitar timesheet"
                   >
                     <XCircle size={16} />
                     Rejeitar
@@ -299,6 +300,7 @@ const TimesheetApproval = () => {
                     onClick={() => handleAprovar(timesheet.id)}
                     className="action-button approve"
                     disabled={timesheet.statusAprovacao !== 'pendente'}
+                    title="Aprovar timesheet"
                   >
                     <CheckCircle size={16} />
                     Aprovar
@@ -310,6 +312,7 @@ const TimesheetApproval = () => {
                     }}
                     className="action-button pay"
                     disabled={timesheet.statusAprovacao !== 'aprovado' || timesheet.statusPagamento === 'pago'}
+                    title="Marcar timesheet como pago"
                   >
                     <DollarSign size={16} />
                     Marcar Pago

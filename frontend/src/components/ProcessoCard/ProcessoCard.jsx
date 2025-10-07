@@ -111,21 +111,21 @@ const ProcessoCard = ({
             <button
               className="processo-card-action-btn"
               onClick={() => onView && onView(processo.id)}
-              title="Visualizar"
+              title="Visualizar processo"
             >
               <Eye size={18} />
             </button>
             <button
               className="processo-card-action-btn"
               onClick={() => onEdit && onEdit(processo.id)}
-              title="Editar"
+              title="Editar processo"
             >
               <Edit size={18} />
             </button>
             <button
               className="processo-card-action-btn processo-card-action-delete"
               onClick={() => onDelete && onDelete(processo.id)}
-              title="Excluir"
+              title="Excluir processo"
             >
               <Trash2 size={18} />
             </button>
