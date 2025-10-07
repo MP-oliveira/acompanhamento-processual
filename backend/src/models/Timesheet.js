@@ -95,6 +95,58 @@ const Timesheet = sequelize.define('Timesheet', {
       key: 'id'
     },
     onDelete: 'CASCADE'
+  },
+  statusAprovacao: {
+    type: DataTypes.ENUM('pendente', 'aprovado', 'rejeitado'),
+    allowNull: false,
+    defaultValue: 'pendente',
+    field: 'status_aprovacao'
+  },
+  aprovadoPor: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'aprovado_por',
+    references: {
+      model: 'users',
+      key: 'id'
+    },
+    onDelete: 'SET NULL'
+  },
+  dataAprovacao: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'data_aprovacao'
+  },
+  motivoRejeicao: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'motivo_rejeicao'
+  },
+  statusPagamento: {
+    type: DataTypes.ENUM('pendente', 'pago'),
+    allowNull: false,
+    defaultValue: 'pendente',
+    field: 'status_pagamento'
+  },
+  dataPagamento: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'data_pagamento'
+  },
+  pagoPor: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'pago_por',
+    references: {
+      model: 'users',
+      key: 'id'
+    },
+    onDelete: 'SET NULL'
+  },
+  observacoesPagamento: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'observacoes_pagamento'
   }
 }, {
   tableName: 'timesheets',
@@ -118,6 +170,18 @@ const Timesheet = sequelize.define('Timesheet', {
     },
     {
       fields: ['faturado']
+    },
+    {
+      fields: ['status_aprovacao']
+    },
+    {
+      fields: ['status_pagamento']
+    },
+    {
+      fields: ['aprovado_por']
+    },
+    {
+      fields: ['pago_por']
     }
   ],
   hooks: {

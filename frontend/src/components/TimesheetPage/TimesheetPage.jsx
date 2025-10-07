@@ -28,7 +28,6 @@ const TimesheetPage = () => {
       <div className="page-header">
         <div className="page-header-content">
           <h1 className="page-title">
-            <Clock size={28} />
             Controle de Horas
           </h1>
         </div>

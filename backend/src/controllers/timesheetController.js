@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { Op } from 'sequelize';
-import { Timesheet, Processo, User } from '../models/index.js';
+import { Timesheet, Processo, User, Cliente } from '../models/index.js';
 import logger from '../config/logger.js';
 
 // Schema de validação
@@ -64,7 +64,14 @@ export const listarTimesheets = async (req, res) => {
         {
           model: Processo,
           as: 'processo',
-          attributes: ['id', 'numero', 'classe']
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
         }
       ],
       order: [['dataInicio', 'DESC']],
@@ -131,7 +138,14 @@ export const criarTimesheet = async (req, res) => {
         {
           model: Processo,
           as: 'processo',
-          attributes: ['id', 'numero', 'classe']
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
         }
       ]
     });
@@ -185,7 +199,14 @@ export const atualizarTimesheet = async (req, res) => {
         {
           model: Processo,
           as: 'processo',
-          attributes: ['id', 'numero', 'classe']
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
         }
       ]
     });
@@ -226,6 +247,317 @@ export const removerTimesheet = async (req, res) => {
     });
   } catch (error) {
     logger.error('Erro ao remover timesheet:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Aprovar timesheet
+ */
+export const aprovarTimesheet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { motivoRejeicao } = req.body;
+
+    const timesheet = await Timesheet.findOne({
+      where: { 
+        id, 
+        userId: req.user.id 
+      }
+    });
+
+    if (!timesheet) {
+      return res.status(404).json({
+        error: 'Registro de horas não encontrado'
+      });
+    }
+
+    await timesheet.update({
+      statusAprovacao: 'aprovado',
+      aprovadoPor: req.user.id,
+      dataAprovacao: new Date(),
+      motivoRejeicao: null
+    });
+
+    const timesheetAtualizado = await Timesheet.findByPk(timesheet.id, {
+      include: [
+        {
+          model: Processo,
+          as: 'processo',
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
+        },
+        {
+          model: User,
+          as: 'aprovador',
+          attributes: ['id', 'nome', 'email']
+        }
+      ]
+    });
+
+    logger.info(`Timesheet aprovado: ${timesheet.id} por ${req.user.email}`);
+
+    res.json(timesheetAtualizado);
+  } catch (error) {
+    logger.error('Erro ao aprovar timesheet:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Rejeitar timesheet
+ */
+export const rejeitarTimesheet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { motivoRejeicao } = req.body;
+
+    if (!motivoRejeicao || motivoRejeicao.trim() === '') {
+      return res.status(400).json({
+        error: 'Motivo da rejeição é obrigatório'
+      });
+    }
+
+    const timesheet = await Timesheet.findOne({
+      where: { 
+        id, 
+        userId: req.user.id 
+      }
+    });
+
+    if (!timesheet) {
+      return res.status(404).json({
+        error: 'Registro de horas não encontrado'
+      });
+    }
+
+    await timesheet.update({
+      statusAprovacao: 'rejeitado',
+      aprovadoPor: req.user.id,
+      dataAprovacao: new Date(),
+      motivoRejeicao: motivoRejeicao.trim()
+    });
+
+    const timesheetAtualizado = await Timesheet.findByPk(timesheet.id, {
+      include: [
+        {
+          model: Processo,
+          as: 'processo',
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
+        },
+        {
+          model: User,
+          as: 'aprovador',
+          attributes: ['id', 'nome', 'email']
+        }
+      ]
+    });
+
+    logger.info(`Timesheet rejeitado: ${timesheet.id} por ${req.user.email}`);
+
+    res.json(timesheetAtualizado);
+  } catch (error) {
+    logger.error('Erro ao rejeitar timesheet:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Marcar timesheet como pago
+ */
+export const marcarPago = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { observacoesPagamento } = req.body;
+
+    const timesheet = await Timesheet.findOne({
+      where: { 
+        id, 
+        userId: req.user.id 
+      }
+    });
+
+    if (!timesheet) {
+      return res.status(404).json({
+        error: 'Registro de horas não encontrado'
+      });
+    }
+
+    if (timesheet.statusAprovacao !== 'aprovado') {
+      return res.status(400).json({
+        error: 'Apenas timesheets aprovados podem ser marcados como pagos'
+      });
+    }
+
+    await timesheet.update({
+      statusPagamento: 'pago',
+      pagoPor: req.user.id,
+      dataPagamento: new Date(),
+      observacoesPagamento: observacoesPagamento || null
+    });
+
+    const timesheetAtualizado = await Timesheet.findByPk(timesheet.id, {
+      include: [
+        {
+          model: Processo,
+          as: 'processo',
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
+        },
+        {
+          model: User,
+          as: 'aprovador',
+          attributes: ['id', 'nome', 'email']
+        },
+        {
+          model: User,
+          as: 'pagador',
+          attributes: ['id', 'nome', 'email']
+        }
+      ]
+    });
+
+    logger.info(`Timesheet marcado como pago: ${timesheet.id} por ${req.user.email}`);
+
+    res.json(timesheetAtualizado);
+  } catch (error) {
+    logger.error('Erro ao marcar timesheet como pago:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Marcar timesheet como faturado
+ */
+export const marcarFaturado = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { faturado, dataFaturamento } = req.body;
+
+    const timesheet = await Timesheet.findOne({
+      where: { 
+        id, 
+        userId: req.user.id 
+      }
+    });
+
+    if (!timesheet) {
+      return res.status(404).json({
+        error: 'Registro de horas não encontrado'
+      });
+    }
+
+    await timesheet.update({
+      faturado: faturado !== undefined ? faturado : true,
+      dataFaturamento: faturado ? (dataFaturamento || new Date()) : null
+    });
+
+    const timesheetAtualizado = await Timesheet.findByPk(timesheet.id, {
+      include: [
+        {
+          model: Processo,
+          as: 'processo',
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
+        }
+      ]
+    });
+
+    res.json(timesheetAtualizado);
+  } catch (error) {
+    logger.error('Erro ao marcar timesheet como faturado:', error);
+    res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Listar timesheets pendentes de aprovação (para admin)
+ */
+export const listarPendentesAprovacao = async (req, res) => {
+  try {
+    const { 
+      page = 1,
+      limit = 50
+    } = req.query;
+
+    const whereClause = { 
+      statusAprovacao: 'pendente'
+    };
+
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: timesheets } = await Timesheet.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'nome', 'email']
+        },
+        {
+          model: Processo,
+          as: 'processo',
+          attributes: ['id', 'numero', 'classe', 'clienteId'],
+          include: [
+            {
+              model: Cliente,
+              as: 'cliente',
+              attributes: ['id', 'nome', 'tipo']
+            }
+          ]
+        }
+      ],
+      order: [['createdAt', 'ASC']], // Mais antigos primeiro
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+    res.json({
+      timesheets,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: count,
+        pages: Math.ceil(count / limit)
+      }
+    });
+  } catch (error) {
+    logger.error('Erro ao listar timesheets pendentes:', error);
     res.status(500).json({
       error: 'Erro interno do servidor'
     });

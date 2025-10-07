@@ -43,6 +43,7 @@ const Workflows = lazy(() => import('./components/Workflows/Workflows'));
 const DashboardFinanceiro = lazy(() => import('./components/DashboardFinanceiro/DashboardFinanceiro'));
 const Clientes = lazy(() => import('./components/Clientes/Clientes'));
 const TimesheetPage = lazy(() => import('./components/TimesheetPage/TimesheetPage'));
+const TimesheetApproval = lazy(() => import('./components/TimesheetApproval/TimesheetApproval'));
 
 // Configuração do React Query
 const queryClient = new QueryClient({
@@ -148,6 +149,11 @@ const AppContent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Route path="/financeiro" element={<DashboardFinanceiro />} />
                     <Route path="/clientes" element={<Clientes />} />
                     <Route path="/timesheet" element={<TimesheetPage />} />
+                    <Route path="/timesheet/approval" element={
+                      <AdminRoute user={user}>
+                        <TimesheetApproval />
+                      </AdminRoute>
+                    } />
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="/performance" element={<PerformanceDashboard />} />

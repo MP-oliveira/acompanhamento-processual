@@ -10,6 +10,11 @@ import {
   criarTimesheet,
   atualizarTimesheet,
   removerTimesheet,
+  aprovarTimesheet,
+  rejeitarTimesheet,
+  marcarPago,
+  marcarFaturado,
+  listarPendentesAprovacao,
   obterEstatisticas
 } from '../controllers/timesheetController.js';
 
@@ -23,9 +28,14 @@ router.use(auth);
 
 // Rotas de timesheet
 router.get('/', validateQueryParams(['processoId', 'dataInicio', 'dataFim', 'tipo', 'faturavel', 'faturado', 'page', 'limit']), listarTimesheets);
+router.get('/pendentes', listarPendentesAprovacao);
 router.get('/estatisticas', obterEstatisticas);
 router.post('/', criarTimesheet);
 router.put('/:id', validateRouteParams({ id: { type: 'number', required: true } }), atualizarTimesheet);
+router.patch('/:id/aprovar', validateRouteParams({ id: { type: 'number', required: true } }), aprovarTimesheet);
+router.patch('/:id/rejeitar', validateRouteParams({ id: { type: 'number', required: true } }), rejeitarTimesheet);
+router.patch('/:id/pagar', validateRouteParams({ id: { type: 'number', required: true } }), marcarPago);
+router.patch('/:id/faturar', validateRouteParams({ id: { type: 'number', required: true } }), marcarFaturado);
 router.delete('/:id', validateRouteParams({ id: { type: 'number', required: true } }), removerTimesheet);
 
 export default router;

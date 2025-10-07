@@ -1,114 +1,264 @@
-/* ===== TIMESHEET ===== */
+/* ===== TIMESHEET CONTAINER ===== */
 .timesheet-container {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+/* ===== HEADER ===== */
 .timesheet-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
 }
 
 .timesheet-header h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin: 0;
 }
 
-/* ===== RESUMO ===== */
-.timesheet-resumo {
+.timesheet-header-actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
+  gap: 0.75rem;
+}
+
+/* ===== FILTROS ===== */
+.timesheet-filtros {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ===== RESUMO (ESTATÍSTICAS) ===== */
+.timesheet-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .timesheet-resumo-card {
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.timesheet-resumo-card.total {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
-  border-color: var(--primary-200);
+.timesheet-resumo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.timesheet-resumo-card.faturavel {
-  background-color: rgba(34, 197, 94, 0.05);
-  border-color: rgba(34, 197, 94, 0.3);
+.timesheet-resumo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.timesheet-resumo-card.valor {
-  background-color: rgba(251, 191, 36, 0.05);
-  border-color: rgba(251, 191, 36, 0.3);
+.timesheet-resumo-card.total .timesheet-resumo-icon {
+  background: var(--primary-500);
+  color: white;
+}
+
+.timesheet-resumo-card.faturavel .timesheet-resumo-icon {
+  background: #10b981;
+  color: white;
+}
+
+.timesheet-resumo-card.valor .timesheet-resumo-icon {
+  background: #f59e0b;
+  color: white;
+}
+
+.timesheet-resumo-card.pendente .timesheet-resumo-icon {
+  background: #ef4444;
+  color: white;
+}
+
+.timesheet-resumo-content {
+  flex: 1;
 }
 
 .timesheet-resumo-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
   margin-bottom: 0.25rem;
+  font-weight: 500;
 }
 
 .timesheet-resumo-valor {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-primary, #1f2937);
+}
+
+/* ===== RESUMO DE STATUS ===== */
+.timesheet-status-resumo {
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.timesheet-status-resumo h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.status-resumo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  transition: all 0.3s ease;
+}
+
+.status-resumo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.status-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.status-count.pendente {
+  color: #f59e0b;
+}
+
+.status-count.aprovado {
+  color: #10b981;
+}
+
+.status-count.rejeitado {
+  color: #ef4444;
+}
+
+.status-count.pago {
+  color: var(--primary-500);
+}
+
+.status-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
 }
 
 /* ===== FORMULÁRIO ===== */
 .timesheet-form {
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .form-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.form-group label {
-  display: block;
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 0.375rem;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 0.5rem;
 }
 
 .form-input,
-.form-select {
-  width: 100%;
-  padding: 0.625rem;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+.form-select,
+.form-textarea {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 8px;
   font-size: 0.875rem;
   transition: all 0.2s ease;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background: white;
 }
 
 .form-input:focus,
-.form-select:focus {
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
   border-color: var(--primary-500);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  font-family: inherit;
 }
 
 .form-checkbox {
@@ -116,98 +266,631 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  margin-top: 1.75rem;
 }
 
-.form-checkbox input {
+.form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
   cursor: pointer;
 }
 
-/* ===== LISTA ===== */
-.timesheet-lista {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.timesheet-loading,
-.timesheet-empty {
-  text-align: center;
-  padding: var(--spacing-xl);
-  color: var(--text-tertiary);
-}
-
-.timesheet-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.timesheet-empty svg {
-  color: var(--text-muted);
-}
-
-.timesheet-empty p {
-  margin: 0;
+.form-checkbox span {
   font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
 }
 
+/* ===== AGRUPAMENTO POR CLIENTE ===== */
+.timesheet-grupo-cliente {
+  background: white;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.timesheet-grupo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--primary-100, #dbeafe);
+}
+
+.timesheet-grupo-header h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  margin: 0;
+}
+
+.timesheet-grupo-stats {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.timesheet-stat-horas {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.timesheet-stat-valor {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--success-600, #059669);
+}
+
+/* ===== AGRUPAMENTO POR PROCESSO ===== */
+.timesheet-grupo-processo {
+  margin-bottom: 1rem;
+}
+
+.timesheet-processo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-tertiary, #f3f4f6);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+.timesheet-processo-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+/* ===== ITEM DE TIMESHEET ===== */
 .timesheet-item {
-  background-color: var(--bg-elevated);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  transition: all 0.2s ease;
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-left: 3px solid var(--primary-500, #6366f1);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .timesheet-item:hover {
-  border-color: var(--primary-200);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateX(2px);
+}
+
+.timesheet-item.faturado {
+  border-left-color: var(--success-500, #10b981);
+  background: #f0fdf4;
 }
 
 .timesheet-item-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .timesheet-item-tipo {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  padding: 0.25rem 0.625rem;
+  padding: 0.375rem 0.75rem;
   border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: var(--primary-100);
-  color: var(--primary-700);
+  letter-spacing: 0.5px;
+}
+
+.tipo-audiencia {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tipo-peticao {
+  background: #dbeafe;
+  color: var(--primary-600);
+}
+
+.tipo-reuniao {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.tipo-pesquisa {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.tipo-deslocamento {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.tipo-consulta_processo {
+  background: #ccfbf1;
+  color: #115e59;
+}
+
+.tipo-analise_documentos {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.tipo-outros {
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .timesheet-item-duracao {
-  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-primary, #1f2937);
+}
+
+.timesheet-item-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.timesheet-item-badge.faturavel {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.timesheet-item-badge.faturado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.timesheet-item-badge.pendente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.timesheet-item-badge.aprovado {
+  background: #dbeafe;
+  color: var(--primary-600);
+}
+
+.timesheet-item-badge.rejeitado {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.timesheet-item-badge.pago {
+  background: #e0e7ff;
+  color: #4338ca;
 }
 
 .timesheet-item-descricao {
+  font-size: 0.9375rem;
+  color: var(--text-primary, #1f2937);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.timesheet-item-observacoes {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--text-secondary, #6b7280);
+  font-style: italic;
   margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-tertiary, #f9fafb);
+  border-radius: 6px;
+  border-left: 2px solid var(--border-color, #d1d5db);
+}
+
+.timesheet-item-rejeicao {
+  font-size: 0.875rem;
+  color: #dc2626;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #fef2f2;
+  border-radius: 6px;
+  border-left: 2px solid #fecaca;
+}
+
+.timesheet-item-aprovacao {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f0f9ff;
+  border-radius: 6px;
+  border-left: 2px solid #bae6fd;
+}
+
+.timesheet-item-pagamento {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f0fdf4;
+  border-radius: 6px;
+  border-left: 2px solid #bbf7d0;
+}
+
+.timesheet-item-rastreamento {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.rastreamento-item {
+  font-size: 0.875rem;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rastreamento-item:last-child {
+  margin-bottom: 0;
+}
+
+.rastreamento-item strong {
+  color: var(--text-primary, #1f2937);
+  font-weight: 600;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.rastreamento-item.pendente {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.rastreamento-item.pendente strong {
+  color: #f59e0b;
 }
 
 .timesheet-item-footer {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.timesheet-item-data,
+.timesheet-item-valor {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
 }
 
 .timesheet-item-valor {
   font-weight: 600;
-  color: var(--success-600);
-  margin-left: auto;
+  color: var(--success-600, #059669);
 }
 
+.timesheet-item-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ===== ESTADOS VAZIOS E LOADING ===== */
+.timesheet-loading,
+.timesheet-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+}
+
+.timesheet-loading .spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.timesheet-empty svg {
+  color: var(--text-tertiary, #9ca3af);
+  margin-bottom: 1rem;
+}
+
+.timesheet-empty p {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin: 0.5rem 0;
+}
+
+.timesheet-empty small {
+  font-size: 0.875rem;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* ===== BOTÕES ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+}
+
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-600);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary, #f3f4f6);
+  color: var(--text-primary, #1f2937);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary, #e5e7eb);
+}
+
+.btn-outline {
+  background: white;
+  color: var(--text-primary, #1f2937);
+  border: 1px solid var(--border-color, #d1d5db);
+}
+
+.btn-outline:hover {
+  background: var(--bg-secondary, #f9fafb);
+  border-color: var(--text-secondary, #9ca3af);
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-icon-sm {
+  padding: 0.375rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon-sm.btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-icon-sm.btn-danger:hover {
+  background: #fecaca;
+  transform: scale(1.1);
+}
+
+.btn-icon-sm.btn-success {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.btn-icon-sm.btn-success:hover {
+  background: #a7f3d0;
+  transform: scale(1.1);
+}
+
+.btn-icon-sm.btn-warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.btn-icon-sm.btn-warning:hover {
+  background: #fde68a;
+  transform: scale(1.1);
+}
+
+/* ===== MODAL STYLES ===== */
+.processo-view-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.processo-view-container {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 95%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  color: #000000 !important;
+  border-radius: var(--radius-md);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  z-index: 10;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--neutral-100);
+  color: #000000 !important;
+}
+
+.modal-close-btn svg {
+  color: #000000 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.modal-content {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+  background-color: var(--bg-secondary);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .timesheet-container {
+    padding: 1rem;
+  }
+
+  .timesheet-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .timesheet-header-actions {
+    width: 100%;
+  }
+
+  .timesheet-header-actions .btn {
+    flex: 1;
+  }
+
+  .timesheet-resumo {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timesheet-grupo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .timesheet-processo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .timesheet-item-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timesheet-item-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Modal responsivo */
+  .processo-view-overlay {
+    padding: var(--spacing-sm);
+  }
+  
+  .processo-view-container {
+    width: 100%;
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: var(--spacing-md);
+  }
+  
+  .modal-content {
+    padding: var(--spacing-md);
+  }
+  
+  .modal-actions {
+    padding: var(--spacing-md);
+  }
+}

@@ -7,7 +7,11 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
-    cors: true
+    cors: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost'
+    }
   },
   build: {
     sourcemap: true,

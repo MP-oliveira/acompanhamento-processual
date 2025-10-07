@@ -75,12 +75,19 @@ Timesheet.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
 User.hasMany(Timesheet, { foreignKey: 'userId', as: 'timesheets' });
 Timesheet.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// Associações para aprovação e pagamento
+User.hasMany(Timesheet, { foreignKey: 'aprovadoPor', as: 'timesheetsAprovados' });
+Timesheet.belongsTo(User, { foreignKey: 'aprovadoPor', as: 'aprovador' });
+
+User.hasMany(Timesheet, { foreignKey: 'pagoPor', as: 'timesheetsPagos' });
+Timesheet.belongsTo(User, { foreignKey: 'pagoPor', as: 'pagador' });
+
 // Associações para Cliente (temporariamente desabilitado - precisa migration)
 User.hasMany(Cliente, { foreignKey: 'userId', as: 'clientes' });
 Cliente.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-// Cliente.hasMany(Processo, { foreignKey: 'clienteId', as: 'processos' });
-// Processo.belongsTo(Cliente, { foreignKey: 'clienteId', as: 'cliente' });
+Cliente.hasMany(Processo, { foreignKey: 'clienteId', as: 'processos' });
+Processo.belongsTo(Cliente, { foreignKey: 'clienteId', as: 'cliente' });
 
 export { 
   sequelize, 

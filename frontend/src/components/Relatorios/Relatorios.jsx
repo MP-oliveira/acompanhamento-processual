@@ -8,13 +8,16 @@ import {
   Users,
   Clock,
   CheckCircle,
+  CheckCircle2,
+  DollarSign,
   XCircle,
   AlertTriangle,
   Filter,
   RefreshCw,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react';
 import { relatorioService } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,7 +32,12 @@ const Relatorios = () => {
   const [selectedType, setSelectedType] = useState('todos');
   const [showFilters, setShowFilters] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedRelatorio, setSelectedRelatorio] = useState(null);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Buscar relatórios do backend
   useEffect(() => {
@@ -117,32 +125,72 @@ const Relatorios = () => {
     // Aqui você pode adicionar notificação de erro
   };
 
+  const handleViewRelatorio = (relatorio) => {
+    setSelectedRelatorio(relatorio);
+    setShowViewModal(true);
+  };
+
   const handleDeleteRelatorio = (relatorio) => {
     setSelectedRelatorio(relatorio);
+    setAdminPassword('');
     setShowDeleteModal(true);
   };
 
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedRelatorio(null);
+    setAdminPassword('');
+  };
+
+  const handleOpenStatusModal = (status) => {
+    setSelectedStatus(status);
+    setShowStatusModal(true);
+  };
+
+  const handleCloseStatusModal = () => {
+    setShowStatusModal(false);
+    setSelectedStatus(null);
+  };
+
   const handleConfirmDelete = async () => {
-    if (!selectedRelatorio) return;
+    if (!selectedRelatorio || !adminPassword.trim()) {
+      alert('Por favor, digite a senha do administrador para confirmar a exclusão.');
+      return;
+    }
 
     try {
-      setLoading(true);
-      await relatorioService.delete(selectedRelatorio.id);
+      setDeleteLoading(true);
+      
+      // Validar senha do admin e deletar relatório
+      await relatorioService.deleteWithPassword(selectedRelatorio.id, adminPassword);
+      
       setShowDeleteModal(false);
       setSelectedRelatorio(null);
+      setAdminPassword('');
+      
       // Recarregar relatórios
       const response = await relatorioService.getAll({
         tipo: selectedType !== 'todos' ? selectedType : undefined,
         status: 'todos'
       });
       setRelatorios(response.relatorios || []);
+      
       // Atualizar estatísticas
       const statsResponse = await relatorioService.getStats();
       setStats(statsResponse || { total: 0, concluidos: 0, processando: 0, erro: 0 });
+      
+      alert('Relatório excluído com sucesso!');
     } catch (error) {
       console.error('Erro ao deletar relatório:', error);
+      if (error.response?.status === 401) {
+        alert('Senha incorreta. Apenas administradores podem excluir relatórios.');
+      } else if (error.response?.status === 403) {
+        alert('Acesso negado. Apenas administradores podem excluir relatórios.');
+      } else {
+        alert('Erro ao deletar relatório. Tente novamente.');
+      }
     } finally {
-      setLoading(false);
+      setDeleteLoading(false);
     }
   };
 
@@ -413,7 +461,7 @@ const Relatorios = () => {
         ) : (
           <div className="relatorios-grid">
             {filteredRelatorios.map(relatorio => (
-              <div key={relatorio.id} className="relatorio-card">
+              <div key={relatorio.id} className={`relatorio-card relatorio-card-${relatorio.status}`}>
                 <div className="relatorio-card-header">
                   <div className="relatorio-card-type">
                     {getTipoIcon(relatorio.tipo)}
@@ -482,12 +530,21 @@ const Relatorios = () => {
 
                 <div className="relatorio-card-actions">
                   <button
-                    className="relatorio-card-action-btn relatorio-card-action-delete"
-                    onClick={() => handleDeleteRelatorio(relatorio)}
-                    title="Excluir relatório"
+                    className="relatorio-card-action-btn relatorio-card-action-view"
+                    onClick={() => handleViewRelatorio(relatorio)}
+                    title="Visualizar relatório completo"
                   >
-                    <Trash2 size={16} />
+                    <Eye size={16} />
                   </button>
+                  {user?.role === 'admin' && (
+                    <button
+                      className="relatorio-card-action-btn relatorio-card-action-delete"
+                      onClick={() => handleDeleteRelatorio(relatorio)}
+                      title="Excluir relatório (apenas admin)"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                   <RelatorioExport 
                     relatorio={relatorio}
                     onSuccess={(type) => handleExportSuccess(relatorio.id, type)}
@@ -501,15 +558,337 @@ const Relatorios = () => {
         )}
       </div>
 
+      {/* Modal de Visualização Completa */}
+      {showViewModal && selectedRelatorio && (
+        <div className="processo-view-overlay" onClick={() => setShowViewModal(false)}>
+          <div className="processo-view-container" onClick={(e) => e.stopPropagation()}>
+            <div className="processo-view-header">
+              <h2>{selectedRelatorio.titulo}</h2>
+              <div className="modal-header-actions">
+                <button 
+                  className="btn btn-primary btn-sm"
+                  onClick={() => window.print()}
+                  title="Imprimir relatório"
+                >
+                  <FileText size={16} />
+                  Imprimir
+                </button>
+                <button 
+                  className="modal-close-btn" 
+                  onClick={() => setShowViewModal(false)}
+                >
+                  <XCircle size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="processo-view-content">
+              <div className="relatorio-completo">
+                {/* Header do Relatório */}
+                <div className="relatorio-completo-header">
+                  <div className="relatorio-completo-meta">
+                    <div className="relatorio-meta-item">
+                      <span>Período: {selectedRelatorio.periodo}</span>
+                    </div>
+                    <div className="relatorio-meta-item">
+                      <span>Gerado em: {formatDate(selectedRelatorio.dataGeracao)}</span>
+                    </div>
+                    <div className="relatorio-meta-item">
+                      <span>Tipo: {getTipoText(selectedRelatorio.tipo)}</span>
+                    </div>
+                  </div>
+                  <div className="relatorio-completo-status">
+                    <span>{getStatusText(selectedRelatorio.status)}</span>
+                  </div>
+                </div>
+
+                {/* Descrição */}
+                <div className="relatorio-completo-description">
+                  <p>{selectedRelatorio.descricao}</p>
+                </div>
+
+                {/* Seções de Dados */}
+                <div className="relatorio-completo-sections">
+                  {/* Resumo Executivo */}
+                  <div className="relatorio-section relatorio-section-resumo">
+                    <h3>Resumo Executivo</h3>
+                    <div className="relatorio-section-content">
+                      <div className="relatorio-resumo-stats-grid">
+                        <div className="relatorio-resumo-stat-card">
+                          <div className="relatorio-resumo-stat-icon total">
+                            <FileText size={24} />
+                          </div>
+                          <div className="relatorio-resumo-stat-content">
+                            <div className="relatorio-resumo-stat-value">1</div>
+                            <div className="relatorio-resumo-stat-label">Total de Processos</div>
+                          </div>
+                        </div>
+                        <div className="relatorio-resumo-stat-card">
+                          <div className="relatorio-resumo-stat-icon ativos">
+                            <CheckCircle size={24} />
+                          </div>
+                          <div className="relatorio-resumo-stat-content">
+                            <div className="relatorio-resumo-stat-value">1</div>
+                            <div className="relatorio-resumo-stat-label">Processos Ativos</div>
+                          </div>
+                        </div>
+                        <div className="relatorio-resumo-stat-card">
+                          <div className="relatorio-resumo-stat-icon arquivados">
+                            <FileText size={24} />
+                          </div>
+                          <div className="relatorio-resumo-stat-content">
+                            <div className="relatorio-resumo-stat-value">0</div>
+                            <div className="relatorio-resumo-stat-label">Processos Arquivados</div>
+                          </div>
+                        </div>
+                        <div className="relatorio-resumo-stat-card">
+                          <div className="relatorio-resumo-stat-icon suspensos">
+                            <Clock size={24} />
+                          </div>
+                          <div className="relatorio-resumo-stat-content">
+                            <div className="relatorio-resumo-stat-value">0</div>
+                            <div className="relatorio-resumo-stat-label">Processos Suspensos</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Processos do Mês */}
+                  <div className="relatorio-section relatorio-section-processos">
+                    <h3>Processos do Mês</h3>
+                    <div className="relatorio-section-content">
+                      <div className="relatorio-table">
+                        <div className="relatorio-table-header">
+                          <div className="relatorio-table-cell">Número</div>
+                          <div className="relatorio-table-cell">Cliente</div>
+                          <div className="relatorio-table-cell">Status</div>
+                          <div className="relatorio-table-cell">Data</div>
+                        </div>
+                        <div className="relatorio-table-row">
+                          <div className="relatorio-table-cell">1234567-89.2025.8.26.0001</div>
+                          <div className="relatorio-table-cell">João Silva</div>
+                          <div className="relatorio-table-cell">
+                            <span className="relatorio-status-badge ativo">Ativo</span>
+                          </div>
+                          <div className="relatorio-table-cell">01/10/2025</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tarefas Realizadas */}
+                  <div className="relatorio-section relatorio-section-tarefas">
+                    <h3>Tarefas Realizadas</h3>
+                    <div className="relatorio-section-content">
+                      <div className="relatorio-tasks">
+                        <div className="relatorio-task-item">
+                          <div className="relatorio-task-info">
+                            <div className="relatorio-task-title">Petição inicial protocolada</div>
+                            <div className="relatorio-task-meta">Processo: 1234567-89.2025.8.26.0001</div>
+                          </div>
+                          <div className="relatorio-task-date">15/10/2025</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status Timeline */}
+                  <div className="relatorio-section relatorio-section-timeline">
+                    <h3>Status do Mês</h3>
+                    <div className="relatorio-section-content">
+                      {/* Cards de Estatísticas */}
+                      <div className="relatorio-stats-grid">
+                        <div className="relatorio-stat-card" onClick={() => handleOpenStatusModal('audiencias')}>
+                          <div className="relatorio-stat-icon audiencia">
+                            <Calendar size={24} />
+                          </div>
+                          <div className="relatorio-stat-content">
+                            <div className="relatorio-stat-number">3</div>
+                            <div className="relatorio-stat-label">Audiências</div>
+                          </div>
+                        </div>
+
+                        <div className="relatorio-stat-card" onClick={() => handleOpenStatusModal('processos')}>
+                          <div className="relatorio-stat-icon processo">
+                            <CheckCircle size={24} />
+                          </div>
+                          <div className="relatorio-stat-content">
+                            <div className="relatorio-stat-number">12</div>
+                            <div className="relatorio-stat-label">Processos Ativos</div>
+                          </div>
+                        </div>
+
+                        <div className="relatorio-stat-card" onClick={() => handleOpenStatusModal('distribuicao')}>
+                          <div className="relatorio-stat-icon distribuicao">
+                            <FileText size={24} />
+                          </div>
+                          <div className="relatorio-stat-content">
+                            <div className="relatorio-stat-number">8</div>
+                            <div className="relatorio-stat-label">Distribuídos</div>
+                          </div>
+                        </div>
+
+                        <div className="relatorio-stat-card" onClick={() => handleOpenStatusModal('concluidos')}>
+                          <div className="relatorio-stat-icon concluido">
+                            <CheckCircle2 size={24} />
+                          </div>
+                          <div className="relatorio-stat-content">
+                            <div className="relatorio-stat-number">5</div>
+                            <div className="relatorio-stat-label">Concluídos</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Timeline Visual */}
+                      <div className="relatorio-timeline">
+                        <div className="relatorio-timeline-item" onClick={() => handleOpenStatusModal('audiencias')}>
+                          <div className="relatorio-timeline-icon audiencia-agendada">
+                            <Calendar size={16} />
+                          </div>
+                          <div className="relatorio-timeline-content">
+                            <div className="relatorio-timeline-title">Audiência Agendada</div>
+                            <div className="relatorio-timeline-subtitle">Ação de Indenização</div>
+                            <div className="relatorio-timeline-date">10 de out. de 2025, 21:00</div>
+                          </div>
+                          <div className="relatorio-timeline-date-right">10 de out. de 2025</div>
+                        </div>
+
+                        <div className="relatorio-timeline-item" onClick={() => handleOpenStatusModal('processos')}>
+                          <div className="relatorio-timeline-icon processo-ativo">
+                            <CheckCircle size={16} />
+                          </div>
+                          <div className="relatorio-timeline-content">
+                            <div className="relatorio-timeline-title">Processo Ativo</div>
+                            <div className="relatorio-timeline-subtitle">Sem nada</div>
+                            <div className="relatorio-timeline-date">07 de out. de 2025, 14:55</div>
+                          </div>
+                          <div className="relatorio-timeline-date-right">07 de out. de 2025</div>
+                        </div>
+
+                        <div className="relatorio-timeline-item" onClick={() => handleOpenStatusModal('distribuicao')}>
+                          <div className="relatorio-timeline-icon processo-distribuido">
+                            <FileText size={16} />
+                          </div>
+                          <div className="relatorio-timeline-content">
+                            <div className="relatorio-timeline-title">Processo Distribuído</div>
+                            <div className="relatorio-timeline-subtitle">Distribuído em TJBA</div>
+                            <div className="relatorio-timeline-date">03 de out. de 2025, 21:00</div>
+                          </div>
+                          <div className="relatorio-timeline-date-right">03 de out. de 2025</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timesheet */}
+                  <div className="relatorio-section relatorio-section-timesheet">
+                    <h3>Controle de Horas</h3>
+                    <div className="relatorio-section-content">
+                      <div className="relatorio-timesheet">
+                        <div className="relatorio-timesheet-stats-grid">
+                          <div className="relatorio-timesheet-stat-card">
+                            <div className="relatorio-timesheet-stat-icon horas">
+                              <Clock size={24} />
+                            </div>
+                            <div className="relatorio-timesheet-stat-content">
+                              <div className="relatorio-timesheet-stat-value">40h</div>
+                              <div className="relatorio-timesheet-stat-label">Total de Horas</div>
+                            </div>
+                          </div>
+                          <div className="relatorio-timesheet-stat-card">
+                            <div className="relatorio-timesheet-stat-icon valor">
+                              <DollarSign size={24} />
+                            </div>
+                            <div className="relatorio-timesheet-stat-content">
+                              <div className="relatorio-timesheet-stat-value">R$ 2.000</div>
+                              <div className="relatorio-timesheet-stat-label">Valor Total</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="relatorio-timesheet-details">
+                          <div className="relatorio-timesheet-item">
+                            <div className="relatorio-timesheet-info">
+                              <div className="relatorio-timesheet-desc">Elaboração de petição inicial</div>
+                              <div className="relatorio-timesheet-meta">Processo: 1234567-89.2025.8.26.0001</div>
+                            </div>
+                            <div className="relatorio-timesheet-valores">
+                              <div className="relatorio-timesheet-stat-card pequeno">
+                                <div className="relatorio-timesheet-stat-icon pequeno horas">
+                                  <Clock size={16} />
+                                </div>
+                                <div className="relatorio-timesheet-stat-content">
+                                  <div className="relatorio-timesheet-stat-value">8h</div>
+                                </div>
+                              </div>
+                              <div className="relatorio-timesheet-stat-card pequeno">
+                                <div className="relatorio-timesheet-stat-icon pequeno valor">
+                                  <DollarSign size={16} />
+                                </div>
+                                <div className="relatorio-timesheet-stat-content">
+                                  <div className="relatorio-timesheet-stat-value">R$ 400</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Financeiro */}
+                  <div className="relatorio-section relatorio-section-financeiro">
+                    <h3>Financeiro</h3>
+                    <div className="relatorio-section-content">
+                      <div className="relatorio-financeiro">
+                        <div className="relatorio-financeiro-stats-grid">
+                          <div className="relatorio-financeiro-stat-card">
+                            <div className="relatorio-financeiro-stat-icon receitas">
+                              <TrendingUp size={24} />
+                            </div>
+                            <div className="relatorio-financeiro-stat-content">
+                              <div className="relatorio-financeiro-stat-value">R$ 5.000</div>
+                              <div className="relatorio-financeiro-stat-label">Receitas</div>
+                            </div>
+                          </div>
+                          <div className="relatorio-financeiro-stat-card">
+                            <div className="relatorio-financeiro-stat-icon despesas">
+                              <TrendingDown size={24} />
+                            </div>
+                            <div className="relatorio-financeiro-stat-content">
+                              <div className="relatorio-financeiro-stat-value">R$ 1.200</div>
+                              <div className="relatorio-financeiro-stat-label">Despesas</div>
+                            </div>
+                          </div>
+                          <div className="relatorio-financeiro-stat-card">
+                            <div className="relatorio-financeiro-stat-icon lucro">
+                              <DollarSign size={24} />
+                            </div>
+                            <div className="relatorio-financeiro-stat-content">
+                              <div className="relatorio-financeiro-stat-value">R$ 3.800</div>
+                              <div className="relatorio-financeiro-stat-label">Lucro</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Confirmação para Deletar */}
       {showDeleteModal && (
-        <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
+        <div className="modal-overlay" onClick={handleCloseDeleteModal}>
           <div className="modal-content modal-confirm" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">Confirmar Exclusão</h2>
               <button 
                 className="modal-close"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={handleCloseDeleteModal}
               >
                 <XCircle size={24} />
               </button>
@@ -522,22 +901,161 @@ const Relatorios = () => {
                 <strong>"{selectedRelatorio?.titulo}"</strong>
                 <p className="confirm-warning">Esta ação não pode ser desfeita.</p>
               </div>
+              
+              <div className="admin-password-section">
+                <label htmlFor="adminPassword" className="admin-password-label">
+                  🔒 Senha do Administrador:
+                </label>
+                <input
+                  type="password"
+                  id="adminPassword"
+                  className="admin-password-input"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Digite sua senha de administrador"
+                  autoComplete="current-password"
+                />
+                <small className="admin-password-help">
+                  Apenas administradores podem excluir relatórios. Digite sua senha para confirmar.
+                </small>
+              </div>
             </div>
 
             <div className="modal-actions">
               <button 
                 className="btn btn-secondary" 
-                onClick={() => setShowDeleteModal(false)}
+                onClick={handleCloseDeleteModal}
               >
                 Cancelar
               </button>
               <button 
                 className="btn btn-danger" 
                 onClick={handleConfirmDelete}
+                disabled={deleteLoading || !adminPassword.trim()}
               >
                 <Trash2 size={16} />
-                Sim, Deletar
+                {deleteLoading ? 'Excluindo...' : 'Sim, Deletar'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Status Detalhado */}
+      {showStatusModal && selectedStatus && (
+        <div className="processo-view-overlay" onClick={handleCloseStatusModal}>
+          <div className="processo-view-container" onClick={(e) => e.stopPropagation()}>
+            <div className="processo-view-header">
+              <h2>
+                {selectedStatus === 'audiencias' && 'Audiências do Mês'}
+                {selectedStatus === 'processos' && 'Processos Ativos'}
+                {selectedStatus === 'distribuicao' && 'Processos Distribuídos'}
+              </h2>
+              <div className="modal-header-actions">
+                <button 
+                  className="modal-close-btn" 
+                  onClick={handleCloseStatusModal}
+                >
+                  <XCircle size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="processo-view-content">
+              <div className="status-detalhado">
+                {selectedStatus === 'audiencias' && (
+                  <div className="status-list">
+                    <div className="status-item">
+                      <div className="status-item-header">
+                        <div className="status-item-icon audiencia-agendada">
+                          <Calendar size={16} />
+                        </div>
+                        <div className="status-item-info">
+                          <div className="status-item-title">Audiência de Conciliação</div>
+                          <div className="status-item-subtitle">Processo: 1234567-89.2025.8.26.0001</div>
+                        </div>
+                        <div className="status-item-date">10/10/2025 - 21:00</div>
+                      </div>
+                      <div className="status-item-details">
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Cliente:</span>
+                          <span className="status-detail-value">João Silva</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Tribunal:</span>
+                          <span className="status-detail-value">TJBA</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Responsável:</span>
+                          <span className="status-detail-value">Admin LexElite</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {selectedStatus === 'processos' && (
+                  <div className="status-list">
+                    <div className="status-item">
+                      <div className="status-item-header">
+                        <div className="status-item-icon processo-ativo">
+                          <CheckCircle size={16} />
+                        </div>
+                        <div className="status-item-info">
+                          <div className="status-item-title">Ação de Indenização</div>
+                          <div className="status-item-subtitle">Processo: 1234567-89.2025.8.26.0001</div>
+                        </div>
+                        <div className="status-item-date">07/10/2025 - 14:55</div>
+                      </div>
+                      <div className="status-item-details">
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Cliente:</span>
+                          <span className="status-detail-value">João Silva</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Status:</span>
+                          <span className="status-detail-value">Ativo</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Responsável:</span>
+                          <span className="status-detail-value">Admin LexElite</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {selectedStatus === 'distribuicao' && (
+                  <div className="status-list">
+                    <div className="status-item">
+                      <div className="status-item-header">
+                        <div className="status-item-icon processo-distribuido">
+                          <FileText size={16} />
+                        </div>
+                        <div className="status-item-info">
+                          <div className="status-item-title">Ação de Indenização</div>
+                          <div className="status-item-subtitle">Processo: 1234567-89.2025.8.26.0001</div>
+                        </div>
+                        <div className="status-item-date">03/10/2025 - 21:00</div>
+                      </div>
+                      <div className="status-item-details">
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Cliente:</span>
+                          <span className="status-detail-value">João Silva</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Tribunal:</span>
+                          <span className="status-detail-value">TJBA</span>
+                        </div>
+                        <div className="status-detail-row">
+                          <span className="status-detail-label">Responsável:</span>
+                          <span className="status-detail-value">Admin LexElite</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

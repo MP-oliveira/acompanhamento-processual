@@ -223,16 +223,47 @@ export const gerarRelatorio = async (req, res) => {
 };
 
 /**
- * Remove um relatório
+ * Remove um relatório (apenas admin com senha)
  */
 export const removerRelatorio = async (req, res) => {
   try {
     const { id } = req.params;
+    const { adminPassword } = req.body;
 
-    const relatorio = await Relatorio.findOne({
-      where: { id, userId: req.user.id }
-    });
+    // Verificar se o usuário é admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        error: 'Apenas administradores podem excluir relatórios'
+      });
+    }
 
+    // Verificar se a senha foi fornecida
+    if (!adminPassword) {
+      return res.status(400).json({
+        error: 'Senha do administrador é obrigatória'
+      });
+    }
+
+    // Buscar o usuário admin para validar a senha
+    const adminUser = await User.findByPk(req.user.id);
+    if (!adminUser) {
+      return res.status(404).json({
+        error: 'Usuário administrador não encontrado'
+      });
+    }
+
+    // Validar senha do admin
+    const bcrypt = await import('bcrypt');
+    const isPasswordValid = await bcrypt.compare(adminPassword, adminUser.senha);
+    
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        error: 'Senha do administrador incorreta'
+      });
+    }
+
+    // Buscar o relatório (admin pode deletar qualquer relatório)
+    const relatorio = await Relatorio.findByPk(id);
     if (!relatorio) {
       return res.status(404).json({
         error: 'Relatório não encontrado'
@@ -241,7 +272,7 @@ export const removerRelatorio = async (req, res) => {
 
     await relatorio.destroy();
 
-    logger.info(`Relatório removido: ${relatorio.titulo} por ${req.user.email}`);
+    logger.info(`Relatório removido: ${relatorio.titulo} por admin ${req.user.email}`);
 
     res.json({
       message: 'Relatório removido com sucesso'

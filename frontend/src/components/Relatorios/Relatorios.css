@@ -205,47 +205,85 @@
 }
 
 .relatorio-card {
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  padding: var(--spacing-lg);
-  transition: all var(--transition-fast);
+  background: 
+    linear-gradient(145deg, 
+      rgba(255, 255, 255, 0.9), 
+      rgba(255, 255, 255, 0.7)
+    ),
+    var(--bg-secondary);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  padding: 1.75rem;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
 }
 
 .relatorio-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
   border-color: var(--border-medium);
 }
 
 .relatorio-card-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-md);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .relatorio-card-type {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--primary-100);
+  color: var(--primary-600);
 }
 
 .relatorio-card-status {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .status-icon {
   flex-shrink: 0;
+}
+
+/* ===== BARRA LATERAL POR STATUS ===== */
+.relatorio-card-concluido {
+  border-left: 3px solid var(--success-500);
+}
+
+.relatorio-card-erro {
+  border-left: 3px solid var(--error-500);
+}
+
+.relatorio-card-processando {
+  border-left: 3px solid var(--warning-500);
 }
 
 .status-success {
@@ -262,15 +300,17 @@
 
 .relatorio-card-content {
   flex: 1;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1.5rem;
 }
 
 .relatorio-card-title {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-sm) 0;
-  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .relatorio-card-description {
@@ -283,24 +323,28 @@
 .relatorio-card-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
 }
 
 .relatorio-card-period,
 .relatorio-card-date {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 /* ===== DADOS DO RELATÓRIO ===== */
 .relatorio-card-data {
   background-color: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
   border: 1px solid var(--border-light);
 }
 
@@ -368,23 +412,35 @@
 /* ===== AÇÕES ===== */
 .relatorio-card-actions {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: 0.5rem;
   justify-content: flex-end;
   margin-top: auto;
   flex-shrink: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
 }
 
 .relatorio-card-action-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
   background-color: transparent;
+}
+
+.relatorio-card-action-view {
+  color: var(--primary-600);
+}
+
+.relatorio-card-action-view:hover {
+  background-color: var(--primary-100);
+  color: var(--primary-700);
+  transform: scale(1.05);
 }
 
 .relatorio-card-action-edit {
@@ -392,8 +448,9 @@
 }
 
 .relatorio-card-action-edit:hover {
-  background-color: var(--primary-50);
+  background-color: var(--primary-100);
   color: var(--primary-700);
+  transform: scale(1.05);
 }
 
 .relatorio-card-action-delete {
@@ -401,8 +458,9 @@
 }
 
 .relatorio-card-action-delete:hover {
-  background-color: var(--error-50);
+  background-color: var(--error-100);
   color: var(--error-700);
+  transform: scale(1.05);
 }
 
 .relatorio-card-action-btn:focus-visible {
@@ -621,9 +679,589 @@
   outline-offset: 2px;
 }
 
+/* ===== MODAL DE VISUALIZAÇÃO COMPLETA ===== */
+.relatorio-completo {
+  max-width: 100%;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 6px;
+}
+
+.relatorio-completo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.relatorio-completo-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.relatorio-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.relatorio-completo-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: var(--success-100);
+  color: var(--success-600);
+}
+
+.relatorio-completo-description {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-500);
+}
+
+.relatorio-completo-description p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.relatorio-completo-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.relatorio-section {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===== BARRAS COLORIDAS NO LADO DIREITO ===== */
+.relatorio-section-resumo {
+  border-right: 4px solid var(--primary-500);
+}
+
+.relatorio-section-processos {
+  border-right: 4px solid var(--success-500);
+}
+
+.relatorio-section-tarefas {
+  border-right: 4px solid var(--warning-500);
+}
+
+.relatorio-section-audiencias {
+  border-right: 4px solid var(--info-500);
+}
+
+.relatorio-section-timesheet {
+  border-right: 4px solid var(--purple-500);
+}
+
+.relatorio-section-financeiro {
+  border-right: 4px solid var(--success-600);
+}
+
+.relatorio-section-timeline {
+  border-right: 4px solid var(--primary-500);
+}
+
+/* ===== CARDS DE ESTATÍSTICAS (ESTILO DASHBOARD) ===== */
+.relatorio-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.relatorio-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.relatorio-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-500);
+}
+
+.relatorio-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relatorio-stat-icon.audiencia {
+  background: var(--warning-500);
+}
+
+.relatorio-stat-icon.processo {
+  background: var(--success-500);
+}
+
+.relatorio-stat-icon.distribuicao {
+  background: var(--info-500);
+}
+
+.relatorio-stat-icon.concluido {
+  background: var(--primary-500);
+}
+
+.relatorio-stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.relatorio-stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== TIMELINE VISUAL ===== */
+.relatorio-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.relatorio-timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.relatorio-timeline-item:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary-500);
+  transform: translateX(4px);
+}
+
+.relatorio-timeline-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relatorio-timeline-icon.audiencia-agendada {
+  background: var(--warning-500);
+}
+
+.relatorio-timeline-icon.processo-ativo {
+  background: var(--success-500);
+}
+
+.relatorio-timeline-icon.processo-distribuido {
+  background: var(--info-500);
+}
+
+.relatorio-timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.relatorio-timeline-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-timeline-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-timeline-date {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+.relatorio-timeline-date-right {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.relatorio-section h3 {
+  margin: 0;
+  padding: 1.5rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.relatorio-section-content {
+  padding: 1.5rem;
+}
+
+/* ===== ESTATÍSTICAS ===== */
+.relatorio-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.relatorio-stat-item {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.relatorio-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  margin-bottom: 0.5rem;
+}
+
+.relatorio-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== TABELAS ===== */
+.relatorio-table {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.relatorio-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.relatorio-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.relatorio-table-row:last-child {
+  border-bottom: none;
+}
+
+.relatorio-table-cell {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.relatorio-table-header .relatorio-table-cell {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.relatorio-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.relatorio-status-badge.ativo {
+  background-color: var(--success-100);
+  color: var(--success-600);
+}
+
+/* ===== TAREFAS ===== */
+.relatorio-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.relatorio-task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.relatorio-task-info {
+  flex: 1;
+}
+
+.relatorio-task-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-task-meta {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.relatorio-task-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== AUDIÊNCIAS ===== */
+.relatorio-audiencias {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.relatorio-audiencia-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.relatorio-audiencia-info {
+  flex: 1;
+}
+
+.relatorio-audiencia-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-audiencia-meta {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.relatorio-audiencia-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== TIMESHEET ===== */
+.relatorio-timesheet {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.relatorio-timesheet-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.relatorio-timesheet-stat {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.relatorio-timesheet-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  margin-bottom: 0.5rem;
+}
+
+.relatorio-timesheet-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.relatorio-timesheet-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.relatorio-timesheet-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  align-items: center;
+}
+
+.relatorio-timesheet-info {
+  flex: 1;
+}
+
+.relatorio-timesheet-desc {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-timesheet-meta {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.relatorio-timesheet-hours {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ===== FINANCEIRO ===== */
+.relatorio-financeiro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.relatorio-financeiro-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.relatorio-financeiro-stat {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.relatorio-financeiro-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  margin-bottom: 0.5rem;
+}
+
+.relatorio-financeiro-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 /* ===== MODAL DE CONFIRMAÇÃO ===== */
 .modal-confirm {
-  max-width: 400px;
+  max-width: 500px;
+}
+
+.admin-password-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.admin-password-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.admin-password-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.admin-password-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.admin-password-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.admin-password-help {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 .confirm-message {
@@ -673,5 +1311,413 @@
   .relatorios-stat-card:hover,
   .relatorios-stat-card:hover .relatorios-stat-icon {
     transform: none;
+  }
+}
+
+/* ===== MODAL DE STATUS DETALHADO ===== */
+.status-detalhado {
+  padding: 1rem 0;
+}
+
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.status-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.status-item:hover {
+  border-color: var(--primary-500);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.status-item-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.status-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.status-item-icon.audiencia-agendada {
+  background: var(--warning-500);
+}
+
+.status-item-icon.processo-ativo {
+  background: var(--success-500);
+}
+
+.status-item-icon.processo-distribuido {
+  background: var(--info-500);
+}
+
+.status-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.status-item-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.status-item-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.status-item-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.status-item-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.status-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-detail-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.status-detail-value {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ===== CARDS DE ESTATÍSTICAS DO TIMESHEET (ESTILO DASHBOARD) ===== */
+.relatorio-timesheet-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.relatorio-timesheet-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.relatorio-timesheet-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-500);
+}
+
+.relatorio-timesheet-stat-card.pequeno {
+  padding: 0.75rem 1rem;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  min-width: auto;
+}
+
+.relatorio-timesheet-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relatorio-timesheet-stat-icon.pequeno {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.relatorio-timesheet-stat-icon.horas {
+  background: var(--info-500);
+}
+
+.relatorio-timesheet-stat-icon.valor {
+  background: var(--success-500);
+}
+
+.relatorio-timesheet-stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.relatorio-timesheet-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-timesheet-stat-card.pequeno .relatorio-timesheet-stat-value {
+  font-size: 1.25rem;
+  margin-bottom: 0;
+}
+
+.relatorio-timesheet-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.relatorio-timesheet-valores {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-direction: row;
+}
+
+/* ===== CARDS DE ESTATÍSTICAS DO FINANCEIRO (ESTILO DASHBOARD) ===== */
+.relatorio-financeiro-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.relatorio-financeiro-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.relatorio-financeiro-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-500);
+}
+
+.relatorio-financeiro-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relatorio-financeiro-stat-icon.receitas {
+  background: var(--success-500);
+}
+
+.relatorio-financeiro-stat-icon.despesas {
+  background: var(--error-500);
+}
+
+.relatorio-financeiro-stat-icon.lucro {
+  background: var(--primary-500);
+}
+
+.relatorio-financeiro-stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.relatorio-financeiro-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-financeiro-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== CARDS DE ESTATÍSTICAS DO RESUMO EXECUTIVO (ESTILO DASHBOARD) ===== */
+.relatorio-resumo-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.relatorio-resumo-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.relatorio-resumo-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-500);
+}
+
+.relatorio-resumo-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relatorio-resumo-stat-icon.total {
+  background: var(--primary-500);
+}
+
+.relatorio-resumo-stat-icon.ativos {
+  background: var(--success-500);
+}
+
+.relatorio-resumo-stat-icon.arquivados {
+  background: var(--neutral-500);
+}
+
+.relatorio-resumo-stat-icon.suspensos {
+  background: var(--warning-500);
+}
+
+.relatorio-resumo-stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.relatorio-resumo-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-resumo-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== MODAL FLUTUANTE ===== */
+.processo-view-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.processo-view-container {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 95%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+}
+
+.processo-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-tertiary);
+}
+
+.processo-view-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.processo-view-content {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+  background-color: var(--bg-secondary);
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .processo-view-overlay {
+    padding: var(--spacing-sm);
+  }
+  .processo-view-container {
+    width: 100%;
+    max-height: 95vh;
+  }
+  .processo-view-header {
+    padding: var(--spacing-md);
+  }
+  .processo-view-content {
+    padding: var(--spacing-md);
   }
 }

@@ -214,6 +214,13 @@ export const relatorioService = {
     return response.data;
   },
 
+  async deleteWithPassword(id, password) {
+    const response = await api.delete(`/relatorios/${id}`, {
+      data: { adminPassword: password }
+    });
+    return response.data;
+  },
+
   async getStats() {
     const response = await api.get('/relatorios/stats');
     return response.data;

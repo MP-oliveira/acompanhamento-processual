@@ -239,8 +239,8 @@
 }
 
 .dashboard-section-link:hover {
-  color: var(--primary-700);
-  text-decoration: underline;
+  color: white;
+  text-decoration: none;
 }
 
 .dashboard-section-content {

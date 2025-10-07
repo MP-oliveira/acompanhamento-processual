@@ -3,28 +3,28 @@ import { Op } from 'sequelize';
 import { Cliente, Processo, User } from '../models/index.js';
 import logger from '../config/logger.js';
 
-// Schema de validação
+// Schema de validação simplificado
 const clienteSchema = Joi.object({
-  nome: Joi.string().min(3).max(200).required(),
-  tipo: Joi.string().valid('fisica', 'juridica').required(),
-  cpf: Joi.string().pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/).optional().allow(null, ''),
-  cnpj: Joi.string().pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/).optional().allow(null, ''),
-  rg: Joi.string().max(20).optional().allow(''),
-  email: Joi.string().email().max(200).optional().allow(''),
-  telefone: Joi.string().max(20).optional().allow(''),
-  celular: Joi.string().max(20).optional().allow(''),
-  endereco: Joi.string().max(300).optional().allow(''),
-  numero: Joi.string().max(10).optional().allow(''),
-  complemento: Joi.string().max(100).optional().allow(''),
-  bairro: Joi.string().max(100).optional().allow(''),
-  cidade: Joi.string().max(100).optional().allow(''),
-  estado: Joi.string().length(2).uppercase().optional().allow(''),
-  cep: Joi.string().pattern(/^\d{5}-\d{3}$/).optional().allow(''),
-  profissao: Joi.string().max(100).optional().allow(''),
-  estadoCivil: Joi.string().valid('solteiro', 'casado', 'divorciado', 'viuvo', 'uniao_estavel').optional().allow(null),
-  dataNascimento: Joi.date().optional().allow(null),
-  observacoes: Joi.string().max(2000).optional().allow(''),
-  ativo: Joi.boolean().optional()
+  nome: Joi.string().min(2).max(200).required(),
+  tipo: Joi.string().valid('fisica', 'juridica').default('fisica'),
+  cpf: Joi.string().optional().allow('', null),
+  cnpj: Joi.string().optional().allow('', null),
+  rg: Joi.string().optional().allow('', null),
+  email: Joi.string().email().optional().allow('', null),
+  telefone: Joi.string().optional().allow('', null),
+  celular: Joi.string().optional().allow('', null),
+  endereco: Joi.string().optional().allow('', null),
+  numero: Joi.string().optional().allow('', null),
+  complemento: Joi.string().optional().allow('', null),
+  bairro: Joi.string().optional().allow('', null),
+  cidade: Joi.string().optional().allow('', null),
+  estado: Joi.string().optional().allow('', null),
+  cep: Joi.string().optional().allow('', null),
+  profissao: Joi.string().optional().allow('', null),
+  estadoCivil: Joi.string().optional().allow('', null),
+  dataNascimento: Joi.string().optional().allow('', null),
+  observacoes: Joi.string().optional().allow('', null),
+  ativo: Joi.boolean().default(true)
 });
 
 /**
@@ -52,13 +52,6 @@ export const listarClientes = async (req, res) => {
 
     const { count, rows: clientes } = await Cliente.findAndCountAll({
       where: whereClause,
-      include: [
-        {
-          model: Processo,
-          as: 'processos',
-          attributes: ['id', 'numero', 'classe', 'status']
-        }
-      ],
       order: [['nome', 'ASC']],
       limit: parseInt(limit),
       offset: parseInt(offset)
@@ -92,14 +85,7 @@ export const buscarCliente = async (req, res) => {
       where: { 
         id, 
         userId: req.user.id 
-      },
-      include: [
-        {
-          model: Processo,
-          as: 'processos',
-          attributes: ['id', 'numero', 'classe', 'status', 'createdAt']
-        }
-      ]
+      }
     });
 
     if (!cliente) {
@@ -133,8 +119,8 @@ export const criarCliente = async (req, res) => {
       });
     }
 
-    // Verificar CPF/CNPJ duplicado
-    if (value.cpf) {
+    // Verificar CPF/CNPJ duplicado (apenas se não estiver vazio)
+    if (value.cpf && value.cpf.trim() !== '') {
       const existe = await Cliente.findOne({ where: { cpf: value.cpf } });
       if (existe) {
         return res.status(409).json({
@@ -143,7 +129,7 @@ export const criarCliente = async (req, res) => {
       }
     }
 
-    if (value.cnpj) {
+    if (value.cnpj && value.cnpj.trim() !== '') {
       const existe = await Cliente.findOne({ where: { cnpj: value.cnpj } });
       if (existe) {
         return res.status(409).json({
@@ -199,8 +185,8 @@ export const atualizarCliente = async (req, res) => {
       });
     }
 
-    // Verificar CPF/CNPJ duplicado
-    if (value.cpf && value.cpf !== cliente.cpf) {
+    // Verificar CPF/CNPJ duplicado (apenas se não estiver vazio)
+    if (value.cpf && value.cpf.trim() !== '' && value.cpf !== cliente.cpf) {
       const existe = await Cliente.findOne({ 
         where: { 
           cpf: value.cpf,
@@ -214,7 +200,7 @@ export const atualizarCliente = async (req, res) => {
       }
     }
 
-    if (value.cnpj && value.cnpj !== cliente.cnpj) {
+    if (value.cnpj && value.cnpj.trim() !== '' && value.cnpj !== cliente.cnpj) {
       const existe = await Cliente.findOne({ 
         where: { 
           cnpj: value.cnpj,

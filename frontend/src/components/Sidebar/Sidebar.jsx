@@ -15,7 +15,8 @@ import {
   LayoutGrid,
   Zap,
   DollarSign,
-  Clock
+  Clock,
+  CheckCircle
 } from 'lucide-react';
 import { processoService } from '../../services/api';
 import { useRelatoriosStats } from '../../hooks/useRelatorios';
@@ -65,6 +66,10 @@ const Sidebar = ({ isOpen, onClose, user }) => {
   const isActiveRoute = (href) => {
     if (href === '/dashboard') {
       return location.pathname === '/dashboard' || location.pathname === '/';
+    }
+    // Para evitar que /timesheet ative quando estiver em /timesheet/approval
+    if (href === '/timesheet') {
+      return location.pathname === '/timesheet';
     }
     return location.pathname.startsWith(href);
   };
@@ -200,6 +205,17 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                       <Clock className="sidebar-nav-item-icon" size={20} />
                       <span className="sidebar-nav-item-text">Timesheet</span>
                     </Link>
+                    {/* Aprovação de Horas - Apenas para administradores */}
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/timesheet/approval"
+                        className={`sidebar-nav-item ${isActiveRoute('/timesheet/approval') ? 'active' : ''}`}
+                        onClick={onClose}
+                      >
+                        <CheckCircle className="sidebar-nav-item-icon" size={20} />
+                        <span className="sidebar-nav-item-text">Aprovar Horas</span>
+                      </Link>
+                    )}
 
                   {/* Seção Sistema */}
                   <div className="sidebar-nav-section">

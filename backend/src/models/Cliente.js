@@ -21,20 +21,14 @@ const Cliente = sequelize.define('Cliente', {
     defaultValue: 'fisica'
   },
   cpf: {
-    type: DataTypes.STRING(14),
+    type: DataTypes.STRING(20),
     allowNull: true,
-    unique: true,
-    validate: {
-      is: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
-    }
+    unique: true
   },
   cnpj: {
-    type: DataTypes.STRING(18),
+    type: DataTypes.STRING(20),
     allowNull: true,
-    unique: true,
-    validate: {
-      is: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/
-    }
+    unique: true
   },
   rg: {
     type: DataTypes.STRING(20),
@@ -77,18 +71,11 @@ const Cliente = sequelize.define('Cliente', {
   },
   estado: {
     type: DataTypes.STRING(2),
-    allowNull: true,
-    validate: {
-      len: [2, 2],
-      isUppercase: true
-    }
+    allowNull: true
   },
   cep: {
-    type: DataTypes.STRING(9),
-    allowNull: true,
-    validate: {
-      is: /^\d{5}-\d{3}$/
-    }
+    type: DataTypes.STRING(10),
+    allowNull: true
   },
   profissao: {
     type: DataTypes.STRING(100),
@@ -142,11 +129,12 @@ const Cliente = sequelize.define('Cliente', {
   ],
   validate: {
     cpfOuCnpj() {
-      if (this.tipo === 'fisica' && !this.cpf) {
-        throw new Error('CPF é obrigatório para pessoa física');
+      // Validação mais flexível - permite salvar sem CPF/CNPJ
+      if (this.tipo === 'fisica' && this.cpf && this.cpf.trim() === '') {
+        this.cpf = null;
       }
-      if (this.tipo === 'juridica' && !this.cnpj) {
-        throw new Error('CNPJ é obrigatório para pessoa jurídica');
+      if (this.tipo === 'juridica' && this.cnpj && this.cnpj.trim() === '') {
+        this.cnpj = null;
       }
     }
   }

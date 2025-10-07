@@ -283,6 +283,8 @@
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--primary-700);
+  color: white;
+  text-decoration: none;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
