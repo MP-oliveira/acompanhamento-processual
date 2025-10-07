@@ -15,6 +15,8 @@ import notificationPreferencesRoutes from './notificationPreferencesRoutes.js';
 import commentRoutes from './commentRoutes.js';
 import custaRoutes from './custaRoutes.js';
 import documentoRoutes from './documentoRoutes.js';
+import calendarRoutes from './calendarRoutes.js';
+import timesheetRoutes from './timesheetRoutes.js';
 
 const router = Router();
 
@@ -38,6 +40,8 @@ router.use('/notification-preferences', notificationPreferencesRoutes);
 router.use('/comments', commentRoutes); // Comentários em processos
 router.use('/custas', custaRoutes); // Custas processuais
 router.use('/documentos', documentoRoutes); // Documentos processuais
+router.use('/calendar', calendarRoutes); // Calendário de eventos e prazos
+router.use('/timesheets', timesheetRoutes); // Controle de horas trabalhadas
 
 // Rotas externas (públicas)
 router.use('/external', externalRoutes);

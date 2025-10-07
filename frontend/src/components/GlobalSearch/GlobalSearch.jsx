@@ -45,12 +45,12 @@ const GlobalSearch = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'history', 'favorites'
   const inputRef = useRef(null);
   const navigate = useNavigate();
-
+  
   // Focus no input quando abrir e carregar histórico/favoritos
   useEffect(() => {
     if (isOpen) {
       if (inputRef.current) {
-        inputRef.current.focus();
+      inputRef.current.focus();
       }
       setHistory(getHistory());
       setFavorites(getFavorites());
@@ -271,17 +271,17 @@ const GlobalSearch = ({ isOpen, onClose }) => {
       <div className="global-search-modal" onClick={(e) => e.stopPropagation()}>
         <div className="global-search-header">
           <Search className="global-search-icon" size={20} />
-          <input
-            ref={inputRef}
-            type="text"
+            <input
+              ref={inputRef}
+              type="text"
             className="global-search-input"
             placeholder="Buscar processos, ações..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           <div className="global-search-header-actions">
             {query.trim().length >= 2 && (
-              <button 
+              <button
                 className={`global-search-favorite-btn ${isFavorite(query) ? 'active' : ''}`}
                 onClick={handleToggleFavorite}
                 title={isFavorite(query) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
@@ -433,8 +433,8 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                           hour: '2-digit', 
                           minute: '2-digit' 
                         })}
-                      </div>
-                    </div>
+                </div>
+              </div>
                     <button 
                       className="global-search-remove-btn"
                       onClick={(e) => handleRemoveHistory(e, item.id)}
@@ -442,7 +442,7 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                     >
                       <X size={16} />
                     </button>
-                  </div>
+            </div>
                 ))
               )}
             </>
@@ -451,11 +451,11 @@ const GlobalSearch = ({ isOpen, onClose }) => {
           {!loading && query.trim().length < 2 && activeTab === 'favorites' && (
             <>
               {favorites.length === 0 ? (
-                <div className="global-search-empty">
+            <div className="global-search-empty">
                   <Star size={32} />
                   <p>Nenhuma busca favorita</p>
-                </div>
-              ) : (
+            </div>
+          ) : (
                 favorites.map((item) => (
                   <div
                     key={item.id}
@@ -515,22 +515,22 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                     )}
                   </div>
                   <ArrowRight size={16} className="global-search-result-arrow" />
-                </div>
+            </div>
               ))}
             </>
           )}
         </div>
 
-        <div className="global-search-footer">
+          <div className="global-search-footer">
           <div className="global-search-footer-hint">
             <kbd>↑</kbd>
             <kbd>↓</kbd>
             <span>navegar</span>
-          </div>
+            </div>
           <div className="global-search-footer-hint">
             <kbd>Enter</kbd>
             <span>selecionar</span>
-          </div>
+            </div>
           <div className="global-search-footer-hint">
             <kbd>ESC</kbd>
             <span>fechar</span>

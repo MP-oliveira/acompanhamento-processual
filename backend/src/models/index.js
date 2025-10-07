@@ -10,6 +10,9 @@ import NotificationPreferences from './NotificationPreferences.js';
 import Comment from './Comment.js';
 import Custa from './Custa.js';
 import Documento from './Documento.js';
+import CalendarEvent from './CalendarEvent.js';
+import Timesheet from './Timesheet.js';
+import Cliente from './Cliente.js';
 
 // Definindo associações
 User.hasMany(Processo, { foreignKey: 'userId', as: 'processos' });
@@ -58,6 +61,27 @@ Documento.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
 User.hasMany(Documento, { foreignKey: 'uploadPor', as: 'documentosUpload' });
 Documento.belongsTo(User, { foreignKey: 'uploadPor', as: 'uploader' });
 
+// Associações para CalendarEvent
+Processo.hasMany(CalendarEvent, { foreignKey: 'processoId', as: 'eventos' });
+CalendarEvent.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
+
+User.hasMany(CalendarEvent, { foreignKey: 'userId', as: 'eventos' });
+CalendarEvent.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// Associações para Timesheet
+Processo.hasMany(Timesheet, { foreignKey: 'processoId', as: 'timesheets' });
+Timesheet.belongsTo(Processo, { foreignKey: 'processoId', as: 'processo' });
+
+User.hasMany(Timesheet, { foreignKey: 'userId', as: 'timesheets' });
+Timesheet.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// Associações para Cliente
+User.hasMany(Cliente, { foreignKey: 'userId', as: 'clientes' });
+Cliente.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+Cliente.hasMany(Processo, { foreignKey: 'clienteId', as: 'processos' });
+Processo.belongsTo(Cliente, { foreignKey: 'clienteId', as: 'cliente' });
+
 export { 
   sequelize, 
   User, 
@@ -70,5 +94,8 @@ export {
   NotificationPreferences,
   Comment,
   Custa,
-  Documento
+  Documento,
+  CalendarEvent,
+  Timesheet,
+  Cliente
 };

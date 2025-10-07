@@ -65,6 +65,16 @@ Processo.init({
       model: 'users',
       key: 'id'
     }
+  },
+  clienteId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'cliente_id',
+    references: {
+      model: 'clientes',
+      key: 'id'
+    },
+    onDelete: 'SET NULL'
   }
 }, {
   sequelize,
