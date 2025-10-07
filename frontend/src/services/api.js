@@ -125,6 +125,11 @@ export const processoService = {
     return response.data;
   },
 
+  async updateStatus(id, status) {
+    const response = await api.patch(`/processos/${id}/status`, { status });
+    return response.data;
+  },
+
   async delete(id) {
     const response = await api.delete(`/processos/${id}`);
     return response.data;

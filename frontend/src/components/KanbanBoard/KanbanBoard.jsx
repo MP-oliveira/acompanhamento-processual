@@ -107,6 +107,13 @@ const KanbanBoard = () => {
 
     if (activeProcesso && activeProcesso.status !== newStatus) {
       try {
+        console.log('🔄 Drag and Drop:', {
+          processoId: active.id,
+          statusAntigo: activeProcesso.status,
+          statusNovo: newStatus,
+          processo: activeProcesso
+        });
+
         // Atualização otimista
         setProcessos(prev =>
           prev.map(p =>
@@ -114,26 +121,12 @@ const KanbanBoard = () => {
           )
         );
 
-        // Atualizar no backend - enviar dados completos do processo
-        const updateData = {
-          numero: activeProcesso.numero,
-          classe: activeProcesso.classe,
-          assunto: activeProcesso.assunto || '',
-          tribunal: activeProcesso.tribunal || '',
-          comarca: activeProcesso.comarca || '',
-          status: newStatus,
-          dataDistribuicao: activeProcesso.dataDistribuicao || '',
-          dataSentenca: activeProcesso.dataSentenca || '',
-          prazoRecurso: activeProcesso.prazoRecurso || '',
-          prazoEmbargos: activeProcesso.prazoEmbargos || '',
-          proximaAudiencia: activeProcesso.proximaAudiencia || '',
-          observacoes: activeProcesso.observacoes || ''
-        };
-
-        await processoService.update(active.id, updateData);
+        // Atualizar no backend - apenas o status
+        await processoService.updateStatus(active.id, newStatus);
         toast.success(`Processo movido para ${COLUMNS.find(c => c.id === newStatus)?.title}`);
       } catch (error) {
-        console.error('Erro ao atualizar status:', error);
+        console.error('❌ Erro ao atualizar status:', error);
+        console.error('Detalhes do erro:', error.response?.data);
         toast.error('Erro ao atualizar status do processo');
         // Reverter mudança em caso de erro
         loadProcessos();
