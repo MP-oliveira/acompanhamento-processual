@@ -20,7 +20,7 @@
 
 /* Largura máxima apenas quando está na grid */
 .processos-grid .processo-card {
-  max-width: 370px;
+  max-width: 350px;
 }
 
 .processo-card:hover {
