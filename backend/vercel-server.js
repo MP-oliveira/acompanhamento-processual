@@ -8,20 +8,29 @@ dotenv.config();
 
 // Verificar se as variáveis de ambiente necessárias estão definidas
 if (!process.env.DATABASE_URL) {
-  console.error('DATABASE_URL não está definida nas variáveis de ambiente');
+  console.error('❌ DATABASE_URL não está definida nas variáveis de ambiente');
 }
 
-// Testar conexão com o banco
-import sequelize from './src/config/database.js';
+// Importar Sequelize e modelos (versão serverless - sem sync)
+import { sequelize } from './src/models/serverless.js';
 
-// Teste de conexão
-sequelize.authenticate()
-  .then(() => {
-    console.log('✅ Conexão com o banco de dados estabelecida com sucesso');
-  })
-  .catch(err => {
-    console.error('❌ Erro ao conectar com o banco de dados:', err);
-  });
+// Variável global para controlar se já tentamos conectar
+let connectionInitialized = false;
+
+// Função para garantir conexão (apenas tenta autenticar, sem sync)
+const ensureConnection = async () => {
+  if (!connectionInitialized) {
+    try {
+      await sequelize.authenticate();
+      console.log('✅ Conexão com o banco de dados estabelecida');
+      connectionInitialized = true;
+    } catch (err) {
+      console.error('❌ Erro ao conectar com o banco:', err.message);
+      // Não lançar erro, deixar tentar novamente na próxima requisição
+      connectionInitialized = false;
+    }
+  }
+};
 
 // Importar rotas reais
 import authRoutes from './src/routes/authRoutes.js';
@@ -123,6 +132,14 @@ app.get('/api/debug', (req, res) => {
   });
 });
 
+
+// Middleware para garantir conexão antes de cada requisição
+app.use('/api', async (req, res, next) => {
+  // Tenta garantir conexão, mas não bloqueia se falhar
+  // (os próprios controllers lidarão com erros de conexão)
+  await ensureConnection();
+  next();
+});
 
 // Usar rotas reais do backend com tratamento de erro
 try {
