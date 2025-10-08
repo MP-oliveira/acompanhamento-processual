@@ -63,6 +63,16 @@ const ProcessoCard = ({
     });
   };
 
+  const formatDateWithTime = (dateString, timeString) => {
+    if (!dateString) return 'Não informado';
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString('pt-BR');
+    if (timeString) {
+      return `${formattedDate} às ${timeString}`;
+    }
+    return formattedDate;
+  };
+
   const getDaysUntilDeadline = (dateString) => {
     if (!dateString) return null;
     const deadline = new Date(dateString);
@@ -167,7 +177,9 @@ const ProcessoCard = ({
             </div>
             <div className="processo-card-deadline-content">
               <span className="processo-card-deadline-date">
-                {formatDate(nextDeadline.date)}
+                {nextDeadline.label === 'Audiência' && processo.horaAudiencia
+                  ? formatDateWithTime(nextDeadline.date, processo.horaAudiencia)
+                  : formatDate(nextDeadline.date)}
               </span>
               {nextDeadline.daysLeft !== null && nextDeadline.daysLeft !== undefined && (
                 <span className={`processo-card-deadline-days ${

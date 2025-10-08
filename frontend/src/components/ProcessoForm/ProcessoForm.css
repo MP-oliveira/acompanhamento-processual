@@ -172,6 +172,15 @@
   box-shadow: 0 0 0 3px var(--error-50);
 }
 
+/* ===== HELPER TEXT ===== */
+.form-helper {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
 /* ===== SELECT ===== */
 .form-select {
   width: 100%;

@@ -17,16 +17,39 @@ const processoSchema = Joi.object({
     'string.max': 'Classe deve ter no máximo 100 caracteres',
     'any.required': 'Classe é obrigatória'
   }),
-  assunto: Joi.string().max(500).optional(),
-  tribunal: Joi.string().max(100).optional(),
-  comarca: Joi.string().max(100).optional(),
+  assunto: Joi.string().max(500).optional().allow(''),
+  tribunal: Joi.string().max(100).optional().allow(''),
+  comarca: Joi.string().max(100).optional().allow(''),
   status: Joi.string().valid('ativo', 'arquivado', 'suspenso').optional(),
-  dataDistribuicao: Joi.date().allow(null, '').optional(),
-  dataSentenca: Joi.date().allow(null, '').optional(),
-  prazoRecurso: Joi.date().allow(null, '').optional(),
-  prazoEmbargos: Joi.date().allow(null, '').optional(),
-  proximaAudiencia: Joi.date().allow(null, '').optional(),
-  observacoes: Joi.string().max(1000).optional()
+  dataDistribuicao: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  dataSentenca: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  prazoRecurso: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  prazoEmbargos: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  proximaAudiencia: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  horaAudiencia: Joi.string().pattern(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/).allow(null, '').optional().messages({
+    'string.pattern.base': 'Hora deve estar no formato HH:MM'
+  }),
+  observacoes: Joi.string().max(1000).optional().allow('')
 });
 
 // Schema para atualização (campos opcionais) - permite desconhecidos
@@ -43,13 +66,36 @@ const processoUpdateSchema = Joi.object({
   tribunal: Joi.string().max(100).optional().allow(''),
   comarca: Joi.string().max(100).optional().allow(''),
   status: Joi.string().valid('ativo', 'arquivado', 'suspenso').optional(),
-  dataDistribuicao: Joi.string().allow(null, '').optional(),
-  dataSentenca: Joi.string().allow(null, '').optional(),
-  prazoRecurso: Joi.string().allow(null, '').optional(),
-  prazoEmbargos: Joi.string().allow(null, '').optional(),
-  proximaAudiencia: Joi.string().allow(null, '').optional(),
+  dataDistribuicao: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  dataSentenca: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  prazoRecurso: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  prazoEmbargos: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  proximaAudiencia: Joi.alternatives().try(
+    Joi.date().iso(),
+    Joi.string().isoDate(),
+    Joi.allow(null, '')
+  ).optional(),
+  horaAudiencia: Joi.string().pattern(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/).allow(null, '').optional().messages({
+    'string.pattern.base': 'Hora deve estar no formato HH:MM'
+  }),
   observacoes: Joi.string().max(1000).optional().allow('')
-});
+}).unknown(true);
 
 /**
  * Lista todos os processos do usuário
@@ -168,7 +214,7 @@ export const criarProcesso = async (req, res) => {
 
     // Converter strings vazias em null para campos de data
     const cleanValue = { ...value };
-    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia'].forEach(field => {
+    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia', 'horaAudiencia'].forEach(field => {
       if (cleanValue[field] === '') {
         cleanValue[field] = null;
       }
@@ -260,7 +306,7 @@ export const atualizarProcesso = async (req, res) => {
 
     // Converter strings vazias em null para campos de data
     const cleanValue = { ...value };
-    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia'].forEach(field => {
+    ['dataDistribuicao', 'dataSentenca', 'prazoRecurso', 'prazoEmbargos', 'proximaAudiencia', 'horaAudiencia'].forEach(field => {
       if (cleanValue[field] === '') {
         cleanValue[field] = null;
       }

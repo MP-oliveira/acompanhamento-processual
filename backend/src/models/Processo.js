@@ -54,6 +54,10 @@ Processo.init({
     type: DataTypes.DATE,
     allowNull: true
   },
+  horaAudiencia: {
+    type: DataTypes.STRING(5),
+    allowNull: true
+  },
   observacoes: {
     type: DataTypes.TEXT,
     allowNull: true

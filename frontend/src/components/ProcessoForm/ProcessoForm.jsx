@@ -27,6 +27,7 @@ const ProcessoForm = ({
     prazoRecurso: '',
     prazoEmbargos: '',
     proximaAudiencia: '',
+    horaAudiencia: '',
     observacoes: ''
   });
 
@@ -52,6 +53,7 @@ const ProcessoForm = ({
           new Date(processo.prazoEmbargos).toISOString().split('T')[0] : '',
         proximaAudiencia: processo.proximaAudiencia ? 
           new Date(processo.proximaAudiencia).toISOString().split('T')[0] : '',
+        horaAudiencia: processo.horaAudiencia || '',
         observacoes: processo.observacoes || ''
       });
     }
@@ -154,6 +156,8 @@ const ProcessoForm = ({
           new Date(formData.prazoEmbargos).toISOString() : null,
         proximaAudiencia: formData.proximaAudiencia && formData.proximaAudiencia.trim() ? 
           new Date(formData.proximaAudiencia).toISOString() : null,
+        horaAudiencia: formData.horaAudiencia && formData.horaAudiencia.trim() ? 
+          formData.horaAudiencia.trim() : null,
         observacoes: formData.observacoes
       };
 
@@ -409,6 +413,27 @@ const ProcessoForm = ({
                 className="form-input"
                 disabled={loading}
               />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="horaAudiencia" className="form-label">
+                Horário da Audiência (opcional)
+              </label>
+              <input
+                type="time"
+                id="horaAudiencia"
+                name="horaAudiencia"
+                value={formData.horaAudiencia}
+                onChange={handleChange}
+                className="form-input"
+                disabled={loading}
+                placeholder="--:--"
+              />
+              <small className="form-helper">
+                Informe o horário caso haja uma audiência agendada
+              </small>
             </div>
           </div>
         </div>
