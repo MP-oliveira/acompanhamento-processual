@@ -11,8 +11,8 @@ if (!process.env.DATABASE_URL) {
   console.error('❌ DATABASE_URL não está definida nas variáveis de ambiente');
 }
 
-// Importar Sequelize e modelos (versão serverless - sem sync)
-import { sequelize } from './src/models/serverless.js';
+// Importar Sequelize e modelos
+import sequelize from './src/config/database.js';
 
 // Variável global para controlar se já tentamos conectar
 let connectionInitialized = false;
