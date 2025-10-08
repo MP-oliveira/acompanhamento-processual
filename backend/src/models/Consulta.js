@@ -36,7 +36,8 @@ Consulta.init({
   dataConsulta: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
+    field: 'data_consulta'
   },
   resultado: {
     type: DataTypes.JSON,
@@ -49,6 +50,7 @@ Consulta.init({
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'user_id',
     references: {
       model: 'users',
       key: 'id'

@@ -36,19 +36,23 @@ Processo.init({
   },
   dataDistribuicao: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'data_distribuicao'
   },
   dataSentenca: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'data_sentenca'
   },
   prazoRecurso: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'prazo_recurso'
   },
   prazoEmbargos: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'prazo_embargos'
   },
   proximaAudiencia: {
     type: DataTypes.DATE,
@@ -67,8 +71,18 @@ Processo.init({
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'user_id',
     references: {
       model: 'users',
+      key: 'id'
+    }
+  },
+  clienteId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'cliente_id',
+    references: {
+      model: 'clientes',
       key: 'id'
     }
   }

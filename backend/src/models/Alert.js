@@ -23,11 +23,13 @@ Alert.init({
   },
   dataVencimento: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'data_vencimento'
   },
   dataNotificacao: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    field: 'data_notificacao'
   },
   lido: {
     type: DataTypes.BOOLEAN,
@@ -40,6 +42,7 @@ Alert.init({
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'user_id',
     references: {
       model: 'users',
       key: 'id'
@@ -48,6 +51,7 @@ Alert.init({
   processoId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: 'processo_id',
     references: {
       model: 'processos',
       key: 'id'
