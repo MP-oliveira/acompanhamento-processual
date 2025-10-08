@@ -52,11 +52,13 @@ Processo.init({
   },
   proximaAudiencia: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'proxima_audiencia'
   },
   horaAudiencia: {
     type: DataTypes.STRING(5),
-    allowNull: true
+    allowNull: true,
+    field: 'hora_audiencia'
   },
   observacoes: {
     type: DataTypes.TEXT,
