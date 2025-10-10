@@ -160,3 +160,4 @@ Para dúvidas ou problemas, consulte a documentação do backend ou abra uma iss
 ---
 
 **Desenvolvido com ❤️ para a advocacia moderna**
+<!-- Deploy Fri Oct 10 11:27:40 -03 2025 -->
