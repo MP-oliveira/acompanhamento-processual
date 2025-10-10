@@ -47,8 +47,12 @@ const ProcessoCard = ({
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Não informado';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR');
+    } catch {
+      return 'Data inválida';
+    }
   };
 
   const formatDateTime = (dateString) => {
