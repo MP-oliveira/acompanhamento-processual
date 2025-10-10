@@ -5,6 +5,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import { clienteService } from '../../services/clienteService';
 import './ProcessoForm.css';
 
 const ProcessoForm = ({ 
@@ -28,10 +29,12 @@ const ProcessoForm = ({
     prazoEmbargos: '',
     proximaAudiencia: '',
     horaAudiencia: '',
+    clienteId: '',
     observacoes: ''
   });
 
   const [errors, setErrors] = useState({});
+  const [clientes, setClientes] = useState([]);
 
   // Preencher formulário se estiver editando ou usando template
   useEffect(() => {
@@ -54,10 +57,25 @@ const ProcessoForm = ({
         proximaAudiencia: processo.proximaAudiencia ? 
           new Date(processo.proximaAudiencia).toISOString().split('T')[0] : '',
         horaAudiencia: processo.horaAudiencia || '',
+        clienteId: processo.clienteId || '',
         observacoes: processo.observacoes || ''
       });
     }
   }, [processo]);
+
+  // Carregar clientes
+  useEffect(() => {
+    const loadClientes = async () => {
+      try {
+        const response = await clienteService.getAll();
+        setClientes(response.clientes || []);
+      } catch (error) {
+        console.error('Erro ao carregar clientes:', error);
+      }
+    };
+    
+    loadClientes();
+  }, []);
 
   // Preencher com dados do template selecionado
   useEffect(() => {
@@ -158,6 +176,8 @@ const ProcessoForm = ({
           new Date(formData.proximaAudiencia).toISOString() : null,
         horaAudiencia: formData.horaAudiencia && formData.horaAudiencia.trim() ? 
           formData.horaAudiencia.trim() : null,
+        clienteId: formData.clienteId && formData.clienteId.trim() ? 
+          parseInt(formData.clienteId) : null,
         observacoes: formData.observacoes
       };
 
@@ -433,6 +453,30 @@ const ProcessoForm = ({
               />
               <small className="form-helper">
                 Informe o horário caso haja uma audiência agendada
+              </small>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="clienteId" className="form-label">
+                Cliente
+              </label>
+              <select
+                id="clienteId"
+                name="clienteId"
+                value={formData.clienteId}
+                onChange={handleChange}
+                className="form-select"
+                disabled={loading}
+              >
+                <option value="">Selecione um cliente</option>
+                {clientes.map(cliente => (
+                  <option key={cliente.id} value={cliente.id}>
+                    {cliente.nome} - {cliente.email}
+                  </option>
+                ))}
+              </select>
+              <small className="form-helper">
+                Selecione o cliente responsável por este processo
               </small>
             </div>
           </div>
