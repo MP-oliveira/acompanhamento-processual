@@ -48,8 +48,10 @@ const ProcessoCard = ({
   const formatDate = (dateString) => {
     if (!dateString) return 'Não informado';
     try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('pt-BR');
+      // Converter para o formato que o input de data usa (YYYY-MM-DD) e depois formatar
+      const isoDate = new Date(dateString).toISOString().split('T')[0];
+      const [year, month, day] = isoDate.split('-');
+      return `${day}/${month}/${year}`;
     } catch {
       return 'Data inválida';
     }
