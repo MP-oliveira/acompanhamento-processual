@@ -75,10 +75,17 @@ const ProcessoCard = ({
 
   const getDaysUntilDeadline = (dateString) => {
     if (!dateString) return null;
+    
+    // Normalizar datas para comparação (apenas dia, sem hora)
     const deadline = new Date(dateString);
+    const deadlineDate = new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate());
+    
     const now = new Date();
-    const diffTime = deadline - now;
+    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const diffTime = deadlineDate - todayDate;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
     return diffDays;
   };
 
